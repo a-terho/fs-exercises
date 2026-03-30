@@ -117,9 +117,9 @@ const App = () => {
   const deletePerson = (person) => {
     // varmenna poisto käyttäjältä
     if (window.confirm(`Delete ${person.name}?`)) {
-      personService.del(person).then((deletedPerson) => {
-        setPersons(persons.filter((p) => p.id !== deletedPerson.id));
-        showInfoMessage(`Removed ${deletedPerson.name}`);
+      personService.del(person).then(() => {
+        setPersons(persons.filter((p) => p.id !== person.id));
+        showInfoMessage(`Removed ${person.name}`);
       });
     }
   };
