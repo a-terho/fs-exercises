@@ -1,30 +1,9 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
 
 const morgan = require('morgan');
-
-let people = [
-  {
-    name: 'Arto Hellas',
-    number: '040-123456',
-    id: '1',
-  },
-  {
-    name: 'Ada Lovelace',
-    number: '39-44-5323523',
-    id: '2',
-  },
-  {
-    name: 'Dan Abramov',
-    number: '12-43-234345',
-    id: '3',
-  },
-  {
-    name: 'Mary Poppendieck',
-    number: '39-23-6423122',
-    id: '4',
-  },
-];
+const Person = require('./models/Person');
 
 const randInt = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
 
@@ -34,7 +13,7 @@ app.use(express.json());
 // jaetaan frontend
 app.use(express.static('dist'));
 
-// loggaus, pohjana 'tiny' formaatti
+// loggaus, pohjana morganin 'tiny' formaatti
 morgan.token('body', function (req, res) {
   return JSON.stringify(req.body);
 });
@@ -44,73 +23,108 @@ const logger = morgan(
 app.use(logger);
 
 app.get('/info', (req, res) => {
-  const now = new Date().toString();
-  const markup = `<p>Phonebook has info for ${people.length} people</p><p>${now}</p>`;
-  res.status(200).send(markup);
-});
-
-// käyttää JSend spesifikaatiota
-// https://github.com/omniti-labs/jsend
-
-app.get('/api/persons', (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    data: people,
+  Person.countDocuments({}).then((numPeople) => {
+    const now = new Date().toString();
+    const markup = `<p>Phonebook has info for ${numPeople} people</p><p>${now}</p>`;
+    return res.status(200).send(markup);
   });
 });
 
+// käytän JSend spesifikaatiota osassa HTTP responseja
+// https://github.com/omniti-labs/jsend
+
+// hae kaikki henkilöt
+app.get('/api/persons', (req, res) => {
+  Person.find({}).then((people) => res.status(200).json(people));
+});
+
+// lisää henkilö
 app.post('/api/persons', (req, res) => {
   const { name, number } = req.body;
 
   if (!name || !number) {
     return res.status(400).json({
-      status: 'error',
-      message: 'bad request: name and/or number missing',
+      status: 'fail',
+      data: {
+        ...(!name && { name: 'missing required field' }),
+        ...(!number && { number: 'missing required field' }),
+      },
     });
   }
 
-  const found = people.find((p) => p.name.toLowerCase() === name.toLowerCase());
-  if (found) {
+  // const found = people.find((p) => p.name.toLowerCase() === name.toLowerCase());
+  // if (found) {
+  //   return res.status(400).json({
+  //     status: 'error',
+  //     message: `name ${name} already exists in the phonebook`,
+  //   });
+  // }
+
+  // sama kuin new Person({ name, number }).save().then(...);
+  Person.create({ name, number }).then((person) =>
+    res.status(201).json(person),
+  );
+});
+
+// hae tietty henkilö
+app.get('/api/persons/:id', (req, res, next) => {
+  const { id } = req.params;
+  Person.findById(id)
+    .then((person) => {
+      if (!person) {
+        return res.status(404).json({
+          status: 'error',
+          message: `person with id ${id} not found`,
+        });
+      }
+
+      return res.status(200).json(person);
+    })
+    .catch((err) => next(err));
+});
+
+// päivitä henkilön tietoja
+app.put('/api/persons/:id', (req, res, next) => {
+  const { id } = req.params;
+
+  // tällä hetkellä sovellus tukee vain numeron päivitystä
+  const { number } = req.body;
+  if (number === undefined) {
     return res.status(400).json({
-      status: 'error',
-      message: `name ${name} already exists in the phonebook`,
+      status: 'fail',
+      data: { number: 'missing required field' },
     });
   }
 
-  const person = {
-    name,
-    number,
-    id: String(randInt(0, 1_000_000)),
-  };
-  people = people.concat(person);
+  Person.findById(id)
+    .then((person) => {
+      if (!person) {
+        return res.status(404).json({
+          status: 'error',
+          message: `person with id ${id} not found`,
+        });
+      }
 
-  res.status(200).json({
-    status: 'success',
-    data: person,
-  });
+      person.number = number;
+      person
+        .save()
+        .then((updatedPerson) => res.status(200).json(updatedPerson));
+    })
+    .catch((err) => next(err));
 });
 
-app.get('/api/persons/:id', (req, res) => {
+// poista henkilö
+app.delete('/api/persons/:id', (req, res, next) => {
   const { id } = req.params;
-  const person = people.find((p) => p.id === id);
-
-  if (!person) {
-    return res.status(404).json({
-      status: 'error',
-      message: `person with id ${id} not found`,
-    });
-  }
-
-  res.status(200).json({
-    status: 'success',
-    data: person,
-  });
+  Person.findByIdAndDelete(id)
+    .then(() => res.status(204).end())
+    .catch((err) => next(err));
 });
 
-app.delete('/api/persons/:id', (req, res) => {
-  const { id } = req.params;
-  people = people.filter((p) => p.id !== id);
-  res.status(204).end();
+// keskitetty virheidenkäsittelyn middleware
+app.use((err, req, res, next) => {
+  console.error(err.message);
+  next(err);
 });
 
 // luo palvelin
