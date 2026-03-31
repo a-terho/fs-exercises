@@ -20,7 +20,7 @@ export default defineConfig([
       eqeqeq: 'error',
       'no-unused-vars': [
         'error',
-        { args: 'all', argsIgnorePattern: 'err|req|res|^_' },
+        { args: 'all', argsIgnorePattern: 'err|req|res|next|^_' },
       ],
     },
   },
