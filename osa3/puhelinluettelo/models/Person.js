@@ -9,8 +9,22 @@ mongoose
   );
 
 const personSchema = mongoose.Schema({
-  name: String,
-  number: String,
+  name: {
+    type: String,
+    required: true,
+    minLength: 3,
+  },
+  number: {
+    type: String,
+    required: true,
+    minLength: 8,
+    validate: {
+      validator: function (v) {
+        return /^[0-9]{2,3}-[0-9]+$/.test(v);
+      },
+      message: 'does not match correct format xx-xx... or xxx-xx...',
+    },
+  },
 });
 
 // siistitään palautuvaa JSON-tulostetta

@@ -40,14 +40,20 @@ const App = () => {
         )
       : persons;
 
-  const showInfoMessage = (message) => {
-    setMessage({ message, style: 'info' });
-    setTimeout(() => setMessage(null), 3000);
+  const showInfoMessage = (text) => {
+    // nollaa ensin mahdollinen viesti-ikkuna
+    if (message?.id) clearTimeout(message.id);
+
+    const id = setTimeout(() => setMessage(null), 4000);
+    setMessage({ id, text, style: 'info' });
   };
 
-  const showErrorMessage = (message) => {
-    setMessage({ message, style: 'error' });
-    setTimeout(() => setMessage(null), 5000);
+  const showErrorMessage = (text) => {
+    // nollaa ensin mahdollinen viesti-ikkuna
+    if (message?.id) clearTimeout(message.id);
+
+    const id = setTimeout(() => setMessage(null), 8000);
+    setMessage({ id, text, style: 'error' });
   };
 
   const resetFields = () => {
@@ -82,17 +88,25 @@ const App = () => {
           setPersons(
             persons.map((p) => (p.id === updatedPerson.id ? updatedPerson : p)),
           );
-
           resetFields();
+
           showInfoMessage(`Changed phone number for ${updatedPerson.name}`);
         })
-        .catch(() => {
-          setPersons(persons.filter((p) => p.id !== person.id));
+        .catch((err) => {
+          if (err.response.status === 404) {
+            setPersons(persons.filter((p) => p.id !== person.id));
+            resetFields();
 
-          resetFields();
-          showErrorMessage(
-            `Information for ${person.name} has already been removed from server`,
-          );
+            showErrorMessage(
+              `Information for ${person.name} has already been removed from server`,
+            );
+          } else {
+            console.log(err.response);
+            showErrorMessage(
+              err.response.data?.message ??
+                `Error occurred while updating number for ${person.name}`,
+            );
+          }
         });
       return;
     }
@@ -105,12 +119,15 @@ const App = () => {
       };
 
       // lisää nimi tietokantaan
-      personService.add(newPerson).then((addedPerson) => {
-        setPersons(persons.concat(addedPerson));
+      personService
+        .add(newPerson)
+        .then((addedPerson) => {
+          setPersons(persons.concat(addedPerson));
 
-        resetFields();
-        showInfoMessage(`Added ${addedPerson.name}`);
-      });
+          resetFields();
+          showInfoMessage(`Added ${addedPerson.name}`);
+        })
+        .catch((err) => showErrorMessage(err.response.data?.message));
     }
   };
 

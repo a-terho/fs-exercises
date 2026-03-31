@@ -39,10 +39,10 @@ app.get('/api/persons', (req, res) => {
 });
 
 // lisää henkilö
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res, next) => {
   const { name, number } = req.body;
 
-  if (!name || !number) {
+  if (name === undefined || number === undefined) {
     return res.status(400).json({
       status: 'fail',
       data: {
@@ -60,10 +60,10 @@ app.post('/api/persons', (req, res) => {
   //   });
   // }
 
-  // sama kuin new Person({ name, number }).save().then(...);
-  Person.create({ name, number }).then((person) =>
-    res.status(201).json(person),
-  );
+  // sama kuin new Person({ name, number }).save()
+  Person.create({ name, number })
+    .then((person) => res.status(201).json(person))
+    .catch((err) => next(err));
 });
 
 // hae tietty henkilö
@@ -108,7 +108,8 @@ app.put('/api/persons/:id', (req, res, next) => {
       person.number = number;
       person
         .save()
-        .then((updatedPerson) => res.status(200).json(updatedPerson));
+        .then((updatedPerson) => res.status(200).json(updatedPerson))
+        .catch((err) => next(err));
     })
     .catch((err) => next(err));
 });
@@ -124,6 +125,13 @@ app.delete('/api/persons/:id', (req, res, next) => {
 // keskitetty virheidenkäsittelyn middleware
 app.use((err, req, res, next) => {
   console.error(err.message);
+
+  res.status(500).json({
+    status: 'error',
+    message: err.message,
+  });
+
+  // jatka vielä Expressin virallisella virheidenkäsittelijällä
   next(err);
 });
 
