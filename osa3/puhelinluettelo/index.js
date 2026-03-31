@@ -5,8 +5,6 @@ const app = express();
 const morgan = require('morgan');
 const Person = require('./models/Person');
 
-const randInt = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
-
 // luodaan req.body
 app.use(express.json());
 
@@ -14,13 +12,10 @@ app.use(express.json());
 app.use(express.static('dist'));
 
 // loggaus, pohjana morganin 'tiny' formaatti
-morgan.token('body', function (req, res) {
-  return JSON.stringify(req.body);
-});
-const logger = morgan(
-  ':method :url :status :res[content-length] - :response-time ms :body',
+morgan.token('body', (req, res) => JSON.stringify(req.body));
+app.use(
+  morgan(':method :url :status :res[content-length] - :response-time ms :body'),
 );
-app.use(logger);
 
 app.get('/info', (req, res) => {
   Person.countDocuments({}).then((numPeople) => {
@@ -51,14 +46,6 @@ app.post('/api/persons', (req, res, next) => {
       },
     });
   }
-
-  // const found = people.find((p) => p.name.toLowerCase() === name.toLowerCase());
-  // if (found) {
-  //   return res.status(400).json({
-  //     status: 'error',
-  //     message: `name ${name} already exists in the phonebook`,
-  //   });
-  // }
 
   // sama kuin new Person({ name, number }).save()
   Person.create({ name, number })
