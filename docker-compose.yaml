@@ -1,0 +1,21 @@
+services:
+  devenv:
+    build: .
+    container_name: fs-monorepo
+    command: sh -c "npm install && tail -f /dev/null"
+    volumes:
+      # sisällyttä lähdekoodi kontin luettavaksi
+      # erota kuitenkin node_modules omaan volumeen
+      - ./:/workspace
+      - node_modules:/workspace/node_modules
+      # git komentoja varten
+      - ~/.gitconfig:/home/node/.gitconfig:ro
+
+    ports:
+      - '3001-3003:3001-3003' # ulostuleva palvelinliikenne
+      - '5173-5175:5173-5175' # vite dev
+    environment:
+      - NODE_ENV=development
+
+volumes:
+  node_modules:

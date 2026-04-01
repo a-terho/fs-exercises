@@ -1,0 +1,7 @@
+{
+  "name": "fs-exercises",
+  "private": true,
+  "workspaces": [
+    "osa*/*"
+  ]
+}

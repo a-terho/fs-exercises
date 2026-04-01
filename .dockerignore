@@ -1,0 +1,15 @@
+# turvataan ettei turhat tiedostot päädy vahingossa konttiin
+#  jos Dockerfileen päädytään lisäämään joskus COPY layer
+
+.dockerignore
+docker-compose.yaml
+Dockerfile
+dev.sh
+**/node_modules
+**/dist
+**/.env
+**/.git
+**/.gitignore
+**/.vscode
+**/.DS_Store
+**/Thumbs.db

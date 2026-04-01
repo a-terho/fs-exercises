@@ -1,3 +1,4 @@
 node_modules
 luentodemot
 .env
+.DS_Store
