@@ -3,17 +3,22 @@ module.exports = router;
 
 const Blog = require('../models/Blog');
 
-router.get('/', (req, res) => {
-  Blog.find({}).then((blogs) => {
-    res.json(blogs);
-  });
+router.get('/', async (req, res) => {
+  const blogs = await Blog.find({});
+  return res.json(blogs);
 });
 
-router.post('/', (req, res, next) => {
-  const blog = new Blog(req.body);
+router.post('/', async (req, res) => {
+  const { title, url, author, likes } = req.body;
 
-  blog
-    .save()
-    .then((result) => res.status(201).json(result))
-    .catch((err) => next(err));
+  try {
+    const blog = await Blog.create({ title, url, author, likes });
+    return res.status(201).json(blog);
+  } catch (err) {
+    // mongoosen heittämä validointivirhe
+    if (err.name === 'ValidationError') {
+      return res.status(400).end();
+    }
+    throw err;
+  }
 });

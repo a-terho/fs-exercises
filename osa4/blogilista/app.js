@@ -14,14 +14,14 @@ module.exports = app;
 logger.info('connecting to MongoDB...');
 mongoose
   .connect(config.MONGODB_URI, { family: 4 })
-  .then(() => logger.info('connected to MongoDB"'))
+  .then(() => logger.info('connected to MongoDB'))
   .catch((err) =>
     logger.error('error while connecting to MongoDB:', err.message),
   );
 
 // globaalit middlewaret
 app.use(express.json());
-app.use(morgan('tiny'));
+app.use(morgan('tiny', { skip: () => process.env.NODE_ENV === 'test' }));
 
 // reitittimet
 const blogsRouter = require('./controllers/blogs');

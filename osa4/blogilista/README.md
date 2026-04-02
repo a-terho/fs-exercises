@@ -1,3 +1,3 @@
 # blogilista
 
-Tehtävät 4.1 - 4.2
+Tehtävät 4.1 - 4.12
