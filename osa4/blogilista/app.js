@@ -4,7 +4,6 @@ const middleware = require('./utils/middleware');
 
 const express = require('express');
 const mongoose = require('mongoose');
-const morgan = require('morgan');
 
 // luodaan Express app
 const app = express();
@@ -21,7 +20,7 @@ mongoose
 
 // globaalit middlewaret
 app.use(express.json());
-app.use(morgan('tiny', { skip: () => process.env.NODE_ENV === 'test' }));
+app.use(middleware.requestLogger());
 
 // reitittimet
 const blogsRouter = require('./controllers/blogs');
