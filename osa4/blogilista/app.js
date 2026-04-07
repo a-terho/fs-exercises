@@ -20,11 +20,16 @@ mongoose
 
 // globaalit middlewaret
 app.use(express.json());
-app.use(middleware.requestLogger());
+app.use(middleware.addRequestLogger());
+app.use(middleware.tokenExtractor);
 
 // reitittimet
 const blogsRouter = require('./controllers/blogs');
-app.use('/api/blogs', blogsRouter);
+const loginRouter = require('./controllers/login');
+const usersRouter = require('./controllers/users');
+app.use('/api/blogs', middleware.userExtractor, blogsRouter);
+app.use('/api/login', loginRouter);
+app.use('/api/users', usersRouter);
 
 // virheidenkäsittelyn middlewaret
 app.use(middleware.noEndpoint);

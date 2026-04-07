@@ -1,0 +1,8 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImEtdGVyaG8iLCJpZCI6IjY5ZDNjZDRkMzZkM2E1MGVjNDYzMWU0NCIsImlhdCI6MTc3NTQ4ODM0MywiZXhwIjoxNzc1NDkxOTQzfQ.r5KIrIzV7m3g_aD0D9PzjcRDWv-WT05HcvmvHzudBZw
+
+{
+  "title": "testing",
+  "url": "http://localhost"
+}

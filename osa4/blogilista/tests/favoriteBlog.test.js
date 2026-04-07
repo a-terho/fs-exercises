@@ -2,7 +2,7 @@ const { test, describe } = require('node:test');
 const assert = require('node:assert');
 const listHelper = require('../utils/list_helper');
 
-const { blogs } = require('./blogs');
+const { blogs } = require('./data');
 
 describe('favoriteBlog', () => {
   test('return value is in correct format', () => {

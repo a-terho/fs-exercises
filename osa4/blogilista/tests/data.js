@@ -143,4 +143,25 @@ const blogsMany = [
   },
 ];
 
-module.exports = { blogs, blogsOne, blogsMany };
+const usersMany = [
+  {
+    username: 'a-terho',
+    passwordHash:
+      '$2b$10$ACM8T7gA.PIs5BYCzi9Oz.j/HgEJ5SzP9usJtyKAGYEXsX7u7JN/S',
+    name: 'a-terho',
+  },
+  {
+    username: 'b-terho',
+    passwordHash:
+      '$2b$10$S5M/VR6lHoSPHKkh43jdCu2yvy6O8mGULiBIDVRyhscQBiAvpkxsa',
+    name: 'b-terho',
+  },
+  {
+    username: 'c-terho',
+    passwordHash:
+      '$2b$10$o/.h268JudlnKS9DWTPfau7oN54XmoZWw46WFfQJI4oxQda066C82',
+    name: 'c-terho',
+  },
+];
+
+module.exports = { blogs, blogsOne, blogsMany, usersMany };
