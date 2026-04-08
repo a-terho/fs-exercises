@@ -28,8 +28,10 @@ const blogSchema = mongoose.Schema(
         delete ret._id;
         delete ret.__v;
         // muunna blogiin liitetty käyttäjäviite merkkijonoksi
-        // tämä koskee populoimattomia viitteitä
-        ret.user = ret.user.toString();
+        // tämä koskee vain populoimattomia viitteitä
+        if (ret.user instanceof mongoose.Types.ObjectId) {
+          ret.user = ret.user.toString();
+        }
       },
     },
   },

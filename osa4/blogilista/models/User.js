@@ -36,9 +36,11 @@ const userSchema = mongoose.Schema(
         // poista salasana aina json tulosteesta
         delete ret.passwordHash;
         // muunna käytäjään liitetyt blogiviitteet merkkijonoiksi
-        // tämä koskee populoimattomia viitteitä
+        // tämä koskee vain populoimattomia viitteitä
         ret.blogs?.forEach((blog) => {
-          blog = blog.toString();
+          if (blog instanceof mongoose.Types.ObjectId) {
+            blog = blog.toString();
+          }
           return blog;
         });
       },
