@@ -13,7 +13,7 @@ services:
 
     ports:
       - '3001-3003:3001-3003' # ulostuleva palvelinliikenne
-      - '5173-5175:5173-5175' # vite dev
+      - '127.0.0.1:5173-5175:5173-5175' # vite dev
     environment:
       - NODE_ENV=development
 
