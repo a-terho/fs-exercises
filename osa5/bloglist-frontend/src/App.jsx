@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './index.css';
 
 import blogService from './services/blogs';
@@ -7,6 +7,7 @@ import loginService from './services/login';
 import BlogList from './components/BlogList';
 import LoginForm from './components/LoginForm';
 import NewBlogForm from './components/NewBlogForm';
+import Toggleable from './components/Toggleable';
 
 const Notification = ({ message }) => {
   if (message) return <div className={message.style}>{message.text}</div>;
@@ -17,22 +18,23 @@ const App = () => {
   const [user, setUser] = useState(null);
   // ilmoitusikkuna
   const [notification, setNotification] = useState(null);
-  // kirjautumislomake
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  // blogin lisäämisen lomake
-  const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
-  const [url, setUrl] = useState('');
+
+  // viite uutta blogia luovaan React-komponenttiin
+  const newBlogFormToggleRef = useRef();
 
   const setUserIdentityTo = (data) => {
-    // data sisältää kentät username ja token
+    // data sisältää kentät username, name ja token
     blogService.setToken(data?.token ? data.token : null);
     setUser(data);
   };
 
+  // apufunktio, joka järjestelee blogit tykkäysten mukaan
+  const setBlogsSorted = (allBlogs) => {
+    setBlogs(allBlogs.sort((a, b) => b.likes - a.likes));
+  };
+
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
+    blogService.getAll().then((blogs) => setBlogsSorted(blogs));
   }, []);
 
   useEffect(() => {
@@ -43,16 +45,14 @@ const App = () => {
     }
   }, []);
 
-  const handleLogin = async (event) => {
-    event.preventDefault();
-
+  const handleLogin = async (username, password) => {
     try {
       const data = await loginService.login(username, password);
       window.localStorage.setItem('blogAppUserIdentity', JSON.stringify(data));
       setUserIdentityTo(data);
       clearNotification();
     } catch ({ response }) {
-      showErrorNotification(response.data.error);
+      displayErrorFromResponse(response);
     }
   };
 
@@ -62,20 +62,55 @@ const App = () => {
     showInfoNotification('logged out');
   };
 
-  const handleAddBlog = async (event) => {
-    event.preventDefault();
+  const addBlog = async (data) => {
+    try {
+      const blog = await blogService.create(data);
+      // manipuloidaan paikallista dataa hieman, jotta se sopii frontendiin paremmin
+      // tämän voisi tehdä myös muokkaamalla backendista palautuvaa dataa
+      blog.user = { username: user.username, name: user.name };
+      setBlogs(blogs.concat(blog));
+
+      showInfoNotification(
+        `new blog '${blog.title}' by ${blog.author} was added`,
+      );
+
+      // piilota komponentti ja välitä sille tieto onnistuneesta lisäyksestä
+      newBlogFormToggleRef.current.toggleVisibility();
+      return true;
+    } catch ({ response }) {
+      displayErrorFromResponse(response);
+      return false;
+    }
+  };
+
+  const removeBlog = async (blog) => {
+    // varmista poisto käyttäjltä ennen etenemistä
+    if (!window.confirm(`Remove blog '${blog.title}' by ${blog.author}?`))
+      return;
 
     try {
-      const blog = await blogService.create({ title, author, url });
-      // ei toimi tällä hetkellä kuten toivottu
-      // user kenttää ei populoida vastaukseen eikä käyttäjän id:tä ole saatavilla suoraan
-      //  joten blogi ei tunnistaudu oikealle käyttäjälle vaikka se lisättäisiinkin tilaan
-      //  eikä näy siten listauksessa, vaatii hiemam backendin muokkaamista
-      // setBlogs(blogs.concat(blog));
-
-      showInfoNotification(`new blog '${title}' by ${author} was added`);
+      await blogService.remove(blog);
+      setBlogs(blogs.filter((b) => b.id !== blog.id));
     } catch ({ response }) {
-      showErrorNotification(response.data.error);
+      displayErrorFromResponse(response);
+    }
+  };
+
+  const addLike = async (blog) => {
+    try {
+      const res = await blogService.updateField(blog, 'likes', blog.likes + 1);
+
+      // onnistuessaan päivitetään blogs listaan myös palvelimen mukainen tieto
+      setBlogsSorted(
+        blogs.map((b) => {
+          if (b.id === blog.id) {
+            b.likes = res.likes;
+          }
+          return b;
+        }),
+      );
+    } catch ({ response }) {
+      displayErrorFromResponse(response);
     }
   };
 
@@ -98,30 +133,32 @@ const App = () => {
     setNotification({ id, text, style: 'error' });
   };
 
+  const displayErrorFromResponse = (response) => {
+    const message = response.data?.error
+      ? response.data.error
+      : `${response.statusText} (${response.status})`;
+    showErrorNotification(message);
+  };
+
   return (
     <>
       <Notification message={notification} />
-      {user === null && (
-        <LoginForm
-          onUsernameChange={({ target }) => setUsername(target.value)}
-          onPasswordChange={({ target }) => setPassword(target.value)}
-          onSubmit={handleLogin}
-        />
-      )}
+      {user === null && <LoginForm onLogin={handleLogin} />}
       {user && (
         <>
           <h1>blog list app</h1>
           <p>
-            {user.username} logged in{' '}
-            <button onClick={handleLogout}>logout</button>
+            {user.name} logged in <button onClick={handleLogout}>logout</button>
           </p>
-          <NewBlogForm
-            onTitleChange={({ target }) => setTitle(target.value)}
-            onAuthorChange={({ target }) => setAuthor(target.value)}
-            onUrlChange={({ target }) => setUrl(target.value)}
-            onSubmit={handleAddBlog}
+          <Toggleable buttonLabel="create blog" ref={newBlogFormToggleRef}>
+            <NewBlogForm onBlogPost={addBlog} />
+          </Toggleable>
+          <BlogList
+            user={user}
+            blogs={blogs}
+            likeHandler={addLike}
+            removeHandler={removeBlog}
           />
-          <BlogList user={user} blogs={blogs} />
         </>
       )}
     </>

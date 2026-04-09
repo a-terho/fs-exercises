@@ -1,14 +1,18 @@
 import Blog from './Blog';
 
-const BlogList = ({ user, blogs }) => (
+const BlogList = ({ user, blogs, likeHandler, removeHandler }) => (
   <>
-    <h2>saved blogs</h2>
+    <h2>all saved blogs</h2>
     {blogs.map((blog) => {
-      // näytä vain blogit, joiden luoja on nykyinen käyttäjä
-      // tunnistus tapahtuu tällä hetkellä käyttäjänimen perusteella
-      if (blog.user?.username === user.username) {
-        return <Blog key={blog.id} blog={blog} />;
-      }
+      return (
+        <Blog
+          key={blog.id}
+          user={user}
+          blog={blog}
+          onLike={likeHandler}
+          onRemove={removeHandler}
+        />
+      );
     })}
   </>
 );

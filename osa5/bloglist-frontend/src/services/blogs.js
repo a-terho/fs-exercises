@@ -17,4 +17,17 @@ const create = async (blog) => {
   return res.data;
 };
 
-export default { setToken, getAll, create };
+const remove = async (blog) => {
+  const config = { headers: { Authorization: `Bearer ${authToken}` } };
+  const res = await axios.delete(`${baseUrl}/${blog.id}`, config);
+  return res.data;
+};
+
+// 5.8 ohjaa käyttämään PUT-pyyntöä, tätä ei ole toistaiseksi backendissä
+// PATCH-pyyntö toimii joka tapauksessa tässä tarkoituksessa mielekkäämmin
+const updateField = async (blog, field, value) => {
+  const res = await axios.patch(`${baseUrl}/${blog.id}`, { [field]: value });
+  return res.data;
+};
+
+export default { setToken, getAll, create, remove, updateField };
