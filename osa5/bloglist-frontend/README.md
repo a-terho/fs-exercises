@@ -1,3 +1,3 @@
 # bloglist-frontend
 
-Tehtävät 5.1 - 5.11
+Tehtävät 5.1 - 5.12

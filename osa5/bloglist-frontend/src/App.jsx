@@ -7,19 +7,17 @@ import loginService from './services/login';
 import BlogList from './components/BlogList';
 import LoginForm from './components/LoginForm';
 import NewBlogForm from './components/NewBlogForm';
+import Notification from './components/Notification';
 import Toggleable from './components/Toggleable';
-
-const Notification = ({ message }) => {
-  if (message) return <div className={message.style}>{message.text}</div>;
-};
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
-  // ilmoitusikkuna
-  const [notification, setNotification] = useState(null);
 
-  // viite uutta blogia luovaan React-komponenttiin
+  // viite ilmoitusikkunan metodeja varten
+  const notificationRef = useRef();
+
+  // viite blogin lisäämislomakkeen piilottamista varten
   const newBlogFormToggleRef = useRef();
 
   const setUserIdentityTo = (data) => {
@@ -31,6 +29,14 @@ const App = () => {
   // apufunktio, joka järjestelee blogit tykkäysten mukaan
   const setBlogsSorted = (allBlogs) => {
     setBlogs(allBlogs.sort((a, b) => b.likes - a.likes));
+  };
+
+  // apufunktio, joka etsii soveltuvan virheilmoituksen ilmoitusikkunaan
+  const displayErrorFromResponse = (response) => {
+    const message = response.data?.error
+      ? response.data.error
+      : `${response.statusText} (${response.status})`;
+    notificationRef.current.showError(message);
   };
 
   useEffect(() => {
@@ -50,7 +56,7 @@ const App = () => {
       const data = await loginService.login(username, password);
       window.localStorage.setItem('blogAppUserIdentity', JSON.stringify(data));
       setUserIdentityTo(data);
-      clearNotification();
+      notificationRef.current.hide();
     } catch ({ response }) {
       displayErrorFromResponse(response);
     }
@@ -59,7 +65,7 @@ const App = () => {
   const handleLogout = () => {
     window.localStorage.removeItem('blogAppUserIdentity');
     setUserIdentityTo(null);
-    showInfoNotification('logged out');
+    notificationRef.current.showInfo('logged out');
   };
 
   const addBlog = async (data) => {
@@ -70,11 +76,11 @@ const App = () => {
       blog.user = { username: user.username, name: user.name };
       setBlogs(blogs.concat(blog));
 
-      showInfoNotification(
+      notificationRef.current.showInfo(
         `new blog '${blog.title}' by ${blog.author} was added`,
       );
 
-      // piilota komponentti ja välitä sille tieto onnistuneesta lisäyksestä
+      // piilota lomake ja välitä komponentille tieto onnistuneesta lisäyksestä
       newBlogFormToggleRef.current.toggleVisibility();
       return true;
     } catch ({ response }) {
@@ -103,9 +109,7 @@ const App = () => {
       // onnistuessaan päivitetään blogs listaan myös palvelimen mukainen tieto
       setBlogsSorted(
         blogs.map((b) => {
-          if (b.id === blog.id) {
-            b.likes = res.likes;
-          }
+          if (b.id === blog.id) b.likes = res.likes;
           return b;
         }),
       );
@@ -114,35 +118,9 @@ const App = () => {
     }
   };
 
-  const clearNotification = () => {
-    if (notification?.id) clearTimeout(notification.id);
-    setNotification(null);
-  };
-
-  const showInfoNotification = (text) => {
-    clearNotification();
-
-    const id = setTimeout(() => setNotification(null), 4000);
-    setNotification({ id, text, style: 'info' });
-  };
-
-  const showErrorNotification = (text) => {
-    clearNotification();
-
-    const id = setTimeout(() => setNotification(null), 8000);
-    setNotification({ id, text, style: 'error' });
-  };
-
-  const displayErrorFromResponse = (response) => {
-    const message = response.data?.error
-      ? response.data.error
-      : `${response.statusText} (${response.status})`;
-    showErrorNotification(message);
-  };
-
   return (
     <>
-      <Notification message={notification} />
+      <Notification ref={notificationRef} />
       {user === null && <LoginForm onLogin={handleLogin} />}
       {user && (
         <>
