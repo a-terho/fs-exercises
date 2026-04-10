@@ -1,6 +1,7 @@
 services:
   devenv:
-    build: .
+    build:
+      dockerfile: Dockerfile.debian # playwright ei tue alpinea
     container_name: fs-monorepo
     command: sh -c "npm install && tail -f /dev/null"
     volumes:
@@ -14,6 +15,7 @@ services:
     ports:
       - '3001-3003:3001-3003' # ulostuleva palvelinliikenne
       - '127.0.0.1:5173-5175:5173-5175' # vite dev
+      - '127.0.0.1:9323:9323' # playwright report
     environment:
       - NODE_ENV=development
 

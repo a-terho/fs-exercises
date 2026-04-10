@@ -9,7 +9,13 @@ fi
 
 if [ $# -eq 0 ]; then
     # avaa oletuksena terminaaliyhteys konttiin
-    docker compose exec devenv sh
+    # yrittää käynnistää ensisijaisesti bash- ja toissijaisesti sh-terminaalin
+    if docker compose exec devenv test -x /bin/bash; then
+        docker compose exec devenv bash
+    else
+        echo "bash is not installed, using sh"
+        docker compose exec devenv sh
+    fi
 else
     # muutoin aja komennot kontissa
     docker compose exec devenv "$@"
