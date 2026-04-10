@@ -1,7 +1,7 @@
 services:
   devenv:
     build:
-      dockerfile: Dockerfile.debian # playwright ei tue alpinea
+      dockerfile: debian.Dockerfile # playwright ei tue alpinea
     container_name: fs-monorepo
     command: sh -c "npm install && tail -f /dev/null"
     volumes:
