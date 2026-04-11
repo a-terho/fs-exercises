@@ -1,4 +1,11 @@
-node_modules
 luentodemot
+node_modules
+*.log
+coverage
+test-results
+playwright-report
+.cache
+.vscode
 .env
 .DS_Store
+Thumbs.db
