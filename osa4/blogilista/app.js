@@ -31,6 +31,12 @@ app.use('/api/blogs', middleware.userExtractor, blogsRouter);
 app.use('/api/login', loginRouter);
 app.use('/api/users', usersRouter);
 
+// vain testeissä käytettävä nollausreitti
+if (process.env.NODE_ENV === 'test') {
+  const testingRouter = require('./controllers/testing');
+  app.use('/api/testing', testingRouter);
+}
+
 // virheidenkäsittelyn middlewaret
 app.use(middleware.noEndpoint);
 app.use(middleware.globalErrorHandler);

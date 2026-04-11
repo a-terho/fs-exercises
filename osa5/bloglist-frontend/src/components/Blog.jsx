@@ -4,19 +4,12 @@ const Blog = ({ user, blog, onLike, onRemove }) => {
   const [opened, setOpened] = useState(false);
   const toggleOpened = () => setOpened(!opened);
 
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5,
-  };
-
-  const hasCreator = blog.user !== undefined;
+  // blogilla ei ole käyttäjää -> undefined, käyttäjä poistettu tietokannasta -> null
+  const hasCreator = !(blog.user === undefined || blog.user === null);
   const userIsBlogCreator = blog.user?.username === user.username;
 
   return (
-    <div style={blogStyle}>
+    <div className="blog">
       {blog.title} {blog.author}
       <button onClick={toggleOpened}>{opened ? 'hide' : 'view'}</button>
       {opened && (
