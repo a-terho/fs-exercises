@@ -8,4 +8,6 @@ playwright-report
 .vscode
 .env
 .DS_Store
+.Spotlight-V100
+.Trashes
 Thumbs.db
