@@ -2,8 +2,11 @@ const { test, expect, beforeEach, describe } = require('@playwright/test');
 const {
   createUser,
   loginAction,
+  openBlogForm,
   fillAndSubmitBlogForm,
-  findFirstLikes,
+  createBlog,
+  viewBlog,
+  viewAndLikeBlog,
 } = require('./helpers');
 
 describe('Blog app', () => {
@@ -60,7 +63,7 @@ describe('Blog app', () => {
 
     test('a new blog can be created', async ({ page }) => {
       // avaa ja täytä lomake
-      await page.getByRole('button', { name: 'create blog' }).click();
+      await openBlogForm(page);
       const inputs = {
         title: "You Don't Know JS Yet (book series)",
         author: 'Kyle Simpson',
@@ -82,45 +85,34 @@ describe('Blog app', () => {
 
     describe('and a blog is created', () => {
       beforeEach(async ({ page }) => {
-        // avaa ja täytä lomake
-        await page.getByRole('button', { name: 'create blog' }).click();
-        const inputs = {
+        await createBlog(page, {
           title: "You Don't Know JS Yet (book series)",
           author: 'Kyle Simpson',
           url: 'https://github.com/getify/You-Dont-Know-JS',
-        };
-        await fillAndSubmitBlogForm(page, inputs);
-        await page
-          .locator('.info')
-          .getByText(`new blog '${inputs.title}' by ${inputs.author} was added`)
-          .waitFor();
+        });
       });
 
       test('you can like the blog', async ({ page }) => {
         // avaa blogi
-        await page.getByRole('button', { name: 'view' }).click();
-        // etsi blogin tykkäysmäärä ja paina tykkäysnappia
-        const likesBefore = await findFirstLikes(page);
-        await page.getByRole('button', { name: 'like' }).click();
-        // odota sivulla esiintyvän tykkäysmäärän kasvaneen
-        await expect(async () => {
-          const likesAfter = await findFirstLikes(page);
-          expect(likesAfter).toBe(likesBefore + 1);
-        }).toPass();
+        const blog = await page.locator('.blog');
+        await viewBlog(blog);
+        // paina tykkäysnappia
+        await blog.getByRole('button', { name: 'like' }).click();
+        // oleta blogin tykkäysmäärän kasvaneen
+        await expect(blog.getByText('likes 1')).toBeVisible();
       });
 
       test('its creator can remove the blog', async ({ page }) => {
         // rekisteröi dialog-handleri, joka hyväksyy varmistusikkunan
         page.on('dialog', (dialog) => dialog.accept());
         // avaa blogi
-        await page.getByRole('button', { name: 'view' }).click();
+        const blog = await page.locator('.blog');
+        await viewBlog(blog);
         // paina poistonappia
-        await page.getByRole('button', { name: 'remove' }).click();
-        // varmista ettei blogiin liittvää tekstiä enää löydy
+        await blog.getByRole('button', { name: 'remove' }).click();
+        // varmista ettei blogiin liittyvää tekstiä enää löydy
         await expect(
-          page
-            .locator('.blog')
-            .getByText("You Don't Know JS Yet (book series)"),
+          blog.getByText("You Don't Know JS Yet (book series)"),
         ).not.toBeVisible();
       });
 
@@ -136,9 +128,48 @@ describe('Blog app', () => {
         await loginAction(page, 'a-terho', 'password');
 
         // avaa blogi ja oleta, ettei poistonappia löydy
-        await page.getByRole('button', { name: 'view' }).click();
-        expect(page.getByRole('button', { name: 'remove' })).not.toBeVisible();
+        const blog = await page.locator('.blog');
+        await viewBlog(blog);
+        expect(blog.getByRole('button', { name: 'remove' })).not.toBeVisible();
       });
     });
+  });
+
+  test('Blogs are ordered by their like count correctly', async ({ page }) => {
+    // kirjaudu sisään
+    await loginAction(page, 'mluukkai', 'salainen');
+    await page.getByText('Matti Luukkainen logged in').waitFor();
+
+    // luo kolme blogia
+    await createBlog(page, {
+      title: 'Error Handling in Node.js',
+      author: 'Smashing Magazine',
+      url: 'https://www.smashingmagazine.com/2020/08/error-handling-nodejs-error-classes/',
+    });
+    await createBlog(page, {
+      title: 'Node.js Best Practices',
+      author: 'GitHub - goldbergyoni',
+      url: 'https://github.com/goldbergyoni/nodebestpractices',
+    });
+    await createBlog(page, {
+      title: 'Async functions',
+      author: 'MDN Web Docs',
+      url: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function',
+    });
+
+    const blogs = page.locator('.blog');
+
+    // tykkää blogeista eri määrät
+    const blog1 = await blogs.getByText('Error Handling in Node.js');
+    const blog2 = await blogs.getByText('Node.js Best Practices');
+    const blog3 = await blogs.getByText('Async functions');
+    await viewAndLikeBlog(blog1, 2);
+    await viewAndLikeBlog(blog2, 1);
+    await viewAndLikeBlog(blog3, 3);
+
+    // tarkista, että järjestys on oikea
+    await expect(blogs.nth(0)).toContainText('Async functions');
+    await expect(blogs.nth(1)).toContainText('Error Handling in Node.js');
+    await expect(blogs.nth(2)).toContainText('Node.js Best Practices');
   });
 });

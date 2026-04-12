@@ -1,6 +1,7 @@
 luentodemot
 node_modules
 *.log
+*.sync-conflict-*-*-*.*
 coverage
 test-results
 playwright-report

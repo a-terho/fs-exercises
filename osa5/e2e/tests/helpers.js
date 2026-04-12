@@ -8,6 +8,13 @@ const loginAction = async (page, username, password) => {
   await page.getByRole('button', { name: 'login' }).click();
 };
 
+const openBlogForm = async (page) => {
+  await page.getByRole('button', { name: 'create blog' }).click();
+  const addButton = await page.getByRole('button', { name: 'add' });
+  // odota, että lomake aukeaa
+  await addButton.waitFor();
+};
+
 const fillAndSubmitBlogForm = async (page, inputs) => {
   // täytä lomake
   await page.getByLabel('title').fill(inputs.title);
@@ -17,22 +24,39 @@ const fillAndSubmitBlogForm = async (page, inputs) => {
   await page.getByRole('button', { name: 'add' }).click();
 };
 
-const findFirstLikes = async (page) => {
-  const content = await page
-    .getByText(/likes (\d+)/)
-    .first()
-    .innerText();
-  return getLikesFromContent(content);
+const createBlog = async (page, inputs) => {
+  await page.getByRole('button', { name: 'create blog' }).click();
+  await fillAndSubmitBlogForm(page, inputs);
+  // odota, että blogi ilmaantuu listalle
+  await page
+    .locator('.blog')
+    .getByText(`${inputs.title} ${inputs.author}`)
+    .waitFor();
 };
 
-const getLikesFromContent = (content) => {
-  const likes = content?.split(' ')[1];
-  return Number(likes);
+const viewBlog = async (blog) => {
+  await blog.getByRole('button', { name: 'view' }).click();
+  const hideButton = await blog.getByRole('button', { name: 'hide' });
+  // odota, että blogi aukeaa
+  await hideButton.waitFor();
+};
+
+const viewAndLikeBlog = async (blog, times) => {
+  await viewBlog(blog);
+  const likeButton = await blog.getByRole('button', { name: 'like' });
+  // oletetaan helpotukseksi, että tykkäykset lähtevät nollasta
+  for (let i = 0; i < times; i++) {
+    await likeButton.click();
+    await blog.getByText(`likes ${i + 1}`).waitFor();
+  }
 };
 
 module.exports = {
   createUser,
   loginAction,
+  openBlogForm,
   fillAndSubmitBlogForm,
-  findFirstLikes,
+  createBlog,
+  viewBlog,
+  viewAndLikeBlog,
 };

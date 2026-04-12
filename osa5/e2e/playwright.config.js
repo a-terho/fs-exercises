@@ -16,6 +16,7 @@ export default defineConfig({
   // älä aja testejä rinnakkain
   fullyParallel: false,
   workers: 1,
+  timeout: 5000,
 
   testDir: './tests',
   /* Fail the build on CI if you accidentally left test.only in the source code. */
