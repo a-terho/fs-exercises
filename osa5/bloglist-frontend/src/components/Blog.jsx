@@ -1,30 +1,28 @@
-import { useState } from 'react';
-
 const Blog = ({ user, blog, onLike, onRemove }) => {
-  const [opened, setOpened] = useState(false);
-  const toggleOpened = () => setOpened(!opened);
+  if (!blog) return null;
 
   // blogilla ei ole käyttäjää -> undefined, käyttäjä poistettu tietokannasta -> null
   const hasCreator = !(blog.user === undefined || blog.user === null);
-  const userIsBlogCreator = blog.user?.username === user.username;
+  const userIsBlogCreator = user && blog.user?.username === user?.username;
 
   return (
     <div className="blog">
-      {blog.title} {blog.author}
-      <button onClick={toggleOpened}>{opened ? 'hide' : 'view'}</button>
-      {opened && (
-        <>
-          <div>{blog.url}</div>
-          <div>
-            likes {blog.likes}{' '}
-            <button onClick={() => onLike(blog)}>like</button>
-          </div>
-          {hasCreator && <div>{blog.user.name}</div>}
-          {userIsBlogCreator && (
-            <button onClick={() => onRemove(blog)}>remove</button>
-          )}
-        </>
-      )}
+      <h2>
+        {blog.author}: {blog.title}
+      </h2>
+      <div>
+        <div>
+          <a href={blog.url}>{blog.url}</a>
+        </div>
+        <div>
+          likes {blog.likes}{' '}
+          {user && <button onClick={() => onLike(blog)}>like</button>}
+        </div>
+        {hasCreator && <div>{blog.user.name}</div>}
+        {userIsBlogCreator && (
+          <button onClick={() => onRemove(blog)}>remove</button>
+        )}
+      </div>
     </div>
   );
 };

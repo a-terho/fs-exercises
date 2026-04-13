@@ -1,14 +1,17 @@
-import { useState, useEffect, useRef } from 'react';
 import './index.css';
+
+import { useState, useEffect, useRef } from 'react';
+import { Link, Routes, Route, useNavigate, useMatch } from 'react-router';
 
 import blogService from './services/blogs';
 import loginService from './services/login';
 
+import Notification from './components/Notification';
 import BlogList from './components/BlogList';
 import LoginForm from './components/LoginForm';
+import Blog from './components/Blog';
+
 import NewBlogForm from './components/NewBlogForm';
-import Notification from './components/Notification';
-import Toggleable from './components/Toggleable';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -17,8 +20,14 @@ const App = () => {
   // viite ilmoitusikkunan metodeja varten
   const notificationRef = useRef();
 
-  // viite blogin lisäämislomakkeen piilottamista varten
-  const newBlogFormToggleRef = useRef();
+  // navigointityökalu
+  const navigate = useNavigate();
+
+  // blogin täsmääjä
+  const match = useMatch('/blogs/:id');
+  const matchedBlog = match
+    ? blogs.find((blog) => blog.id === match.params.id)
+    : null;
 
   const setUserIdentityTo = (data) => {
     // data sisältää kentät username, name ja token
@@ -57,6 +66,7 @@ const App = () => {
       window.localStorage.setItem('blogAppUserIdentity', JSON.stringify(data));
       setUserIdentityTo(data);
       notificationRef.current.hide();
+      navigate('/');
     } catch ({ response }) {
       displayErrorFromResponse(response);
     }
@@ -80,8 +90,8 @@ const App = () => {
         `new blog '${blog.title}' by ${blog.author} was added`,
       );
 
-      // piilota lomake ja välitä komponentille tieto onnistuneesta lisäyksestä
-      newBlogFormToggleRef.current.toggleVisibility();
+      // palaa etusivulle ja välitä komponentille tieto onnistuneesta lisäyksestä
+      navigate('/');
       return true;
     } catch ({ response }) {
       displayErrorFromResponse(response);
@@ -97,6 +107,7 @@ const App = () => {
     try {
       await blogService.remove(blog);
       setBlogs(blogs.filter((b) => b.id !== blog.id));
+      navigate('/');
     } catch ({ response }) {
       displayErrorFromResponse(response);
     }
@@ -120,25 +131,36 @@ const App = () => {
 
   return (
     <>
+      <div className="navbar">
+        <Link to="/">blogs</Link>
+        {user === null && <Link to="/login">login</Link>}
+        {user && (
+          <>
+            <Link to="/create">new blog</Link>
+            <button onClick={handleLogout}>logout</button>
+          </>
+        )}
+      </div>
       <Notification ref={notificationRef} />
-      {user === null && <LoginForm onLogin={handleLogin} />}
-      {user && (
-        <>
-          <h1>blog list app</h1>
-          <p>
-            {user.name} logged in <button onClick={handleLogout}>logout</button>
-          </p>
-          <Toggleable buttonLabel="create blog" ref={newBlogFormToggleRef}>
-            <NewBlogForm onBlogPost={addBlog} />
-          </Toggleable>
-          <BlogList
-            user={user}
-            blogs={blogs}
-            likeHandler={addLike}
-            removeHandler={removeBlog}
-          />
-        </>
-      )}
+      <Routes>
+        {/* navbarin linkit */}
+        <Route path="/" element={<BlogList blogs={blogs} />} />
+        <Route path="/login" element={<LoginForm onLogin={handleLogin} />} />
+        <Route path="/create" element={<NewBlogForm onBlogPost={addBlog} />} />
+
+        {/* yksilöidyt reitit */}
+        <Route
+          path="/blogs/:id"
+          element={
+            <Blog
+              user={user}
+              blog={matchedBlog}
+              onLike={addLike}
+              onRemove={removeBlog}
+            />
+          }
+        />
+      </Routes>
     </>
   );
 };

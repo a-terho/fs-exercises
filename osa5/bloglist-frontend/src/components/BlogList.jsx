@@ -1,19 +1,19 @@
-import Blog from './Blog';
+import { Link } from 'react-router';
 
-const BlogList = ({ user, blogs, likeHandler, removeHandler }) => (
+const BlogList = ({ blogs }) => (
   <>
-    <h2>all saved blogs</h2>
-    {blogs.map((blog) => {
-      return (
-        <Blog
-          key={blog.id}
-          user={user}
-          blog={blog}
-          onLike={likeHandler}
-          onRemove={removeHandler}
-        />
-      );
-    })}
+    <h2>blogs</h2>
+    <ul>
+      {blogs.map((blog) => {
+        return (
+          <li key={blog.id}>
+            <Link to={`/blogs/${blog.id}`}>
+              {blog.title} by {blog.author}
+            </Link>
+          </li>
+        );
+      })}
+    </ul>
   </>
 );
 
