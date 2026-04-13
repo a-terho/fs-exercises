@@ -9,7 +9,7 @@ const loginAction = async (page, username, password) => {
 };
 
 const openBlogForm = async (page) => {
-  await page.getByRole('button', { name: 'create blog' }).click();
+  await page.getByRole('link', { name: 'new blog' }).click();
   const addButton = await page.getByRole('button', { name: 'add' });
   // odota, että lomake aukeaa
   await addButton.waitFor();
@@ -25,12 +25,12 @@ const fillAndSubmitBlogForm = async (page, inputs) => {
 };
 
 const createBlog = async (page, inputs) => {
-  await page.getByRole('button', { name: 'create blog' }).click();
+  await page.getByRole('link', { name: 'new blog' }).click();
   await fillAndSubmitBlogForm(page, inputs);
   // odota, että blogi ilmaantuu listalle
   await page
-    .locator('.blog')
-    .getByText(`${inputs.title} ${inputs.author}`)
+    .locator('li')
+    .getByText(`${inputs.title} by ${inputs.author}`)
     .waitFor();
 };
 
