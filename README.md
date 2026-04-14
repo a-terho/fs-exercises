@@ -15,4 +15,4 @@ edistyminen...
 - [x] osa2
 - [x] osa3
 - [x] osa4
-- [ ] osa5
+- [x] osa5
