@@ -1,8 +1,10 @@
 import { Link } from 'react-router';
 
+import { Header } from './shared-styles';
+
 const BlogList = ({ blogs }) => (
   <>
-    <h2>blogs</h2>
+    <Header>blogs</Header>
     <ul>
       {blogs.map((blog) => {
         return (

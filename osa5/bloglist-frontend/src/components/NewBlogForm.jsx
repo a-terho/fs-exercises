@@ -1,5 +1,30 @@
 import { useState } from 'react';
 
+import { Header, ConfirmButton } from './shared-styles';
+import styled from 'styled-components';
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 500px;
+`;
+
+const Label = styled.label`
+  display: grid;
+  grid-template-columns: 50px 1fr;
+  align-items: center;
+  gap: 10px;
+
+  span {
+    text-align: right;
+  }
+`;
+
+const Input = styled.input`
+  padding: 0.5em;
+`;
+
 const NewBlogForm = ({ onBlogPost }) => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
@@ -17,40 +42,34 @@ const NewBlogForm = ({ onBlogPost }) => {
 
   return (
     <>
-      <h2>add new blog</h2>
-      <form onSubmit={handleAddBlog}>
-        <div>
-          <label>
-            title{' '}
-            <input
-              type="text"
-              value={title}
-              onChange={({ target }) => setTitle(target.value)}
-            ></input>
-          </label>
-        </div>
-        <div>
-          <label>
-            author{' '}
-            <input
-              type="text"
-              value={author}
-              onChange={({ target }) => setAuthor(target.value)}
-            ></input>
-          </label>
-        </div>
-        <div>
-          <label>
-            url{' '}
-            <input
-              type="text"
-              value={url}
-              onChange={({ target }) => setUrl(target.value)}
-            ></input>
-          </label>
-        </div>
-        <button type="submit">add</button>
-      </form>
+      <Header>add new blog</Header>
+      <Form onSubmit={handleAddBlog}>
+        <Label>
+          <span>title</span>
+          <Input
+            type="text"
+            value={title}
+            onChange={({ target }) => setTitle(target.value)}
+          ></Input>
+        </Label>
+        <Label>
+          <span>author</span>
+          <Input
+            type="text"
+            value={author}
+            onChange={({ target }) => setAuthor(target.value)}
+          ></Input>
+        </Label>
+        <Label>
+          <span>url</span>
+          <Input
+            type="text"
+            value={url}
+            onChange={({ target }) => setUrl(target.value)}
+          ></Input>
+        </Label>
+        <ConfirmButton type="submit">add</ConfirmButton>
+      </Form>
     </>
   );
 };
