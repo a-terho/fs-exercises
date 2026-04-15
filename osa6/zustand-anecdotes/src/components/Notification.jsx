@@ -1,12 +1,19 @@
+import { useNotification } from '../store';
+
 const Notification = () => {
+  const content = useNotification();
+
   const style = {
     border: 'solid',
     padding: 10,
     borderWidth: 1,
-    marginBottom: 10
-  }
+    marginBottom: 10,
+  };
 
-  return <div style={style}>render here notification...</div>
-}
+  // piilota ikkuna, jos tekstisisältöä ei ole
+  if (!content) return null;
 
-export default Notification
+  return <div style={style}>{content}</div>;
+};
+
+export default Notification;
