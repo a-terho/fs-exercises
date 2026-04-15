@@ -1,3 +1,3 @@
 # zustand-anecdotes
 
-Tehtävät 6.2 - 6.10
+Tehtävät 6.2 - 6.11

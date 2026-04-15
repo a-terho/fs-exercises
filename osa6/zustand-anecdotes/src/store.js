@@ -20,6 +20,13 @@ const useAnecdoteStore = create((set, get) => ({
         anecdotes: [...old.anecdotes, anecdote],
       }));
     },
+    remove: async (id) => {
+      await anecdoteService.remove(id);
+      return set((old) => ({
+        // filtteröi anekdoottien listalta valittu id
+        anecdotes: old.anecdotes.filter((anecdote) => anecdote.id !== id),
+      }));
+    },
     vote: async (id) => {
       const anecdote = get().anecdotes.find((a) => a.id === id);
       const updated = await anecdoteService.update(id, {

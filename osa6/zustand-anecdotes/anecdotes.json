@@ -29,21 +29,6 @@
       "content": "Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.",
       "id": "98312",
       "votes": 11
-    },
-    {
-      "content": "There are foxes.",
-      "votes": 0,
-      "id": "jq5fBhz841M"
-    },
-    {
-      "content": "There are birds.",
-      "votes": 0,
-      "id": "03VFITQD6Ek"
-    },
-    {
-      "content": "There are lions.",
-      "votes": 0,
-      "id": "_ZTYHSCMtp0"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

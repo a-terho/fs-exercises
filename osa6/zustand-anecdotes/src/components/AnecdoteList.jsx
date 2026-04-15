@@ -6,12 +6,17 @@ import {
 
 const AnecdoteList = () => {
   const anecdotes = useAnecdotes();
-  const { vote } = useAnecdoteActions();
+  const { vote, remove } = useAnecdoteActions();
   const { show } = useNotificationActions();
 
-  const handleVote = (id, content) => {
+  const handleVote = async (id, content) => {
+    await vote(id);
     show(`You voted '${content}'`);
-    vote(id);
+  };
+
+  const handleRemove = async (id, content) => {
+    await remove(id);
+    show(`You removed '${content}'`);
   };
 
   return (
@@ -24,6 +29,13 @@ const AnecdoteList = () => {
             <button onClick={() => handleVote(anecdote.id, anecdote.content)}>
               vote
             </button>
+            {anecdote.votes === 0 && (
+              <button
+                onClick={() => handleRemove(anecdote.id, anecdote.content)}
+              >
+                remove
+              </button>
+            )}
           </div>
         </div>
       ))}
