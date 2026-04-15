@@ -8,10 +8,7 @@ const useAnecdoteStore = create((set, get) => ({
   actions: {
     initialize: async () => {
       const anecdotes = await anecdoteService.getAll();
-      return set(() => ({
-        // järjestä tietokannasta palautuva anekdoottilista äänien mukaan
-        anecdotes: anecdotes.toSorted((a, b) => b.votes - a.votes),
-      }));
+      return set(() => ({ anecdotes }));
     },
     add: async (content) => {
       const anecdote = await anecdoteService.create(content);
@@ -35,29 +32,27 @@ const useAnecdoteStore = create((set, get) => ({
       });
 
       return set((old) => ({
-        anecdotes: old.anecdotes
-          .map((anecdote) =>
-            // päivitä äänimäärä vain valitulle id:lle
-            anecdote.id === id ? updated : anecdote,
-          )
-          // järjestä anekdoottilista äänien mukaisesti
-          .toSorted((a, b) => b.votes - a.votes),
+        anecdotes: old.anecdotes.map((anecdote) =>
+          // päivitä äänimäärä vain valitulle id:lle
+          anecdote.id === id ? updated : anecdote,
+        ),
       }));
     },
     setFilter: (value) => set(() => ({ filter: value })),
   },
 }));
 
-export const useAnecdotes = () => {
+const useAnecdotes = () => {
   const anecdotes = useAnecdoteStore((state) => state.anecdotes);
   const filter = useAnecdoteStore((state) => state.filter);
-  return anecdotes.filter((anecdote) =>
-    anecdote.content.toLowerCase().includes(filter.toLowerCase()),
-  );
+  return anecdotes
+    .filter((anecdote) =>
+      anecdote.content.toLowerCase().includes(filter.toLowerCase()),
+    )
+    .toSorted((a, b) => b.votes - a.votes);
 };
 
-export const useAnecdoteActions = () =>
-  useAnecdoteStore((state) => state.actions);
+const useAnecdoteActions = () => useAnecdoteStore((state) => state.actions);
 
 const useNotificationStore = create((set, get) => ({
   content: '',
@@ -77,8 +72,16 @@ const useNotificationStore = create((set, get) => ({
   },
 }));
 
-export const useNotification = () =>
-  useNotificationStore((state) => state.content);
+const useNotification = () => useNotificationStore((state) => state.content);
 
-export const useNotificationActions = () =>
+const useNotificationActions = () =>
   useNotificationStore((state) => state.actions);
+
+export {
+  useAnecdoteStore,
+  useAnecdotes,
+  useAnecdoteActions,
+  useNotificationStore,
+  useNotification,
+  useNotificationActions,
+};
