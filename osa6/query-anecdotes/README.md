@@ -1,3 +1,3 @@
 # query-anecdotes
 
-Tehtävät 6.16. - 6.19
+Tehtävät 6.16. - 6.22

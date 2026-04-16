@@ -48,7 +48,15 @@ const useAnecdotes = () => {
     isPending,
     isError,
     anecdotes,
-    createAnecdote: (anecdote) => createAnecdoteMutation.mutate(anecdote),
+    // jotta virhe propagoituu hookille, tulee mutate kutsun olla asynkroninen
+    createAnecdote: async (anecdote) => {
+      try {
+        await createAnecdoteMutation.mutateAsync(anecdote);
+        return true;
+      } catch {
+        return false;
+      }
+    },
     updateAnecdote: (anecdote) => updateAnecdoteMutation.mutate(anecdote),
   };
 };
