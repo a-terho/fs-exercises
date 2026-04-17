@@ -1,3 +1,3 @@
 # routed-anecdotes
 
-Tehtävät 7.1
+Tehtävät 7.1 - 7.6
