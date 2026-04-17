@@ -16,4 +16,5 @@ edistyminen...
 - [x] osa3
 - [x] osa4
 - [x] osa5
-- [ ] osa6
+- [x] osa6
+- [ ] osa7
