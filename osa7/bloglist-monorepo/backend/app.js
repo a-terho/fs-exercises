@@ -2,6 +2,7 @@ const config = require('./utils/config');
 const logger = require('./utils/logger');
 const middleware = require('./utils/middleware');
 
+const path = require('node:path');
 const express = require('express');
 const mongoose = require('mongoose');
 
@@ -23,6 +24,11 @@ app.use(express.json());
 app.use(middleware.addRequestLogger());
 app.use(middleware.tokenExtractor);
 
+// jaa tuotantovaiheessa bundlattu frontend
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../frontend/dist')));
+}
+
 // reitittimet
 const blogsRouter = require('./controllers/blogs');
 const loginRouter = require('./controllers/login');
@@ -35,6 +41,13 @@ app.use('/api/users', usersRouter);
 if (process.env.NODE_ENV === 'test') {
   const testingRouter = require('./controllers/testing');
   app.use('/api/testing', testingRouter);
+}
+
+// ohjaa tuotantovaihessa API-reittien jälkeen React Routerin määrittämät reitit
+if (process.env.NODE_ENV === 'production') {
+  app.get('/*route', (req, res) =>
+    res.sendFile(path.join(__dirname, '../frontend/dist/index.html')),
+  );
 }
 
 // virheidenkäsittelyn middlewaret
