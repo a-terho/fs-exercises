@@ -5,7 +5,7 @@ services:
     container_name: fs-monorepo
     command: sh -c "npm install && tail -f /dev/null"
     volumes:
-      # sisällyttä lähdekoodi kontin luettavaksi
+      # sisällytä lähdekoodi kontin luettavaksi
       # erota kuitenkin node_modules omaan volumeen
       - ./:/workspace
       - node_modules:/workspace/node_modules
@@ -13,9 +13,10 @@ services:
       - ~/.gitconfig:/home/node/.gitconfig:ro
 
     ports:
-      - '3001-3003:3001-3003' # ulostuleva palvelinliikenne
+      - '127.0.0.1:3000-3003:3000-3003' # ulostuleva palvelinliikenne
       - '127.0.0.1:5173-5175:5173-5175' # vite dev
       - '127.0.0.1:9323:9323' # playwright report
+      - '127.0.0.1:8000:8000' # esbuild serve
     environment:
       - NODE_ENV=development
 
