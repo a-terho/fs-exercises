@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, Routes, Route, useNavigate, useMatch } from 'react-router';
+import { ErrorBoundary } from 'react-error-boundary';
 
 import styled from 'styled-components';
 
@@ -40,6 +41,8 @@ import BlogList from './components/BlogList';
 import LoginForm from './components/LoginForm';
 import NewBlogForm from './components/NewBlogForm';
 import Blog from './components/Blog';
+import ErrorFallback from './components/ErrorFallback';
+import NotFound from './components/NotFound';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -170,26 +173,34 @@ const App = () => {
           </>
         )}
       </NavBar>
-      <Notification ref={notificationRef} />
-      <Routes>
-        {/* navbarin linkit */}
-        <Route path="/" element={<BlogList blogs={blogs} />} />
-        <Route path="/login" element={<LoginForm onLogin={handleLogin} />} />
-        <Route path="/create" element={<NewBlogForm onBlogPost={addBlog} />} />
+      <ErrorBoundary FallbackComponent={ErrorFallback}>
+        <Notification ref={notificationRef} />
+        <Routes>
+          {/* navbarin linkit */}
+          <Route path="/" element={<BlogList blogs={blogs} />} />
+          <Route path="/login" element={<LoginForm onLogin={handleLogin} />} />
+          <Route
+            path="/create"
+            element={<NewBlogForm onBlogPost={addBlog} />}
+          />
 
-        {/* yksilöidyt reitit */}
-        <Route
-          path="/blogs/:id"
-          element={
-            <Blog
-              user={user}
-              blog={matchedBlog}
-              onLike={addLike}
-              onRemove={removeBlog}
-            />
-          }
-        />
-      </Routes>
+          {/* yksilöidyt reitit */}
+          <Route
+            path="/blogs/:id"
+            element={
+              <Blog
+                user={user}
+                blog={matchedBlog}
+                onLike={addLike}
+                onRemove={removeBlog}
+              />
+            }
+          />
+
+          {/* fallback/splat reitti */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </ErrorBoundary>
     </>
   );
 };
