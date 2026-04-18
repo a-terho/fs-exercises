@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, Routes, Route, useNavigate, useMatch } from 'react-router';
 import { ErrorBoundary } from 'react-error-boundary';
 
@@ -36,20 +36,22 @@ const NavBar = styled.div`
 import blogService from './services/blogs';
 import loginService from './services/login';
 
-import Notification from './components/Notification';
+import Blog from './components/Blog';
 import BlogList from './components/BlogList';
+import ErrorFallback from './components/ErrorFallback';
 import LoginForm from './components/LoginForm';
 import NewBlogForm from './components/NewBlogForm';
-import Blog from './components/Blog';
-import ErrorFallback from './components/ErrorFallback';
 import NotFound from './components/NotFound';
+import Notification from './components/Notification';
+
+import useNotify from './hooks/useNotify';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
 
-  // viite ilmoitusikkunan metodeja varten
-  const notificationRef = useRef();
+  // custom hook ilmoitusten näyttämiseen
+  const { showNotification, hideNotification } = useNotify();
 
   // navigointityökalu
   const navigate = useNavigate();
@@ -73,10 +75,10 @@ const App = () => {
 
   // apufunktio, joka etsii soveltuvan virheilmoituksen ilmoitusikkunaan
   const displayErrorFromResponse = (response) => {
-    const message = response.data?.error
+    const text = response.data?.error
       ? response.data.error
       : `${response.statusText} (${response.status})`;
-    notificationRef.current.showError(message);
+    showNotification({ type: 'error', text });
   };
 
   useEffect(() => {
@@ -96,7 +98,7 @@ const App = () => {
       const data = await loginService.login(username, password);
       window.localStorage.setItem('blogAppUserIdentity', JSON.stringify(data));
       setUserIdentityTo(data);
-      notificationRef.current.hide();
+      hideNotification();
       navigate('/');
     } catch ({ response }) {
       displayErrorFromResponse(response);
@@ -106,7 +108,7 @@ const App = () => {
   const handleLogout = () => {
     window.localStorage.removeItem('blogAppUserIdentity');
     setUserIdentityTo(null);
-    notificationRef.current.showInfo('logged out');
+    showNotification('logged out');
     navigate('/');
   };
 
@@ -118,9 +120,7 @@ const App = () => {
       blog.user = { username: user.username, name: user.name };
       setBlogs(blogs.concat(blog));
 
-      notificationRef.current.showInfo(
-        `new blog '${blog.title}' by ${blog.author} was added`,
-      );
+      showNotification(`new blog '${blog.title}' by ${blog.author} was added`);
 
       // palaa etusivulle ja välitä komponentille tieto onnistuneesta lisäyksestä
       navigate('/');
@@ -174,7 +174,7 @@ const App = () => {
         )}
       </NavBar>
       <ErrorBoundary FallbackComponent={ErrorFallback}>
-        <Notification ref={notificationRef} />
+        <Notification />
         <Routes>
           {/* navbarin linkit */}
           <Route path="/" element={<BlogList blogs={blogs} />} />

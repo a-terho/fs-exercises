@@ -1,5 +1,4 @@
-import { useState, useImperativeHandle } from 'react';
-
+import useNotify from '../hooks/useNotify';
 import styled from 'styled-components';
 
 const Box = styled.div`
@@ -24,36 +23,8 @@ const Box = styled.div`
   }
 `;
 
-const Notification = ({ ref }) => {
-  const [notification, setNotification] = useState(null);
-
-  // paljasta komponentin metodit muiden komponenttien käyttöön
-  useImperativeHandle(ref, () => {
-    return {
-      hide: clearNotification,
-      showInfo,
-      showError,
-    };
-  });
-
-  const clearNotification = () => {
-    if (notification?.id) clearTimeout(notification.id);
-    setNotification(null);
-  };
-
-  const showInfo = (text) => {
-    clearNotification();
-
-    const id = setTimeout(() => setNotification(null), 4000);
-    setNotification({ id, text, style: 'info' });
-  };
-
-  const showError = (text) => {
-    clearNotification();
-
-    const id = setTimeout(() => setNotification(null), 8000);
-    setNotification({ id, text, style: 'error' });
-  };
+const Notification = () => {
+  const { notification } = useNotify();
 
   // piilota ilmoitusikkuna, jos viestiä ei ole
   if (!notification) return null;
