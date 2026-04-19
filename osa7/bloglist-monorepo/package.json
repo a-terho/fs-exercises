@@ -5,7 +5,8 @@
     "dev:lan": "concurrently \"npm run dev --prefix backend\" \"npm run dev:lan --prefix frontend\"",
     "build": "npm run build --prefix frontend",
     "start": "npm start --prefix backend",
-    "format": "prettier . --write"
+    "format": "prettier . --write",
+    "test": "npm run test:all --prefix backend && npm run test --prefix frontend"
   },
   "devDependencies": {
     "concurrently": "^9.2.1",

@@ -2,6 +2,7 @@ import { vi, describe, test, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 
 import Blog from './Blog';
+import { UserContext } from './UserProvider';
 
 describe('<Blog />', () => {
   const user = { username: 'a-terho', name: 'A. Terho' };
@@ -19,12 +20,9 @@ describe('<Blog />', () => {
 
   test('renders all info for logged out user, but no buttons', () => {
     render(
-      <Blog
-        user={null}
-        blog={blog}
-        onLike={onLikeHandler}
-        onRemove={onRemoveHandler}
-      />,
+      <UserContext value={{ user: null }}>
+        <Blog blog={blog} onLike={onLikeHandler} onRemove={onRemoveHandler} />
+      </UserContext>,
     );
 
     // etsi oletetusti renderöityvät elementit DOM:sta
@@ -40,12 +38,9 @@ describe('<Blog />', () => {
 
   test('renders only like button for user that has not created the blog', () => {
     render(
-      <Blog
-        user={otherUser}
-        blog={blog}
-        onLike={onLikeHandler}
-        onRemove={onRemoveHandler}
-      />,
+      <UserContext value={{ user: otherUser }}>
+        <Blog blog={blog} onLike={onLikeHandler} onRemove={onRemoveHandler} />
+      </UserContext>,
     );
 
     // etsi oletetusti renderöityvät elementit DOM:sta
@@ -61,12 +56,9 @@ describe('<Blog />', () => {
 
   test('renders both like and remove buttons for creator of the blog', () => {
     render(
-      <Blog
-        user={user}
-        blog={blog}
-        onLike={onLikeHandler}
-        onRemove={onRemoveHandler}
-      />,
+      <UserContext value={{ user }}>
+        <Blog blog={blog} onLike={onLikeHandler} onRemove={onRemoveHandler} />
+      </UserContext>,
     );
 
     // etsi oletetusti renderöityvät elementit DOM:sta

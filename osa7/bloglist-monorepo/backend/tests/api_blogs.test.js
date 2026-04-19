@@ -69,7 +69,7 @@ describe('route /api/blogs', () => {
     test('returns id field in correct format', async () => {
       const res = await api.get('/api/blogs');
 
-      for (let blog of res?.body) {
+      for (let blog of res.body) {
         assert.strictEqual(
           typeof blog?.id,
           'string',
@@ -100,7 +100,10 @@ describe('route /api/blogs', () => {
         .expect(201)
         .expect('Content-Type', /application\/json/);
 
-      const blogsAfter = await Blog.find({});
+      const blogsAfter = await Blog.find({}).populate({
+        path: 'user',
+        select: 'username name',
+      });
       assert.strictEqual(
         blogsAfter.length,
         blogsMany.length + 1,
@@ -224,7 +227,10 @@ describe('route /api/blogs/:id', () => {
     });
 
     test('returns updated object in response', async () => {
-      const blogs = await Blog.find({});
+      const blogs = await Blog.find({}).populate({
+        path: 'user',
+        select: 'username name',
+      });
       const blogToUpdate = blogs[0];
       const goodId = blogToUpdate.id;
 
