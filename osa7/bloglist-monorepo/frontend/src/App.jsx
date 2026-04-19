@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { Link, Routes, Route, useNavigate, useMatch } from 'react-router';
 import { ErrorBoundary } from 'react-error-boundary';
 
@@ -33,9 +32,6 @@ const NavBar = styled.div`
   }
 `;
 
-import blogService from './services/blogs';
-import loginService from './services/login';
-
 import Blog from './components/Blog';
 import BlogList from './components/BlogList';
 import ErrorFallback from './components/ErrorFallback';
@@ -44,15 +40,14 @@ import NewBlogForm from './components/NewBlogForm';
 import NotFound from './components/NotFound';
 import Notification from './components/Notification';
 
-import useNotify from './hooks/useNotify';
 import useBlogs from './hooks/useBlogs';
+import useNotify from './hooks/useNotify';
+import useUser from './hooks/useUser';
 
 const App = () => {
-  const [user, setUser] = useState(null);
-
-  // omat custom hookit
   const { showNotification, hideNotification } = useNotify();
   const { isPending, blogs, createBlog, updateBlog, deleteBlog } = useBlogs();
+  const { user, loginUser, logoutUser } = useUser();
 
   // navigointityökalu
   const navigate = useNavigate();
@@ -63,12 +58,6 @@ const App = () => {
     ? blogs.find((blog) => blog.id === match.params.id)
     : null;
 
-  const setUserIdentityTo = (data) => {
-    // data sisältää kentät username, name ja token
-    blogService.setToken(data?.token ? data.token : null);
-    setUser(data);
-  };
-
   // apufunktio, joka etsii soveltuvan virheilmoituksen ilmoitusikkunaan
   const displayErrorFromResponse = (response) => {
     const text = response.data?.error
@@ -77,19 +66,9 @@ const App = () => {
     showNotification({ type: 'error', text });
   };
 
-  useEffect(() => {
-    const jsonData = window.localStorage.getItem('blogAppUserIdentity');
-    if (jsonData) {
-      const data = JSON.parse(jsonData);
-      setUserIdentityTo(data);
-    }
-  }, []);
-
   const handleLogin = async (username, password) => {
     try {
-      const data = await loginService.login(username, password);
-      window.localStorage.setItem('blogAppUserIdentity', JSON.stringify(data));
-      setUserIdentityTo(data);
+      await loginUser(username, password);
       hideNotification();
       navigate('/');
     } catch ({ response }) {
@@ -98,8 +77,7 @@ const App = () => {
   };
 
   const handleLogout = () => {
-    window.localStorage.removeItem('blogAppUserIdentity');
-    setUserIdentityTo(null);
+    logoutUser();
     showNotification('logged out');
     navigate('/');
   };
@@ -108,13 +86,9 @@ const App = () => {
     try {
       await createBlog(blog);
       showNotification(`new blog '${blog.title}' by ${blog.author} was added`);
-
-      // palaa etusivulle ja välitä komponentille tieto onnistuneesta lisäyksestä
       navigate('/');
-      return true;
     } catch ({ response }) {
       displayErrorFromResponse(response);
-      return false;
     }
   };
 
@@ -172,12 +146,7 @@ const App = () => {
           <Route
             path="/blogs/:id"
             element={
-              <Blog
-                user={user}
-                blog={matchedBlog}
-                onLike={addLike}
-                onRemove={removeBlog}
-              />
+              <Blog blog={matchedBlog} onLike={addLike} onRemove={removeBlog} />
             }
           />
 

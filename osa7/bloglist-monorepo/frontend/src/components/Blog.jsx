@@ -1,5 +1,7 @@
-import styled from 'styled-components';
 import { useState } from 'react';
+import styled from 'styled-components';
+
+import useUser from '../hooks/useUser';
 
 import NotFound from './NotFound';
 
@@ -46,8 +48,9 @@ const RemoveButton = styled(Button)`
   }
 `;
 
-const Blog = ({ user, blog, onLike, onRemove }) => {
+const Blog = ({ blog, onLike, onRemove }) => {
   const [loading, setLoading] = useState({});
+  const { user } = useUser();
 
   if (!blog) {
     if (loading.ok) return <NotFound element="Blog" />;

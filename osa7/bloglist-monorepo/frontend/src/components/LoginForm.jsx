@@ -1,7 +1,5 @@
-import { useState } from 'react';
-
-import { Header, ConfirmButton } from './shared-styles';
 import styled from 'styled-components';
+import { Header, ConfirmButton } from './shared-styles';
 
 const Input = styled.input`
   padding: 0.5em;
@@ -13,15 +11,17 @@ const Input = styled.input`
   }
 `;
 
+import useField from '../hooks/useField';
+
 const LoginForm = ({ onLogin }) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const username = useField('text');
+  const password = useField('password');
 
   const handleLogin = (event) => {
     event.preventDefault();
-    onLogin(username, password);
+    onLogin(username.value, password.value);
     // React nykyisellään poistaa komponentin DOM:sta, jos kirjautuminen
-    // onnistuu, username and password nollaantuu silloin automaattisesti
+    // onnistuu, lomakkeen kentät nollaantuvat silloin automaattisesti
   };
 
   return (
@@ -30,22 +30,12 @@ const LoginForm = ({ onLogin }) => {
       <form onSubmit={handleLogin}>
         <div>
           <label>
-            username{' '}
-            <Input
-              type="text"
-              value={username}
-              onChange={({ target }) => setUsername(target.value)}
-            ></Input>
+            <span>username</span> <Input {...username}></Input>
           </label>
         </div>
         <div>
           <label>
-            password{' '}
-            <Input
-              type="password"
-              value={password}
-              onChange={({ target }) => setPassword(target.value)}
-            ></Input>
+            <span>password</span> <Input {...password}></Input>
           </label>
         </div>
         <ConfirmButton type="submit">login</ConfirmButton>

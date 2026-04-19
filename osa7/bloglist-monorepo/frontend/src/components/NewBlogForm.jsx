@@ -1,7 +1,5 @@
-import { useState } from 'react';
-
-import { Header, ConfirmButton } from './shared-styles';
 import styled from 'styled-components';
+import { Header, ConfirmButton } from './shared-styles';
 
 const Form = styled.form`
   display: flex;
@@ -25,19 +23,22 @@ const Input = styled.input`
   padding: 0.5em;
 `;
 
-const NewBlogForm = ({ onBlogPost }) => {
-  const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
-  const [url, setUrl] = useState('');
+import useField from '../hooks/useField';
 
-  const handleAddBlog = async (event) => {
+const NewBlogForm = ({ onBlogPost }) => {
+  const title = useField('text');
+  const author = useField('text');
+  const url = useField('text');
+
+  const handleAddBlog = (event) => {
     event.preventDefault();
-    if (await onBlogPost({ title, author, url })) {
-      // tyhjennä kentät vain jos lisäys onnistui
-      setTitle('');
-      setAuthor('');
-      setUrl('');
-    }
+    onBlogPost({
+      title: title.value,
+      author: author.value,
+      url: url.value,
+    });
+    // React nykyisellään poistaa komponentin DOM:sta, jos lisääminen
+    // onnistuu, lomakkeen kentät nollaantuvat silloin automaattisesti
   };
 
   return (
@@ -46,27 +47,15 @@ const NewBlogForm = ({ onBlogPost }) => {
       <Form onSubmit={handleAddBlog}>
         <Label>
           <span>title</span>
-          <Input
-            type="text"
-            value={title}
-            onChange={({ target }) => setTitle(target.value)}
-          ></Input>
+          <Input {...title}></Input>
         </Label>
         <Label>
           <span>author</span>
-          <Input
-            type="text"
-            value={author}
-            onChange={({ target }) => setAuthor(target.value)}
-          ></Input>
+          <Input {...author}></Input>
         </Label>
         <Label>
           <span>url</span>
-          <Input
-            type="text"
-            value={url}
-            onChange={({ target }) => setUrl(target.value)}
-          ></Input>
+          <Input {...url}></Input>
         </Label>
         <ConfirmButton type="submit">add</ConfirmButton>
       </Form>

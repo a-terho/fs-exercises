@@ -1,3 +1,3 @@
 # bloglist-monorepo
 
-Tehtävät 7.7 - 7.13
+Tehtävät 7.7 - 7.15
