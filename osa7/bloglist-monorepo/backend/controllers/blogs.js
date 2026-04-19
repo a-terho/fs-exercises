@@ -34,6 +34,12 @@ router.post('/', async (req, res) => {
   user.blogs = user.blogs.concat(blog._id);
   await user.save();
 
+  // lisää käyttäjän tiedot palautuvaan vastaukseen
+  await blog.populate({
+    path: 'user',
+    select: 'username name', // täytä vain oleelliset kentät
+  });
+
   return res.status(201).json(blog);
 });
 
@@ -92,5 +98,12 @@ router.patch('/:id', async (req, res) => {
   url && (blog.url = url);
 
   const updatedBlog = await blog.save();
+
+  // lisää käyttäjän tiedot palautuvaan vastaukseen
+  await updatedBlog.populate({
+    path: 'user',
+    select: 'username name', // täytä vain oleelliset kentät
+  });
+
   res.status(200).json(updatedBlog);
 });

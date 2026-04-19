@@ -45,13 +45,14 @@ import NotFound from './components/NotFound';
 import Notification from './components/Notification';
 
 import useNotify from './hooks/useNotify';
+import useBlogs from './hooks/useBlogs';
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
 
-  // custom hook ilmoitusten näyttämiseen
+  // omat custom hookit
   const { showNotification, hideNotification } = useNotify();
+  const { isPending, blogs, createBlog, updateBlog, deleteBlog } = useBlogs();
 
   // navigointityökalu
   const navigate = useNavigate();
@@ -68,11 +69,6 @@ const App = () => {
     setUser(data);
   };
 
-  // apufunktio, joka järjestelee blogit tykkäysten mukaan
-  const setBlogsSorted = (allBlogs) => {
-    setBlogs(allBlogs.sort((a, b) => b.likes - a.likes));
-  };
-
   // apufunktio, joka etsii soveltuvan virheilmoituksen ilmoitusikkunaan
   const displayErrorFromResponse = (response) => {
     const text = response.data?.error
@@ -80,10 +76,6 @@ const App = () => {
       : `${response.statusText} (${response.status})`;
     showNotification({ type: 'error', text });
   };
-
-  useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogsSorted(blogs));
-  }, []);
 
   useEffect(() => {
     const jsonData = window.localStorage.getItem('blogAppUserIdentity');
@@ -112,14 +104,9 @@ const App = () => {
     navigate('/');
   };
 
-  const addBlog = async (data) => {
+  const addBlog = async (blog) => {
     try {
-      const blog = await blogService.create(data);
-      // manipuloidaan paikallista dataa hieman, jotta se sopii frontendiin paremmin
-      // tämän voisi tehdä myös muokkaamalla backendista palautuvaa dataa
-      blog.user = { username: user.username, name: user.name };
-      setBlogs(blogs.concat(blog));
-
+      await createBlog(blog);
       showNotification(`new blog '${blog.title}' by ${blog.author} was added`);
 
       // palaa etusivulle ja välitä komponentille tieto onnistuneesta lisäyksestä
@@ -137,8 +124,7 @@ const App = () => {
       return;
 
     try {
-      await blogService.remove(blog);
-      setBlogs(blogs.filter((b) => b.id !== blog.id));
+      await deleteBlog(blog);
       navigate('/');
     } catch ({ response }) {
       displayErrorFromResponse(response);
@@ -147,15 +133,7 @@ const App = () => {
 
   const addLike = async (blog) => {
     try {
-      const res = await blogService.updateField(blog, 'likes', blog.likes + 1);
-
-      // onnistuessaan päivitetään blogs listaan myös palvelimen mukainen tieto
-      setBlogsSorted(
-        blogs.map((b) => {
-          if (b.id === blog.id) b.likes = res.likes;
-          return b;
-        }),
-      );
+      await updateBlog(blog, 'likes', blog.likes + 1);
     } catch ({ response }) {
       displayErrorFromResponse(response);
     }
@@ -177,7 +155,13 @@ const App = () => {
         <Notification />
         <Routes>
           {/* navbarin linkit */}
-          <Route path="/" element={<BlogList blogs={blogs} />} />
+          <Route
+            path="/"
+            element={
+              // latauksen aikana näytetään placeholder latausteksti
+              isPending ? <p>loading blogs...</p> : <BlogList blogs={blogs} />
+            }
+          />
           <Route path="/login" element={<LoginForm onLogin={handleLogin} />} />
           <Route
             path="/create"
