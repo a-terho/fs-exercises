@@ -1,9 +1,10 @@
 import { Link } from 'react-router';
 import styled from 'styled-components';
 
-import { Header } from './shared-styles';
+import { Topheader } from '../styles/shared-styles';
 
 const Table = styled.table`
+  font-family: Helvetica, sans-serif;
   table-layout: fixed;
   /* border-collapse: collapse; */
   width: 600px;
@@ -24,7 +25,7 @@ const UserList = () => {
 
   return (
     <>
-      <Header>users</Header>
+      <Topheader>users</Topheader>
       <Table>
         <thead>
           <tr>

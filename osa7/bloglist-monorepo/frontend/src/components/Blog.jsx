@@ -1,53 +1,14 @@
 import { useMatch } from 'react-router';
-import styled from 'styled-components';
 
+import CommentForm from './CommentForm';
+import CommentList from './CommentList';
 import NotFound from './NotFound';
-
-const Container = styled.div`
-  font-family: Helvetica, sans-serif;
-  margin: 1em;
-  padding: 1em;
-  box-shadow: 0.1em 0.1em 0.5em black;
-`;
-
-const Title = styled.h2`
-  margin: 0;
-  margin-bottom: 1em;
-`;
-
-const Row = styled.div`
-  margin-bottom: 1em;
-`;
-
-const Button = styled.button`
-  text-transform: uppercase;
-  background-color: white;
-  margin-left: 1em;
-  padding-left: 1em;
-  padding-right: 1em;
-  border-radius: 5px;
-`;
-
-const LikeButton = styled(Button)`
-  color: steelblue;
-  border: solid steelblue;
-  &:hover {
-    background-color: steelblue;
-    color: white;
-  }
-`;
-
-const RemoveButton = styled(Button)`
-  color: lightcoral;
-  border: solid lightcoral;
-  &:hover {
-    background-color: lightcoral;
-    color: white;
-  }
-`;
+import { Container, Header, Subheader, Row } from '../styles/shared-styles';
+import { Button, LikeButton, RemoveButton } from '../styles/blog-styles';
 
 import useUser from '../hooks/useUser';
 import useBlogs from '../hooks/useBlogs';
+import useComments from '../hooks/useComments';
 
 const Blog = ({ onLike, onRemove }) => {
   const { isPending, blogs } = useBlogs();
@@ -56,6 +17,9 @@ const Blog = ({ onLike, onRemove }) => {
   // blogin täsmääjä
   const match = useMatch('/blogs/:id');
   const blog = match ? blogs.find((b) => b.id === match.params.id) : null;
+
+  // hae kommentit täsmätylle blogille
+  const { isLoading, comments, addComment } = useComments(blog?.id);
 
   if (!blog) {
     // älä näytä mitään kun blogit vielä latautuvat
@@ -71,10 +35,9 @@ const Blog = ({ onLike, onRemove }) => {
 
   return (
     <Container className="blog">
-      <Title>
-        {blog.author}: {blog.title}
-      </Title>
+      <Header>{blog.title}</Header>
       <div>
+        <Row>by {blog.author}</Row>
         <Row>
           <a href={blog.url}>{blog.url}</a>
         </Row>
@@ -90,6 +53,9 @@ const Blog = ({ onLike, onRemove }) => {
             <RemoveButton onClick={() => onRemove(blog)}>remove</RemoveButton>
           )}
         </Row>
+        <Subheader>comments</Subheader>
+        {user && <CommentForm onCommentPost={addComment} />}
+        <CommentList isLoading={isLoading} comments={comments} />
       </div>
     </Container>
   );

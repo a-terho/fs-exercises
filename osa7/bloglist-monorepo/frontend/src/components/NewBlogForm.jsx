@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Header, ConfirmButton } from './shared-styles';
+import { Topheader, ConfirmButton } from '../styles/shared-styles';
 
 const Form = styled.form`
   display: flex;
@@ -33,9 +33,9 @@ const NewBlogForm = ({ onBlogPost }) => {
   const handleAddBlog = (event) => {
     event.preventDefault();
     onBlogPost({
-      title: title.value,
-      author: author.value,
-      url: url.value,
+      title: title.props.value,
+      author: author.props.value,
+      url: url.props.value,
     });
     // React nykyisellään poistaa komponentin DOM:sta, jos lisääminen
     // onnistuu, lomakkeen kentät nollaantuvat silloin automaattisesti
@@ -43,19 +43,19 @@ const NewBlogForm = ({ onBlogPost }) => {
 
   return (
     <>
-      <Header>add new blog</Header>
+      <Topheader>add new blog</Topheader>
       <Form onSubmit={handleAddBlog}>
         <Label>
           <span>title</span>
-          <Input {...title}></Input>
+          <Input {...title.props}></Input>
         </Label>
         <Label>
           <span>author</span>
-          <Input {...author}></Input>
+          <Input {...author.props}></Input>
         </Label>
         <Label>
           <span>url</span>
-          <Input {...url}></Input>
+          <Input {...url.props}></Input>
         </Label>
         <ConfirmButton type="submit">add</ConfirmButton>
       </Form>

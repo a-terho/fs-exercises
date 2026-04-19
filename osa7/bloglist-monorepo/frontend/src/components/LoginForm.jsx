@@ -1,15 +1,4 @@
-import styled from 'styled-components';
-import { Header, ConfirmButton } from './shared-styles';
-
-const Input = styled.input`
-  padding: 0.5em;
-  margin: 0.3em;
-  border-style: none;
-  border-bottom-style: solid;
-  &:focus {
-    outline: none;
-  }
-`;
+import { Topheader, ConfirmButton, Input } from '../styles/shared-styles';
 
 import useField from '../hooks/useField';
 
@@ -19,23 +8,23 @@ const LoginForm = ({ onLogin }) => {
 
   const handleLogin = (event) => {
     event.preventDefault();
-    onLogin(username.value, password.value);
+    onLogin(username.props.value, password.props.value);
     // React nykyisellään poistaa komponentin DOM:sta, jos kirjautuminen
     // onnistuu, lomakkeen kentät nollaantuvat silloin automaattisesti
   };
 
   return (
     <>
-      <Header>login to application</Header>
+      <Topheader>login to application</Topheader>
       <form onSubmit={handleLogin}>
         <div>
           <label>
-            <span>username</span> <Input {...username}></Input>
+            <span>username</span> <Input {...username.props}></Input>
           </label>
         </div>
         <div>
           <label>
-            <span>password</span> <Input {...password}></Input>
+            <span>password</span> <Input {...password.props}></Input>
           </label>
         </div>
         <ConfirmButton type="submit">login</ConfirmButton>

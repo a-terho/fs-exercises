@@ -19,6 +19,20 @@ const blogSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
+    // kommentit ovat nyt denormalisoituina suoraan blogissa
+    // ei liitetä oletusarvoisesti kyselyihin vaan ne kysellään erikseen
+    comments: {
+      type: [
+        {
+          comment: {
+            type: String,
+            required: true,
+          },
+          postedAt: Date,
+        },
+      ],
+      select: false,
+    },
   },
   {
     toJSON: {
@@ -31,6 +45,13 @@ const blogSchema = mongoose.Schema(
         // tämä koskee vain populoimattomia viitteitä
         if (ret.user instanceof mongoose.Types.ObjectId) {
           ret.user = ret.user.toString();
+        }
+        // muunna kommentien id:t myös oikeaan muotoon
+        if (ret.comments?.length > 0) {
+          ret.comments.forEach((comment) => {
+            comment.id = comment._id.toString();
+            delete comment._id;
+          });
         }
       },
     },

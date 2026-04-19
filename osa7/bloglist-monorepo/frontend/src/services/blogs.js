@@ -17,17 +17,38 @@ const create = async (blog) => {
   return res.data;
 };
 
-const remove = async (blog) => {
+const remove = async (blogId) => {
   const config = { headers: { Authorization: `Bearer ${authToken}` } };
-  const res = await axios.delete(`${baseUrl}/${blog.id}`, config);
+  const res = await axios.delete(`${baseUrl}/${blogId}`, config);
   return res.data;
 };
 
-// 5.8 ohjaa käyttämään PUT-pyyntöä, tätä ei ole toistaiseksi backendissä
-// PATCH-pyyntö toimii joka tapauksessa tässä tarkoituksessa mielekkäämmin
-const updateField = async (blog, field, value) => {
-  const res = await axios.patch(`${baseUrl}/${blog.id}`, { [field]: value });
+const updateField = async (blogId, field, value) => {
+  const res = await axios.patch(`${baseUrl}/${blogId}`, { [field]: value });
   return res.data;
 };
 
-export default { setToken, getAll, create, remove, updateField };
+const getComments = async (blogId) => {
+  const res = await axios.get(`${baseUrl}/${blogId}/comments`);
+  return res.data;
+};
+
+const addComment = async (blogId, comment) => {
+  const config = { headers: { Authorization: `Bearer ${authToken}` } };
+  const res = await axios.post(
+    `${baseUrl}/${blogId}/comments`,
+    { comment },
+    config,
+  );
+  return res.data;
+};
+
+export default {
+  setToken,
+  getAll,
+  create,
+  remove,
+  updateField,
+  getComments,
+  addComment,
+};

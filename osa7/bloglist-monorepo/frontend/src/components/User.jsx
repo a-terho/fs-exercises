@@ -1,6 +1,7 @@
 import { Link, useMatch } from 'react-router';
 
 import NotFound from './NotFound';
+import { Container, Header, BlogLink } from '../styles/shared-styles';
 
 import useUsers from '../hooks/useUsers';
 
@@ -22,20 +23,22 @@ const User = () => {
   return (
     <>
       <h1>{user.name}</h1>
-      {user.blogs.length > 0 ? (
-        <>
-          <h2>added blogs</h2>
-          <ul>
-            {user.blogs.map((blog) => (
-              <li key={blog.id}>
-                <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
-              </li>
-            ))}
-          </ul>
-        </>
-      ) : (
-        <p>{user.name} has not added any blogs.</p>
-      )}
+      <Container>
+        {user.blogs.length > 0 ? (
+          <>
+            <Header>added blogs</Header>
+            <ul>
+              {user.blogs.map((blog) => (
+                <BlogLink key={blog.id}>
+                  <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+                </BlogLink>
+              ))}
+            </ul>
+          </>
+        ) : (
+          <p>{user.name} has not added any blogs.</p>
+        )}
+      </Container>
     </>
   );
 };

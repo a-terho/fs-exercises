@@ -107,3 +107,53 @@ router.patch('/:id', async (req, res) => {
 
   res.status(200).json(updatedBlog);
 });
+
+router.get('/:id/comments', async (req, res) => {
+  const blogId = req.params.id;
+
+  const blog = await Blog.findById(blogId).select('comments');
+
+  if (!blog)
+    return res
+      .status(404)
+      .json({ error: `blog with id ${blogId} doesn't exist` });
+
+  res.status(200).json(blog);
+});
+
+router.post('/:id/comments', async (req, res) => {
+  const blogId = req.params.id;
+  const { comment } = req.body || {};
+  const user = req.user;
+
+  if (!user) {
+    return res.status(401).json({
+      error: "unauthorized: user associated with request isn't valid",
+    });
+  }
+
+  // työntää uuden kommentin blogin yhteydessä olevaan kommenttilistaan
+  // ajaa edeltävästi validaattorit ja palauttaa päivitetyn kommenttilistan
+  const blog = await Blog.findByIdAndUpdate(
+    blogId,
+    {
+      $push: {
+        comments: {
+          comment,
+          postedAt: new Date(),
+        },
+      },
+    },
+    {
+      returnDocument: 'after',
+      runValidators: true,
+    },
+  ).select('comments');
+
+  if (!blog)
+    return res
+      .status(404)
+      .json({ error: `blog with id ${blogId} doesn't exist` });
+
+  res.status(200).json(blog);
+});

@@ -6,6 +6,7 @@ const useUsers = () => {
   const { isPending, data } = useQuery({
     queryKey: ['users'],
     queryFn: userService.getAll,
+    refetchOnMount: false, // älä hae uudelleen, kun käyttäjäsivu avataan
   });
 
   return {
