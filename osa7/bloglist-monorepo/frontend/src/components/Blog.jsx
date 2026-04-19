@@ -1,7 +1,5 @@
-import { useState } from 'react';
+import { useMatch } from 'react-router';
 import styled from 'styled-components';
-
-import useUser from '../hooks/useUser';
 
 import NotFound from './NotFound';
 
@@ -48,20 +46,23 @@ const RemoveButton = styled(Button)`
   }
 `;
 
-const Blog = ({ blog, onLike, onRemove }) => {
-  const [loading, setLoading] = useState({});
+import useUser from '../hooks/useUser';
+import useBlogs from '../hooks/useBlogs';
+
+const Blog = ({ onLike, onRemove }) => {
+  const { isPending, blogs } = useBlogs();
   const { user } = useUser();
 
-  if (!blog) {
-    if (loading.ok) return <NotFound element="Blog" />;
+  // blogin täsmääjä
+  const match = useMatch('/blogs/:id');
+  const blog = match ? blogs.find((b) => b.id === match.params.id) : null;
 
-    // salli lyhyt latausaika, jolloin ei vielä renderöidä NotFound komponenttia
-    // heti sivun päivityksen yhteydessä blog = null vaikka sen id onkin olemassa
-    if (!loading.timer) {
-      const timer = setTimeout(() => setLoading({ ok: true }), 500);
-      setLoading({ ok: false, timer });
-    }
-    return null;
+  if (!blog) {
+    // älä näytä mitään kun blogit vielä latautuvat
+    if (isPending) return null;
+
+    // latautumisen jälkeen jos blogia ei löydy, näytä 404
+    return <NotFound element="Blog" />;
   }
 
   // blogilla ei ole käyttäjää -> undefined, käyttäjä poistettu tietokannasta -> null

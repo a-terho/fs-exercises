@@ -1,4 +1,4 @@
-import { Link, Routes, Route, useNavigate, useMatch } from 'react-router';
+import { Link, Routes, Route, useNavigate } from 'react-router';
 import { ErrorBoundary } from 'react-error-boundary';
 
 import styled from 'styled-components';
@@ -39,6 +39,8 @@ import LoginForm from './components/LoginForm';
 import NewBlogForm from './components/NewBlogForm';
 import NotFound from './components/NotFound';
 import Notification from './components/Notification';
+import User from './components/User';
+import UserList from './components/UserList';
 
 import useBlogs from './hooks/useBlogs';
 import useNotify from './hooks/useNotify';
@@ -46,17 +48,11 @@ import useUser from './hooks/useUser';
 
 const App = () => {
   const { showNotification, hideNotification } = useNotify();
-  const { isPending, blogs, createBlog, updateBlog, deleteBlog } = useBlogs();
+  const { createBlog, updateBlog, deleteBlog } = useBlogs();
   const { user, loginUser, logoutUser } = useUser();
 
   // navigointityökalu
   const navigate = useNavigate();
-
-  // blogin täsmääjä
-  const match = useMatch('/blogs/:id');
-  const matchedBlog = match
-    ? blogs.find((blog) => blog.id === match.params.id)
-    : null;
 
   // apufunktio, joka etsii soveltuvan virheilmoituksen ilmoitusikkunaan
   const displayErrorFromResponse = (response) => {
@@ -117,8 +113,10 @@ const App = () => {
     <>
       <NavBar>
         <Link to="/">blogs</Link>
-        {user === null && <Link to="/login">login</Link>}
-        {user && (
+        <Link to="/users">users</Link>
+        {user === null ? (
+          <Link to="/login">login</Link>
+        ) : (
           <>
             <Link to="/create">new blog</Link>
             <button onClick={handleLogout}>logout</button>
@@ -129,13 +127,8 @@ const App = () => {
         <Notification />
         <Routes>
           {/* navbarin linkit */}
-          <Route
-            path="/"
-            element={
-              // latauksen aikana näytetään placeholder latausteksti
-              isPending ? <p>loading blogs...</p> : <BlogList blogs={blogs} />
-            }
-          />
+          <Route path="/" element={<BlogList />} />
+          <Route path="/users" element={<UserList />} />
           <Route path="/login" element={<LoginForm onLogin={handleLogin} />} />
           <Route
             path="/create"
@@ -145,10 +138,9 @@ const App = () => {
           {/* yksilöidyt reitit */}
           <Route
             path="/blogs/:id"
-            element={
-              <Blog blog={matchedBlog} onLike={addLike} onRemove={removeBlog} />
-            }
+            element={<Blog onLike={addLike} onRemove={removeBlog} />}
           />
+          <Route path="/users/:id" element={<User />} />
 
           {/* fallback/splat reitti */}
           <Route path="*" element={<NotFound />} />
