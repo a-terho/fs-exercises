@@ -4,8 +4,10 @@ import { render, screen } from '@testing-library/react';
 import Blog from './Blog';
 
 vi.mock('../hooks/useBlogs', () => ({ default: vi.fn() }));
+vi.mock('../hooks/useComments', () => ({ default: vi.fn() }));
+vi.mock('../hooks/useNotify', () => ({ default: vi.fn() }));
 vi.mock('../hooks/useUser', () => ({ default: vi.fn() }));
-vi.mock('react-router', () => ({ useMatch: vi.fn() }));
+vi.mock('react-router', () => ({ useMatch: vi.fn(), useNavigate: vi.fn() }));
 
 describe('<Blog />', async () => {
   const user = { username: 'a-terho', name: 'A. Terho', id: 'abc123' };
@@ -19,9 +21,9 @@ describe('<Blog />', async () => {
     user,
   };
 
-  const onLikeHandler = vi.fn();
-  const onRemoveHandler = vi.fn();
   const useBlogs = await import('../hooks/useBlogs');
+  const useComments = await import('../hooks/useComments');
+  const useNotify = await import('../hooks/useNotify');
   const useUser = await import('../hooks/useUser');
   const { useMatch } = await import('react-router');
 
@@ -29,18 +31,28 @@ describe('<Blog />', async () => {
     vi.clearAllMocks();
 
     // mockataan komponentin käyttämien hookien tulokset
-    useBlogs.default.mockReturnValue({ isPending: false, blogs: [blog] });
+    useBlogs.default.mockReturnValue({
+      isPending: false,
+      blogs: [blog],
+      updateBlog: vi.fn(),
+      deleteBlog: vi.fn(),
+    });
+    useComments.default.mockReturnValue({
+      isLoading: false,
+      comments: [],
+      addComment: vi.fn(),
+    });
+    useNotify.default.mockReturnValue({ showNotification: vi.fn() });
     useMatch.mockReturnValue({ params: { id: blog.id } });
   });
 
   test('renders all info for logged out user, but no buttons', () => {
     useUser.default.mockReturnValue({ user: null });
-    render(
-      <Blog blog={blog} onLike={onLikeHandler} onRemove={onRemoveHandler} />,
-    );
+    render(<Blog />);
 
     // etsi oletetusti renderöityvät elementit DOM:sta
-    expect(screen.getByText(`${blog.author}: ${blog.title}`)).toBeVisible();
+    expect(screen.getByText(`${blog.title}`)).toBeVisible();
+    expect(screen.getByText(`by ${blog.author}`)).toBeVisible();
     expect(screen.getByText(blog.url)).toBeVisible();
     expect(screen.getByText(`likes ${blog.likes}`)).toBeVisible();
     expect(screen.getByText(user.name)).toBeVisible();
@@ -52,12 +64,11 @@ describe('<Blog />', async () => {
 
   test('renders only like button for user that has not created the blog', () => {
     useUser.default.mockReturnValue({ user: otherUser });
-    render(
-      <Blog blog={blog} onLike={onLikeHandler} onRemove={onRemoveHandler} />,
-    );
+    render(<Blog />);
 
     // etsi oletetusti renderöityvät elementit DOM:sta
-    expect(screen.getByText(`${blog.author}: ${blog.title}`)).toBeVisible();
+    expect(screen.getByText(`${blog.title}`)).toBeVisible();
+    expect(screen.getByText(`by ${blog.author}`)).toBeVisible();
     expect(screen.getByText(blog.url)).toBeVisible();
     expect(screen.getByText(`likes ${blog.likes}`)).toBeVisible();
     expect(screen.getByText(user.name)).toBeVisible();
@@ -69,12 +80,11 @@ describe('<Blog />', async () => {
 
   test('renders both like and remove buttons for creator of the blog', () => {
     useUser.default.mockReturnValue({ user: user });
-    render(
-      <Blog blog={blog} onLike={onLikeHandler} onRemove={onRemoveHandler} />,
-    );
+    render(<Blog />);
 
     // etsi oletetusti renderöityvät elementit DOM:sta
-    expect(screen.getByText(`${blog.author}: ${blog.title}`)).toBeVisible();
+    expect(screen.getByText(`${blog.title}`)).toBeVisible();
+    expect(screen.getByText(`by ${blog.author}`)).toBeVisible();
     expect(screen.getByText(blog.url)).toBeVisible();
     expect(screen.getByText(`likes ${blog.likes}`)).toBeVisible();
     expect(screen.getByText(user.name)).toBeVisible();

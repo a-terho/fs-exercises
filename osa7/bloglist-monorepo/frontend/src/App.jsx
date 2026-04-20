@@ -42,24 +42,21 @@ import Notification from './components/Notification';
 import User from './components/User';
 import UserList from './components/UserList';
 
-import useBlogs from './hooks/useBlogs';
 import useNotify from './hooks/useNotify';
 import useUser from './hooks/useUser';
 
 const App = () => {
   const { showNotification, hideNotification } = useNotify();
-  const { createBlog, updateBlog, deleteBlog } = useBlogs();
   const { user, loginUser, logoutUser } = useUser();
 
   // navigointityökalu
   const navigate = useNavigate();
 
-  // apufunktio, joka etsii soveltuvan virheilmoituksen ilmoitusikkunaan
-  const displayErrorFromResponse = (response) => {
-    const text = response.data?.error
+  // apufunktio axioksen palauttaman vastausobjektin virheviestin eristämiseksi
+  const resolveErrorText = (response) => {
+    return response.data?.error
       ? response.data.error
       : `${response.statusText} (${response.status})`;
-    showNotification({ type: 'error', text });
   };
 
   const handleLogin = async (username, password) => {
@@ -68,7 +65,7 @@ const App = () => {
       hideNotification();
       navigate('/');
     } catch ({ response }) {
-      displayErrorFromResponse(response);
+      showNotification({ type: 'error', text: resolveErrorText(response) });
     }
   };
 
@@ -76,37 +73,6 @@ const App = () => {
     logoutUser();
     showNotification('logged out');
     navigate('/');
-  };
-
-  const addBlog = async (blog) => {
-    try {
-      await createBlog(blog);
-      showNotification(`new blog '${blog.title}' by ${blog.author} was added`);
-      navigate('/');
-    } catch ({ response }) {
-      displayErrorFromResponse(response);
-    }
-  };
-
-  const removeBlog = async (blog) => {
-    // varmista poisto käyttäjltä ennen etenemistä
-    if (!window.confirm(`Remove blog '${blog.title}' by ${blog.author}?`))
-      return;
-
-    try {
-      await deleteBlog(blog);
-      navigate('/');
-    } catch ({ response }) {
-      displayErrorFromResponse(response);
-    }
-  };
-
-  const addLike = async (blog) => {
-    try {
-      await updateBlog(blog, 'likes', blog.likes + 1);
-    } catch ({ response }) {
-      displayErrorFromResponse(response);
-    }
   };
 
   return (
@@ -130,16 +96,10 @@ const App = () => {
           <Route path="/" element={<BlogList />} />
           <Route path="/users" element={<UserList />} />
           <Route path="/login" element={<LoginForm onLogin={handleLogin} />} />
-          <Route
-            path="/create"
-            element={<NewBlogForm onBlogPost={addBlog} />}
-          />
+          <Route path="/create" element={<NewBlogForm />} />
 
           {/* yksilöidyt reitit */}
-          <Route
-            path="/blogs/:id"
-            element={<Blog onLike={addLike} onRemove={removeBlog} />}
-          />
+          <Route path="/blogs/:id" element={<Blog />} />
           <Route path="/users/:id" element={<User />} />
 
           {/* fallback/splat reitti */}

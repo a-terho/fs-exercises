@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import { Topheader, ConfirmButton } from '../styles/shared-styles';
 
@@ -23,28 +24,50 @@ const Input = styled.input`
   padding: 0.5em;
 `;
 
+import useBlogs from '../hooks/useBlogs';
 import useField from '../hooks/useField';
+import useNotify from '../hooks/useNotify';
 
-const NewBlogForm = ({ onBlogPost }) => {
+const NewBlogForm = () => {
   const title = useField('text');
   const author = useField('text');
   const url = useField('text');
 
-  const handleAddBlog = (event) => {
+  const { createBlog } = useBlogs();
+  const { showNotification } = useNotify();
+
+  const navigate = useNavigate();
+
+  // apufunktio axioksen palauttaman vastausobjektin virheviestin eristämiseksi
+  const resolveErrorText = (response) => {
+    return response.data?.error
+      ? response.data.error
+      : `${response.statusText} (${response.status})`;
+  };
+
+  const addBlog = async (event) => {
     event.preventDefault();
-    onBlogPost({
+    const blog = {
       title: title.props.value,
       author: author.props.value,
       url: url.props.value,
-    });
-    // React nykyisellään poistaa komponentin DOM:sta, jos lisääminen
-    // onnistuu, lomakkeen kentät nollaantuvat silloin automaattisesti
+    };
+
+    try {
+      await createBlog(blog);
+      showNotification(`new blog '${blog.title}' by ${blog.author} was added`);
+      navigate('/');
+      // React nykyisellään poistaa komponentin DOM:sta, jos lisääminen
+      // onnistuu, lomakkeen kentät nollaantuvat silloin automaattisesti
+    } catch ({ response }) {
+      showNotification({ type: 'error', text: resolveErrorText(response) });
+    }
   };
 
   return (
     <>
       <Topheader>add new blog</Topheader>
-      <Form onSubmit={handleAddBlog}>
+      <Form onSubmit={addBlog}>
         <Label>
           <span>title</span>
           <Input {...title.props}></Input>

@@ -4,21 +4,33 @@ import userEvent from '@testing-library/user-event';
 
 import NewBlogForm from './NewBlogForm';
 
-describe('<NewBlogForm />', () => {
+vi.mock('../hooks/useBlogs', () => ({ default: vi.fn() }));
+vi.mock('../hooks/useNotify', () => ({ default: vi.fn() }));
+vi.mock('react-router', () => ({ useNavigate: vi.fn() }));
+
+describe('<NewBlogForm />', async () => {
   const inputs = {
     title: "You Don't Know JS Yet (book series)",
     author: 'Kyle Simpson',
     url: 'https://github.com/getify/You-Dont-Know-JS',
   };
 
-  let onBlogPostHandler = null;
+  const createBlog = vi
+    .fn()
+    .mockResolvedValue(null)
+    .mockRejectedValue({ response: {} });
+  const useBlogs = await import('../hooks/useBlogs');
+  const useNotify = await import('../hooks/useNotify');
+
   beforeEach(() => {
-    // nollaa mock handler ennen testejä
-    onBlogPostHandler = vi.fn();
-    render(<NewBlogForm onBlogPost={onBlogPostHandler} />);
+    vi.clearAllMocks();
+    useBlogs.default.mockReturnValue({ createBlog });
+    useNotify.default.mockReturnValue({ showNotification: vi.fn() });
+
+    render(<NewBlogForm />);
   });
 
-  test('correct values are passed to onBlogPost handler when called', async () => {
+  test('correct values are passed to createBlog when called', async () => {
     const user = userEvent.setup();
 
     const titleInput = screen.getByLabelText('title');
@@ -33,7 +45,7 @@ describe('<NewBlogForm />', () => {
     await user.click(addButton);
 
     // tarkista käsittelijäfunktion saamat arvot
-    const args = onBlogPostHandler.mock.calls[0][0];
+    const args = createBlog.mock.calls[0][0];
     expect(args).toStrictEqual(inputs);
   });
 });

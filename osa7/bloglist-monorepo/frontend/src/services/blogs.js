@@ -24,7 +24,12 @@ const remove = async (blogId) => {
 };
 
 const updateField = async (blogId, field, value) => {
-  const res = await axios.patch(`${baseUrl}/${blogId}`, { [field]: value });
+  const config = { headers: { Authorization: `Bearer ${authToken}` } };
+  const res = await axios.patch(
+    `${baseUrl}/${blogId}`,
+    { [field]: value },
+    config,
+  );
   return res.data;
 };
 

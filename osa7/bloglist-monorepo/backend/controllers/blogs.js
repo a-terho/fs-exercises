@@ -82,6 +82,13 @@ router.delete('/:id', async (req, res) => {
 router.patch('/:id', async (req, res) => {
   const blogId = req.params.id;
   const { url, likes } = req.body || {};
+  const user = req.user;
+
+  if (!user) {
+    return res.status(401).json({
+      error: "unauthorized: user associated with request isn't valid",
+    });
+  }
 
   // tuki tällä hetkellä vain tykkäysten ja url päivitykselle
   // tyrmää pyyntö vain jos payload ei sisällä jotain niistä
@@ -155,5 +162,5 @@ router.post('/:id/comments', async (req, res) => {
       .status(404)
       .json({ error: `blog with id ${blogId} doesn't exist` });
 
-  res.status(200).json(blog);
+  res.status(201).json(blog);
 });

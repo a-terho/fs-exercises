@@ -48,9 +48,13 @@ const globalErrorHandler = (err, req, res, next) => {
     return res.status(400).json({
       error: `User creation failed: username${username} is already taken`,
     });
-  } else if (err.name === 'JsonWebTokenError') {
+  } else if (
+    err.name === 'JsonWebTokenError' ||
+    err.name === 'TokenExpiredError'
+  ) {
     return res.status(401).json({
-      error: 'unauthorized: request contains invalid token, please login again',
+      error:
+        'unauthorized: request contains invalid or expired token, please login again',
     });
   } else {
     res.status(500).json({ error: err.message });

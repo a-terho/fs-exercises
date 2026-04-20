@@ -220,7 +220,13 @@ describe('route /api/blogs/:id', () => {
   describe('PATCH', () => {
     test("updates blog's likes correctly", async () => {
       const goodId = await giveValidBlogId();
-      await api.patch(`/api/blogs/${goodId}`).send({ likes: 30 }).expect(200);
+      const token = await giveValidJwtToken();
+
+      await api
+        .patch(`/api/blogs/${goodId}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({ likes: 30 })
+        .expect(200);
 
       const blogAfter = await Blog.findById(goodId);
       assert.strictEqual(blogAfter.likes, 30);
@@ -233,9 +239,11 @@ describe('route /api/blogs/:id', () => {
       });
       const blogToUpdate = blogs[0];
       const goodId = blogToUpdate.id;
+      const token = await giveValidJwtToken();
 
       const res = await api
         .patch(`/api/blogs/${goodId}`)
+        .set('Authorization', `Bearer ${token}`)
         .send({ likes: 40 })
         .expect(200);
 
@@ -245,22 +253,46 @@ describe('route /api/blogs/:id', () => {
 
     test('sends not found (404) for valid, non-existent id', async () => {
       const badId = await giveValidRemovedBlogId();
-      await api.patch(`/api/blogs/${badId}`).send({ likes: 30 }).expect(404);
+      const token = await giveValidJwtToken();
+
+      await api
+        .patch(`/api/blogs/${badId}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({ likes: 30 })
+        .expect(404);
     });
 
     test('sends bad request (400) for invalid id', async () => {
       const badId = '5a42h3xh45n0xes4df7';
-      await api.patch(`/api/blogs/${badId}`).send({ likes: 30 }).expect(400);
+      const token = await giveValidJwtToken();
+
+      await api
+        .patch(`/api/blogs/${badId}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({ likes: 30 })
+        .expect(400);
     });
 
     test('sends bad request (400) for empty payload', async () => {
       const goodId = await giveValidBlogId();
-      await api.patch(`/api/blogs/${goodId}`).send({}).expect(400);
+      const token = await giveValidJwtToken();
+
+      await api
+        .patch(`/api/blogs/${goodId}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({})
+        .expect(400);
     });
 
     test('sends bad request (400) for invalid payload', async () => {
       const goodId = await giveValidBlogId();
-      await api.patch(`/api/blogs/${goodId}`).send({ likes: 'k' }).expect(400);
+      const token = await giveValidJwtToken();
+
+      await api
+        .patch(`/api/blogs/${goodId}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({ likes: 'k' })
+        .expect(400);
     });
   });
 });
