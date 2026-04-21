@@ -1,0 +1,10 @@
+{
+  "name": "library-monorepo",
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix library-backend\" \"npm run dev --prefix library-frontend\"",
+    "dev:lan": "concurrently \"npm run dev --prefix library-backend\" \"npm run dev:lan --prefix library-frontend\""
+  },
+  "dependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

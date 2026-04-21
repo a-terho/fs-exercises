@@ -82,6 +82,7 @@ let books = [
 
 const typeDefs = /* GraphQL */ `
   type Book {
+    id: ID!
     title: String
     author: String!
     published: Int!
@@ -89,9 +90,9 @@ const typeDefs = /* GraphQL */ `
   }
 
   type Author {
+    id: ID!
     name: String!
     born: Int
-    id: String!
     bookCount: Int!
   }
 

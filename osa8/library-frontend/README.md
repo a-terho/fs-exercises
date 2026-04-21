@@ -1,3 +1,3 @@
 # library-frontend
 
-Tehtävät 8.8
+Tehtävät 8.8 - 8.12
