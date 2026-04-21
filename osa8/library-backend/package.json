@@ -1,0 +1,17 @@
+{
+  "name": "library-backend",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "a-terho",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node --watch index.js",
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@apollo/server": "^5.5.0",
+    "graphql": "^16.13.2"
+  }
+}

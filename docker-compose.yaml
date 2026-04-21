@@ -17,6 +17,7 @@ services:
       - '127.0.0.1:5173-5175:5173-5175' # vite dev
       - '127.0.0.1:9323:9323' # playwright report
       - '127.0.0.1:8000:8000' # esbuild serve
+      - '127.0.0.1:4000:4000' # apollo server
     environment:
       - NODE_ENV=development
 
