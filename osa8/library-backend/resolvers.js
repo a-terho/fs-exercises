@@ -1,7 +1,9 @@
 const { GraphQLError } = require('graphql');
+const jwt = require('jsonwebtoken');
 
 const Author = require('./models/Author');
 const Book = require('./models/Book');
+const User = require('./models/User');
 
 const resolvers = {
   Author: {
@@ -19,13 +21,21 @@ const resolvers = {
       if (args.author) filter.author = args.author;
       if (args.genre) filter.genres = args.genre;
 
-      // korvaa kirjailijoiden id-viitteet tiedoilla vastaukseen
+      // korvaa kirjailijoiden id-viitteet sisällöllä vastaukseen
       return Book.find(filter).populate('author');
     },
+
+    me: (object, args, context) => context.user,
   },
 
   Mutation: {
-    addBook: async (_, { title, author, published, genres }) => {
+    addBook: async (_, { title, author, published, genres }, context) => {
+      if (!context.user) {
+        throw new GraphQLError('Unauthorized, please log in', {
+          extensions: { code: 'UNAUTHENTICATED' },
+        });
+      }
+
       // etsi ensin kirjailijalle oikea id-viite
       let bookAuthor = await Author.findOne({ name: author });
 
@@ -52,7 +62,9 @@ const resolvers = {
         });
         // kirjan lisäämisen jälkeen tallenna myös jo validoitu kirjailija
         await bookAuthor.save();
-        return newBook;
+
+        // korvaa lopulliseen vastaukseen kuitenkin id-viite sisällöllä
+        return newBook.populate('author');
       } catch (err) {
         throw new GraphQLError(`Adding new book failed: ${err.message}`, {
           extensions: { code: 'BAD_USER_INPUT' },
@@ -60,7 +72,13 @@ const resolvers = {
       }
     },
 
-    editAuthor: async (_, { name, setBornTo }) => {
+    editAuthor: async (_, { name, setBornTo }, context) => {
+      if (!context.user) {
+        throw new GraphQLError('Unauthorized, please log in', {
+          extensions: { code: 'UNAUTHENTICATED' },
+        });
+      }
+
       // etsi kirjailijaa nimeltä kokoelmasta
       const author = await Author.findOne({ name });
       if (!author) return null;
@@ -74,6 +92,29 @@ const resolvers = {
           extensions: { code: 'BAD_USER_INPUT' },
         });
       }
+    },
+
+    createUser: async (_, { username, favoriteGenre }) => {
+      try {
+        return await User.create({ username, favoriteGenre });
+      } catch (err) {
+        throw new GraphQLError(`Creating new user failed: ${err.message}`, {
+          extensions: { code: 'BAD_USER_INPUT' },
+        });
+      }
+    },
+
+    login: async (_, { username, password }) => {
+      const user = await User.findOne({ username });
+
+      if (!user || password !== 'password') {
+        throw new GraphQLError('Wrong credentials', {
+          extensions: { code: 'BAD_USER_INPUT' },
+        });
+      }
+
+      const payload = { username, id: user.id };
+      return { value: jwt.sign(payload, process.env.JWT_SECRET) };
     },
   },
 };
