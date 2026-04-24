@@ -5,17 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:lan": "vite --host",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
-    "@apollo/client": "^4.1.7",
-    "graphql": "^16.13.2",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0",
-    "react-router": "^7.14.1"
+    "react-dom": "^19.2.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

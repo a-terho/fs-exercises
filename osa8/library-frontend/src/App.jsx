@@ -1,31 +1,26 @@
-import { Routes, Route, NavLink } from 'react-router';
+import { useState } from 'react'
+import Authors from './components/Authors'
+import Books from './components/Books'
+import NewBook from './components/NewBook'
 
-import Authors from './components/Authors';
-import Books from './components/Books';
-import NewBook from './components/NewBook';
-import { Notification, NotificationProvider } from './components/Notification';
+const App = () => {
+  const [page, setPage] = useState('authors')
 
-const App = () => (
-  <NotificationProvider>
+  return (
     <div>
-      <NavLink to="/">
-        <button>authors</button>
-      </NavLink>
-      <NavLink to="/books">
-        <button>books</button>
-      </NavLink>
-      <NavLink to="/addbook">
-        <button>add book</button>
-      </NavLink>
+      <div>
+        <button onClick={() => setPage('authors')}>authors</button>
+        <button onClick={() => setPage('books')}>books</button>
+        <button onClick={() => setPage('add')}>add book</button>
+      </div>
+
+      <Authors show={page === 'authors'} />
+
+      <Books show={page === 'books'} />
+
+      <NewBook show={page === 'add'} />
     </div>
+  )
+}
 
-    <Notification />
-    <Routes>
-      <Route path="/" element={<Authors />} />
-      <Route path="/books" element={<Books />} />
-      <Route path="/addbook" element={<NewBook />} />
-    </Routes>
-  </NotificationProvider>
-);
-
-export default App;
+export default App
