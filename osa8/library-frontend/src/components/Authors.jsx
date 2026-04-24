@@ -21,6 +21,7 @@ const Authors = () => {
   });
 
   if (loading) return <p>loading...</p>;
+  if (error) return <p>error while loading data</p>;
 
   // kysely nimeää allAuthors -> authors, jotta se voidaan destrukturoida
   const { authors } = data;

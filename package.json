@@ -2,6 +2,7 @@
   "name": "fs-exercises",
   "private": true,
   "workspaces": [
-    "osa*/*"
+    "osa*/*",
+    "!osa8/*"
   ]
 }

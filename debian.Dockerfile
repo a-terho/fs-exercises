@@ -1,7 +1,7 @@
 FROM node:22-slim
 
 # npm kahdesti, koska bugi ei anna asentaa npm@latest suoraan
-RUN apt-get update && apt-get install -y git && \
+RUN apt-get update && apt-get install -y git libcurl4 && \
     npx -y playwright install-deps && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \

@@ -20,6 +20,9 @@ services:
       - '127.0.0.1:4000:4000' # apollo server
     environment:
       - NODE_ENV=development
+      # MongoDB memory serverin tuki
+      - MONGOMS_DISTRO=ubuntu-22.04
+      - MONGOMS_PLATFORM=linux
 
 volumes:
   node_modules:

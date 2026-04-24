@@ -5,6 +5,7 @@ const Books = () => {
   const { loading, error, data } = useQuery(ALL_BOOKS);
 
   if (loading) return <p>loading...</p>;
+  if (error) return <p>error while loading data</p>;
 
   // kysely nimeää allBooks -> books, jotta se voidaan destrukturoida
   const { books } = data;
