@@ -1,8 +1,10 @@
-name: Test library-backend
+name: Test osa8/library-backend
 
 on:
   push:
     branches: [main, master]
+    paths:
+      - 'osa8/**'
   workflow_dispatch:
 
 jobs:
@@ -18,13 +20,13 @@ jobs:
           node-version: 24
 
       - name: Install library-backend dependencies
-        working-directory: library-backend
+        working-directory: osa8/library-backend
         run: npm ci
 
       - name: Install test dependencies
-        working-directory: tests-chapter4
+        working-directory: osa8/tests-chapter4
         run: npm ci
 
       - name: Run tests
-        working-directory: tests-chapter4
+        working-directory: osa8/tests-chapter4
         run: npm test
