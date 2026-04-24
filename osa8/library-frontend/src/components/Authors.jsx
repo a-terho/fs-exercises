@@ -1,8 +1,41 @@
-const Authors = (props) => {
-  if (!props.show) {
-    return null
-  }
-  const authors = []
+import { useQuery, useMutation } from '@apollo/client/react';
+import { useNotify } from '../hooks';
+import { ALL_AUTHORS, SET_BIRTHYEAR } from '../queries';
+
+import BirthYearForm from './BirthYearForm';
+
+const Authors = () => {
+  const { loading, error, data } = useQuery(ALL_AUTHORS);
+  const { notify } = useNotify();
+
+  const [setBirthYear] = useMutation(SET_BIRTHYEAR, {
+    onError: (err) => {
+      console.error(err);
+      notify(`Error: ${err.message}}`);
+    },
+    // mutaatio nimeää editAuthor -> author selkeyttämiseksi
+    onCompleted: ({ author }) => {
+      // muokkaus ei onnistunut, koska kirjailijaa ei löytynyt
+      if (author === null) notify('Error: Author was not found');
+    },
+  });
+
+  if (loading) return <p>loading...</p>;
+
+  // kysely nimeää allAuthors -> authors, jotta se voidaan destrukturoida
+  const { authors } = data;
+
+  // pientä validointia client-puolella syötteen suhteen
+  const updateBirthYear = (data) => {
+    if (data.born === '') return notify('Error: No birth year was given');
+
+    setBirthYear({
+      variables: {
+        name: data.name,
+        born: Number(data.born),
+      },
+    });
+  };
 
   return (
     <div>
@@ -23,8 +56,9 @@ const Authors = (props) => {
           ))}
         </tbody>
       </table>
+      <BirthYearForm authors={authors} onSend={updateBirthYear} />
     </div>
-  )
-}
+  );
+};
 
-export default Authors
+export default Authors;

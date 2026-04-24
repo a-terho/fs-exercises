@@ -1,9 +1,13 @@
-const Books = (props) => {
-  if (!props.show) {
-    return null
-  }
+import { useQuery } from '@apollo/client/react';
+import { ALL_BOOKS } from '../queries';
 
-  const books = []
+const Books = () => {
+  const { loading, error, data } = useQuery(ALL_BOOKS);
+
+  if (loading) return <p>loading...</p>;
+
+  // kysely nimeää allBooks -> books, jotta se voidaan destrukturoida
+  const { books } = data;
 
   return (
     <div>
@@ -26,7 +30,7 @@ const Books = (props) => {
         </tbody>
       </table>
     </div>
-  )
-}
+  );
+};
 
-export default Books
+export default Books;
