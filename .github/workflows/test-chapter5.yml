@@ -1,10 +1,10 @@
 name: E2E tests (osa8/library)
 
 on:
-  # push:
-  #   branches: [main, master]
-  #   paths:
-  #     - 'osa8/**'
+  push:
+    branches: [main, master]
+    paths:
+      - 'osa8/**'
   workflow_dispatch:
 
 jobs:

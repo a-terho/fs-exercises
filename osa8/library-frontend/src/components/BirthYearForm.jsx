@@ -15,7 +15,7 @@ const BirthYearForm = ({ authors, onSend }) => {
 
   return (
     <div>
-      <h3>set birth year</h3>
+      <h3>Set birthyear</h3>
       <form onSubmit={submit}>
         <span>name</span>
         <select name="name">
@@ -26,7 +26,9 @@ const BirthYearForm = ({ authors, onSend }) => {
           ))}
         </select>
         <div>
-          born <input {...born.props}></input>
+          <label>
+            born <input {...born.props}></input>
+          </label>
         </div>
         <button type="submit">update author</button>
       </form>

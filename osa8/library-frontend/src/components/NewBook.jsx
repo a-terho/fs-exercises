@@ -1,5 +1,7 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
 import { useMutation } from '@apollo/client/react';
+
 import { useField, useNotify } from '../hooks';
 import { ADD_BOOK, ALL_BOOKS, ALL_AUTHORS } from '../queries';
 
@@ -10,6 +12,7 @@ const NewBook = () => {
   const genre = useField('text');
 
   const [genres, setGenres] = useState([]);
+  const navigate = useNavigate();
   const { notify } = useNotify();
 
   const [addBook] = useMutation(ADD_BOOK, {
@@ -17,6 +20,8 @@ const NewBook = () => {
       console.error(err);
       notify(`Error: ${err.message}`);
     },
+    // siirry suoraan kirjalistalle onnistuneen lisäyksen jälkeen
+    onCompleted: () => navigate('/books'),
     // tee kyselyt palvelimelle uudelleen mutaation myötä
     refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }],
   });

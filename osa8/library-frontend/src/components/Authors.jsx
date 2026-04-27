@@ -4,7 +4,7 @@ import { ALL_AUTHORS, SET_BIRTHYEAR } from '../queries';
 
 import BirthYearForm from './BirthYearForm';
 
-const Authors = () => {
+const Authors = ({ token }) => {
   const { loading, error, data } = useQuery(ALL_AUTHORS);
   const { notify } = useNotify();
 
@@ -57,7 +57,9 @@ const Authors = () => {
           ))}
         </tbody>
       </table>
-      <BirthYearForm authors={authors} onSend={updateBirthYear} />
+      {token === null ? null : (
+        <BirthYearForm authors={authors} onSend={updateBirthYear} />
+      )}
     </div>
   );
 };

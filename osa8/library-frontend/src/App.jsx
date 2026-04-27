@@ -42,7 +42,7 @@ const App = () => {
               <button>add book</button>
             </NavLink>
             <NavLink to="/recommendations">
-              <button>recommendations</button>
+              <button>recommend</button>
             </NavLink>
             <button onClick={logout}>logout</button>
           </>
@@ -51,7 +51,7 @@ const App = () => {
 
       <Notification />
       <Routes>
-        <Route path="/" element={<Authors />} />
+        <Route path="/" element={<Authors token={token} />} />
         <Route path="/books" element={<Books />} />
         <Route path="/login" element={<LoginForm setToken={setToken} />} />
 

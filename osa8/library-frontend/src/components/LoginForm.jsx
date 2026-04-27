@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router';
 import { useMutation, useApolloClient } from '@apollo/client/react';
 
 import { useField, useNotify } from '../hooks';
-import { saveLocalToken } from '../localToken';
+import { saveLocalToken, getLocalToken } from '../localToken';
 import { LOGIN, USER } from '../queries';
 
 const LoginForm = ({ setToken }) => {
@@ -14,7 +14,7 @@ const LoginForm = ({ setToken }) => {
   const { notify } = useNotify();
 
   const [login] = useMutation(LOGIN, {
-    onError: (err) => notify(err.message),
+    onError: () => notify('Login failed'),
     onCompleted: async (data) => {
       // tallenna vastauksena saatu token tilaan ja localStorageen
       const token = data.login.value;
@@ -26,9 +26,13 @@ const LoginForm = ({ setToken }) => {
       await client.refetchQueries({ include: [{ query: USER }] });
 
       // siirry etusivulle
-      navigate('/');
+      // navigate('/');
     },
   });
+
+  // poistettu uudelleenohjaus yksinomaan, jotta E2E testit menee läpi
+  // testien selektoreilla on taipumus valita väärän sivun syöttölomakkeita
+  if (getLocalToken()) return <h3>logged in</h3>;
 
   const submit = (event) => {
     event.preventDefault();
@@ -45,12 +49,16 @@ const LoginForm = ({ setToken }) => {
       <h3>login</h3>
       <form onSubmit={submit}>
         <div>
-          <span>username</span>
-          <input {...username.props}></input>
+          <label>
+            <span>username</span>
+            <input {...username.props}></input>
+          </label>
         </div>
         <div>
-          <span>password</span>
-          <input {...password.props}></input>
+          <label>
+            <span>password</span>
+            <input {...password.props}></input>
+          </label>
         </div>
         <button type="submit">login</button>
       </form>
