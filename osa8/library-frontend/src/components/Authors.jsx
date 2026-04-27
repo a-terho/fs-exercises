@@ -11,7 +11,7 @@ const Authors = () => {
   const [setBirthYear] = useMutation(SET_BIRTHYEAR, {
     onError: (err) => {
       console.error(err);
-      notify(`Error: ${err.message}}`);
+      notify(`Error: ${err.message}`);
     },
     // mutaatio nimeää editAuthor -> author selkeyttämiseksi
     onCompleted: ({ author }) => {

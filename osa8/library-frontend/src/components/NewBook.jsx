@@ -13,6 +13,10 @@ const NewBook = () => {
   const { notify } = useNotify();
 
   const [addBook] = useMutation(ADD_BOOK, {
+    onError: (err) => {
+      console.error(err);
+      notify(`Error: ${err.message}`);
+    },
     // tee kyselyt palvelimelle uudelleen mutaation myötä
     refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }],
   });

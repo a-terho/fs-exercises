@@ -30,7 +30,6 @@ const resolvers = {
 
   Mutation: {
     addBook: async (_, { title, author, published, genres }, context) => {
-      // console.log('context', context);
       if (!context.currentUser) {
         throw new GraphQLError('Bad authentication, please log in', {
           extensions: { code: 'UNAUTHENTICATED' },
