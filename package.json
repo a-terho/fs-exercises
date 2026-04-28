@@ -3,6 +3,7 @@
   "private": true,
   "workspaces": [
     "osa*/*",
-    "!osa8/*"
+    "!osa8/*",
+    "!osa9/*"
   ]
 }
