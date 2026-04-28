@@ -5,9 +5,16 @@ const Author = require('./models/Author');
 const Book = require('./models/Book');
 const User = require('./models/User');
 
+// tuki GraphQL subscriptioneille
+const { PubSub } = require('graphql-subscriptions');
+const pubsub = new PubSub();
+
 const resolvers = {
   Author: {
-    bookCount: async (author) => Book.countDocuments({ author: author.id }),
+    bookCount: async (author, _, context) => {
+      // dataloader kerää kaikki kertyvät kyselyt yhteen ennen kuin tekee kyselyn
+      return context.loaders.bookCount.load(author._id);
+    },
   },
 
   Query: {
@@ -64,7 +71,11 @@ const resolvers = {
         await bookAuthor.save();
 
         // korvaa lopulliseen vastaukseen kuitenkin id-viite sisällöllä
-        return newBook.populate('author');
+        const populatedBook = await newBook.populate('author');
+
+        // lähetä kirja vastauksena sekä subscibereille tapahtuma sen lisäämisestä
+        pubsub.publish('BOOK_ADDED', { bookAdded: populatedBook });
+        return populatedBook;
       } catch (err) {
         throw new GraphQLError(`Adding new book failed: ${err.message}`, {
           extensions: { code: 'BAD_USER_INPUT' },
@@ -125,6 +136,12 @@ const resolvers = {
       await Book.deleteMany({});
       await User.deleteMany({});
       return true;
+    },
+  },
+
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterableIterator('BOOK_ADDED'),
     },
   },
 };
