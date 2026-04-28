@@ -18,4 +18,5 @@ edistyminen...
 - [x] osa5
 - [x] osa6
 - [x] osa7
-- [ ] osa8
+- [x] osa8
+- [ ] osa9
