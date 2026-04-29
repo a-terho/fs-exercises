@@ -1,0 +1,10 @@
+POST http://localhost:3001/api/patients
+Content-Type: application/json
+
+ {
+  "name": "John Cleese",
+  "dateOfBirth": "1939-10-27",
+  "ssn": "271039-4579",
+  "gender": "male",
+  "occupation": "Comedian"
+ }

@@ -1,4 +1,10 @@
-import type { PatientSensitive, Patient } from '../types.ts';
+import { v1 as uuid } from 'uuid';
+
+import type {
+  PatientSensitive,
+  Patient,
+  NewPatientSensitive,
+} from '../types.ts';
 import patients from '../../data/patients.ts';
 
 const getAllSensitive = (): PatientSensitive[] => {
@@ -15,4 +21,14 @@ const getAll = (): Patient[] => {
   }));
 };
 
-export default { getAllSensitive, getAll };
+const addNew = (data: NewPatientSensitive): PatientSensitive => {
+  const newPatient: PatientSensitive = {
+    id: uuid(),
+    ...data,
+    // sisältää myös ssn (joka voitaisiin tarpeen mukaan poistaa)
+  };
+  patients.push(newPatient);
+  return newPatient;
+};
+
+export default { getAllSensitive, getAll, addNew };
