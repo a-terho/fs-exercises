@@ -1,1 +1,2 @@
-export const isNotNumber = (value: any): boolean => isNaN(Number(value));
+export const isNotNumber = (value: string | number): boolean =>
+  isNaN(Number(value));
