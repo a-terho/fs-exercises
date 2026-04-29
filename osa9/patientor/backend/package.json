@@ -7,8 +7,8 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "dev": "concurrently \"tsc --watch --preserveWatchOutput\" \"node --watch --watch-preserve-output --experimental-transform-types index.ts\"",
-    "start": "node --experimental-transform-types index.ts",
+    "dev": "concurrently \"tsc --watch --preserveWatchOutput\" \"node --watch --watch-preserve-output --experimental-transform-types src/index.ts\"",
+    "start": "node --experimental-transform-types src/index.ts",
     "tsc": "tsc",
     "lint": "eslint ."
   },

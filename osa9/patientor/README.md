@@ -1,3 +1,3 @@
 # patientor
 
-Tehtävät 9.9 - 9.10
+Tehtävät 9.9 - 9.12
