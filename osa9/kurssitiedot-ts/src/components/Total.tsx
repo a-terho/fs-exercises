@@ -4,8 +4,8 @@ interface Props {
   courseParts: CoursePart[];
 }
 
-const Total = (props: Props) => {
-  const totalExercises = props.courseParts.reduce(
+const Total = ({ courseParts }: Props) => {
+  const totalExercises = courseParts.reduce(
     (sum, part) => sum + part.exerciseCount,
     0,
   );

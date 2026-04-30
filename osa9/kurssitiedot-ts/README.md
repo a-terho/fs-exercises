@@ -1,3 +1,3 @@
 # kurssitiedot-ts
 
-Tehtävät 9.17
+Tehtävät 9.17 - 9.18
