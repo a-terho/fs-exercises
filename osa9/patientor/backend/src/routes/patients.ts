@@ -1,25 +1,55 @@
-import express, { type Response } from 'express';
+import express, {
+  type Request,
+  type Response,
+  type NextFunction,
+} from 'express';
 const router = express.Router();
 export default router;
 
-import { parsePatientData } from '../utils.ts';
-import type { Patient, ErrorResponse } from '../types.ts';
+import { z } from 'zod';
+import {
+  NewPatientSensitiveSchema,
+  type NewPatientSensitive,
+  type PatientSensitive,
+  type Patient,
+} from '../types.ts';
+
 import patientService from '../services/patientService.ts';
 
 router.get('/', (_req, res: Response<Patient[]>) => {
   return res.status(200).json(patientService.getAll());
 });
 
-router.post('/', (req, res: Response<Patient | ErrorResponse>) => {
+const parseNewPatientData = (
+  req: Request,
+  _res: Response,
+  next: NextFunction,
+) => {
   try {
-    const data = parsePatientData(req.body);
-    const newPatient = patientService.addNew(data);
-    return res.status(201).json(newPatient);
+    NewPatientSensitiveSchema.parse(req.body);
+    next();
   } catch (err: unknown) {
-    if (err instanceof Error) {
-      return res.status(400).json({ error: err.message });
-    } else {
-      return res.status(400).end();
-    }
+    next(err);
+  }
+};
+
+router.post(
+  '/',
+  parseNewPatientData,
+  (
+    req: Request<unknown, unknown, NewPatientSensitive>,
+    res: Response<PatientSensitive>,
+  ) => {
+    const patientSensitive = patientService.addNew(req.body);
+    return res.status(200).json(patientSensitive); // <- status olisi kai 201, mutta testi testaa 200 koodillla
+  },
+);
+
+// virheidenkäsittelijä
+router.use((err: unknown, _req: Request, res: Response, next: NextFunction) => {
+  if (err instanceof z.ZodError) {
+    return res.status(400).json({ error: err.issues });
+  } else {
+    return next(err);
   }
 });

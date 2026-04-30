@@ -1,3 +1,5 @@
+// jää käyttämättömäksi
+
 import { type NewPatientSensitive, Gender } from './types.ts';
 
 const isString = (value: unknown): value is string => {
