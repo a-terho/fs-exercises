@@ -1,4 +1,4 @@
-name: Health app E2E Tests
+name: Patientor API Tests
 
 on:
   push:
@@ -19,31 +19,31 @@ jobs:
         with:
           node-version: '24'
 
-      - name: Install healthapp dependencies
-        working-directory: osa9/healthapp
-        run: npm install
+      - name: Install patientor backend dependencies
+        working-directory: osa9/patientor/backend
+        run: npm install --legacy-peer-deps
 
-      - name: Lint healthapp
-        working-directory: osa9/healthapp
+      - name: Lint patientor backend
+        working-directory: osa9/patientor/backend
         run: npm run lint
 
-      - name: Start healthapp server
-        working-directory: osa9/healthapp
+      - name: Start patientor backend server
+        working-directory: osa9/patientor/backend
         run: |
           npm start &
           echo $! > server.pid
           sleep 3
 
       - name: Install test dependencies
-        working-directory: osa9/healthapp-tests
+        working-directory: osa9/patientor-api-tests
         run: npm install
 
       - name: Install Playwright browsers
-        working-directory: osa9/healthapp-tests
+        working-directory: osa9/patientor-api-tests
         run: npx playwright install --with-deps chromium
 
-      - name: Run e2e tests
-        working-directory: osa9/healthapp-tests
+      - name: Run API tests
+        working-directory: osa9/patientor-api-tests
         run: npm test
 
       - name: Upload test report
@@ -51,12 +51,12 @@ jobs:
         if: always()
         with:
           name: playwright-report
-          path: osa9/healthapp-tests/playwright-report/
+          path: osa9/patientor-api-tests/playwright-report/
           retention-days: 30
 
-      - name: Stop healthapp server
+      - name: Stop patientor backend server
         if: always()
-        working-directory: osa9/healthapp
+        working-directory: osa9/patientor/backend
         run: |
           if [ -f server.pid ]; then
             kill $(cat server.pid) || true
