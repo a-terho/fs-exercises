@@ -8,9 +8,9 @@ export default router;
 
 import { z } from 'zod';
 import {
-  NewPatientSensitiveSchema,
-  type NewPatientSensitive,
-  type PatientSensitive,
+  NewPatientSchema,
+  type NewPatient,
+  type DatabasePatient,
   type Patient,
 } from '../types.ts';
 
@@ -26,7 +26,7 @@ const parseNewPatientData = (
   next: NextFunction,
 ) => {
   try {
-    NewPatientSensitiveSchema.parse(req.body);
+    NewPatientSchema.parse(req.body);
     next();
   } catch (err: unknown) {
     next(err);
@@ -37,11 +37,25 @@ router.post(
   '/',
   parseNewPatientData,
   (
-    req: Request<unknown, unknown, NewPatientSensitive>,
-    res: Response<PatientSensitive>,
+    req: Request<unknown, unknown, NewPatient>,
+    res: Response<DatabasePatient>,
   ) => {
-    const patientSensitive = patientService.addNew(req.body);
-    return res.status(200).json(patientSensitive); // <- status olisi kai 201, mutta testi testaa 200 koodillla
+    const patientData = patientService.addNew(req.body);
+    return res.status(200).json(patientData); // <- status olisi kai 201, mutta testi testaa 200 koodillla
+  },
+);
+
+router.get(
+  '/:id',
+  (req: Request<{ id: string }>, res: Response<DatabasePatient>) => {
+    const { id } = req.params;
+    const patientData = patientService.getOneSensitive(id);
+
+    if (patientData) {
+      return res.status(200).json(patientData);
+    } else {
+      return res.status(404).end();
+    }
   },
 );
 

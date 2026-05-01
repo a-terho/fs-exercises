@@ -1,14 +1,14 @@
 import { v1 as uuid } from 'uuid';
 
-import type {
-  PatientSensitive,
-  Patient,
-  NewPatientSensitive,
-} from '../types.ts';
+import type { DatabasePatient, Patient, NewPatient } from '../types.ts';
 import patients from '../../data/patients.ts';
 
-const getAllSensitive = (): PatientSensitive[] => {
+const getAllSensitive = (): DatabasePatient[] => {
   return patients;
+};
+
+const getOneSensitive = (id: string): DatabasePatient | undefined => {
+  return patients.find((patient) => patient.id === id);
 };
 
 const getAll = (): Patient[] => {
@@ -21,14 +21,14 @@ const getAll = (): Patient[] => {
   }));
 };
 
-const addNew = (data: NewPatientSensitive): PatientSensitive => {
-  const newPatient: PatientSensitive = {
+const addNew = (data: NewPatient): DatabasePatient => {
+  const newPatient = {
     id: uuid(),
+    entries: [],
     ...data,
-    // sisältää myös ssn (joka voitaisiin tarpeen mukaan poistaa)
   };
   patients.push(newPatient);
   return newPatient;
 };
 
-export default { getAllSensitive, getAll, addNew };
+export default { getAllSensitive, getOneSensitive, getAll, addNew };

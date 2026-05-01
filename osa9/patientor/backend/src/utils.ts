@@ -1,6 +1,6 @@
 // jää käyttämättömäksi
 
-import { type NewPatientSensitive, Gender } from './types.ts';
+import { type NewPatient, Gender } from './types.ts';
 
 const isString = (value: unknown): value is string => {
   return typeof value === 'string' || value instanceof String;
@@ -35,7 +35,7 @@ const parseGender = (gender: unknown): Gender => {
   return gender;
 };
 
-export const parsePatientData = (object: unknown): NewPatientSensitive => {
+export const parsePatientData = (object: unknown): NewPatient => {
   if (
     !object ||
     typeof object !== 'object' ||
@@ -50,7 +50,7 @@ export const parsePatientData = (object: unknown): NewPatientSensitive => {
     throw new Error('parsing failed, invalid data');
   }
 
-  const patientSensitive: NewPatientSensitive = {
+  const patientSensitive = {
     name: parseString(object.name, 'name'),
     ssn: parseString(object.ssn, 'ssn'),
     occupation: parseString(object.occupation, 'occupation'),
