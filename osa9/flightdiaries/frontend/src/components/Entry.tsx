@@ -4,7 +4,7 @@ interface Props {
   entry: NonSensitiveDiaryEntry;
 }
 
-const DiaryEntry = ({ entry }: Props) => {
+const Entry = ({ entry }: Props) => {
   return (
     <div style={{ marginBottom: '1em' }}>
       <div>
@@ -16,4 +16,4 @@ const DiaryEntry = ({ entry }: Props) => {
   );
 };
 
-export default DiaryEntry;
+export default Entry;

@@ -1,4 +1,4 @@
-const Weather = {
+export const Weather = {
   Sunny: 'sunny',
   Rainy: 'rainy',
   Cloudy: 'cloudy',
@@ -6,20 +6,31 @@ const Weather = {
   Windy: 'windy',
 } as const;
 
-type Weather = (typeof Weather)[keyof typeof Weather];
+export type Weather = (typeof Weather)[keyof typeof Weather];
 
-const Visibility = {
+export const Visibility = {
   Great: 'great',
   Good: 'good',
   Ok: 'ok',
   Poor: 'poor',
 } as const;
 
-type Visibility = (typeof Visibility)[keyof typeof Visibility];
+export type Visibility = (typeof Visibility)[keyof typeof Visibility];
 
 export interface NonSensitiveDiaryEntry {
   id: number;
   weather: Weather;
   visibility: Visibility;
   date: string;
+}
+
+export interface NewDiaryEntry {
+  weather: Weather;
+  visibility: Visibility;
+  date: string;
+  comment?: string;
+}
+
+export interface DiaryEntry extends NewDiaryEntry {
+  id: number;
 }
