@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { Typography } from '@mui/material';
 import FemaleIcon from '@mui/icons-material/Female';
 import MaleIcon from '@mui/icons-material/Male';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
+import Typography from '@mui/material/Typography';
 
+import EntryFrame from './EntryFrame';
 import { type Patient } from '../../types';
 import patientService from '../../services/patients';
 
@@ -41,6 +42,23 @@ const PatientPage = () => {
       <Typography variant="body1">
         date of birth: {patientData.dateOfBirth}
       </Typography>
+      {patientData.entries && patientData.entries.length > 0 ? (
+        <>
+          <Typography
+            variant="h5"
+            sx={{ marginTop: '1em', marginBottom: '0.5em' }}
+          >
+            entries
+          </Typography>
+          {patientData.entries.map((entryData) => (
+            <EntryFrame key={entryData.id} entry={entryData} />
+          ))}
+        </>
+      ) : (
+        <Typography variant="h5" sx={{ marginTop: '1em' }}>
+          no entries yet
+        </Typography>
+      )}
     </>
   );
 };
