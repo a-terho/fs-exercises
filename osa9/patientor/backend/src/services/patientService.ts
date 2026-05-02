@@ -1,14 +1,25 @@
 import { v1 as uuid } from 'uuid';
 
-import type { DatabasePatient, Patient, NewPatient } from '../types.ts';
+import type {
+  DatabasePatient,
+  Entry,
+  NewEntry,
+  NewPatient,
+  Patient,
+} from '../types.ts';
 import patients from '../../data/patients.ts';
 
 const getAllSensitive = (): DatabasePatient[] => {
   return patients;
 };
 
-const getOneSensitive = (id: string): DatabasePatient | undefined => {
-  return patients.find((patient) => patient.id === id);
+const getOneSensitive = (id: string): DatabasePatient => {
+  const patient = patients.find((patient) => patient.id === id);
+  if (patient) {
+    return patient;
+  } else {
+    throw new Error(`patient with id ${id} not found`);
+  }
 };
 
 const getAll = (): Patient[] => {
@@ -31,4 +42,24 @@ const addNew = (data: NewPatient): DatabasePatient => {
   return newPatient;
 };
 
-export default { getAllSensitive, getOneSensitive, getAll, addNew };
+const addNewEntry = (patientId: string, data: NewEntry): Entry => {
+  const patient = patients.find((p) => p.id === patientId);
+  if (patient) {
+    const newEntry = {
+      id: uuid(),
+      ...data,
+    };
+    patient.entries.push(newEntry);
+    return newEntry;
+  } else {
+    throw new Error(`patient with id ${patientId} not found`);
+  }
+};
+
+export default {
+  getAllSensitive,
+  getOneSensitive,
+  getAll,
+  addNew,
+  addNewEntry,
+};

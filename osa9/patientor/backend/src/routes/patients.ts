@@ -1,37 +1,26 @@
 import express, {
+  type NextFunction,
   type Request,
   type Response,
-  type NextFunction,
 } from 'express';
 const router = express.Router();
 export default router;
 
-import { z } from 'zod';
 import {
-  NewPatientSchema,
-  type NewPatient,
   type DatabasePatient,
+  type Entry,
+  type NewEntry,
+  type NewPatient,
   type Patient,
+  NewEntrySchema,
 } from '../types.ts';
 
+import { parseNewPatientData } from '../middleware.ts';
 import patientService from '../services/patientService.ts';
 
 router.get('/', (_req, res: Response<Patient[]>) => {
   return res.status(200).json(patientService.getAll());
 });
-
-const parseNewPatientData = (
-  req: Request,
-  _res: Response,
-  next: NextFunction,
-) => {
-  try {
-    NewPatientSchema.parse(req.body);
-    next();
-  } catch (err: unknown) {
-    next(err);
-  }
-};
 
 router.post(
   '/',
@@ -50,20 +39,27 @@ router.get(
   (req: Request<{ id: string }>, res: Response<DatabasePatient>) => {
     const { id } = req.params;
     const patientData = patientService.getOneSensitive(id);
-
-    if (patientData) {
-      return res.status(200).json(patientData);
-    } else {
-      return res.status(404).end();
-    }
+    return res.status(200).json(patientData);
   },
 );
 
-// virheidenkäsittelijä
-router.use((err: unknown, _req: Request, res: Response, next: NextFunction) => {
-  if (err instanceof z.ZodError) {
-    return res.status(400).json({ error: err.issues });
-  } else {
-    return next(err);
-  }
-});
+router.post(
+  '/:id/entries',
+  (
+    req: Request<{ id: string }, unknown, NewEntry>,
+    res: Response<Entry>,
+    next: NextFunction,
+  ) => {
+    const { id } = req.params;
+    // siirretty parsimininen middlewaresta suoraan tähän, koska parsija palauttaa
+    // objektin, josta on poistettu ylimääräiset kentät, middleware ei muokkaa
+    // req.bodya niin parsinta pitäisi tehdä silloin kahdesti
+    try {
+      const newEntry = NewEntrySchema.parse(req.body);
+      const entryData = patientService.addNewEntry(id, newEntry);
+      return res.status(200).json(entryData);
+    } catch (err: unknown) {
+      return next(err);
+    }
+  },
+);
