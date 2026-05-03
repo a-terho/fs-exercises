@@ -1,5 +1,3 @@
-import { useState, useEffect } from 'react';
-
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 
@@ -7,8 +5,7 @@ import EntryHealthCheck from './EntryHealthCheck';
 import EntryHospital from './EntryHospital';
 import EntryOccupationalHealthcare from './EntryOccupationalHealthcare';
 
-import { Entry, Diagnosis } from '../../types';
-import diagnosesService from '../../services/diagnoses';
+import { type Entry } from '../../../types';
 
 const HospitalFrame = styled(Box)({
   margin: '0.5em',
@@ -33,31 +30,23 @@ interface Props {
 }
 
 const EntryFrame = ({ entry }: Props) => {
-  const [diagnosisList, setDiagnosisList] = useState<Diagnosis[]>([]);
-
-  useEffect(() => {
-    if (entry.diagnosisCodes) {
-      diagnosesService.getAll().then((data) => setDiagnosisList(data));
-    }
-  }, [entry.diagnosisCodes]);
-
   switch (entry.type) {
     case 'Hospital':
       return (
         <HospitalFrame>
-          <EntryHospital data={entry} diagnoses={diagnosisList} />
+          <EntryHospital data={entry} />
         </HospitalFrame>
       );
     case 'OccupationalHealthcare':
       return (
         <OccupationalFrame>
-          <EntryOccupationalHealthcare data={entry} diagnoses={diagnosisList} />
+          <EntryOccupationalHealthcare data={entry} />
         </OccupationalFrame>
       );
     case 'HealthCheck':
       return (
         <HealthCheckFrame>
-          <EntryHealthCheck data={entry} diagnoses={diagnosisList} />
+          <EntryHealthCheck data={entry} />
         </HealthCheckFrame>
       );
 

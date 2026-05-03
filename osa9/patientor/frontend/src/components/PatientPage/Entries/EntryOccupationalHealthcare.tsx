@@ -1,14 +1,13 @@
 import Typography from '@mui/material/Typography';
 
-import { type Diagnosis, type OccupationalHealthcareEntry } from '../../types';
+import { type OccupationalHealthcareEntry } from '../../../types';
 import DiagnosisList from './DiagnosisList';
 
 interface Props {
   data: OccupationalHealthcareEntry;
-  diagnoses: Diagnosis[];
 }
 
-const EntryOccupationalHealthcare = ({ data, diagnoses }: Props) => {
+const EntryOccupationalHealthcare = ({ data }: Props) => {
   return (
     <>
       <Typography>
@@ -29,7 +28,7 @@ const EntryOccupationalHealthcare = ({ data, diagnoses }: Props) => {
       <Typography color="textSecondary" sx={{ marginTop: '1em' }}>
         {data.specialist}, specialist
       </Typography>
-      <DiagnosisList codes={data.diagnosisCodes} diagnoses={diagnoses} />
+      <DiagnosisList codes={data.diagnosisCodes} />
     </>
   );
 };

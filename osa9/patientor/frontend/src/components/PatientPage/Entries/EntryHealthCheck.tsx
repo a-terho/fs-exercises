@@ -1,20 +1,11 @@
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import Typography from '@mui/material/Typography';
 
-import {
-  type Diagnosis,
-  type HealthCheckEntry,
-  HealthCheckRating,
-} from '../../types';
+import { type HealthCheckEntry, HealthCheckRating } from '../../../types';
 import DiagnosisList from './DiagnosisList';
 
-interface Props {
-  data: HealthCheckEntry;
-  diagnoses: Diagnosis[];
-}
-
-// tämä skaalaa sydämen värin punainen -> keltainen -> vihreä ratingin mukaan
-// ja kyllä, kysyin tästä apua AI-kielimallilta
+// tämä skaalaa sydämen värin punainen -> keltainen -> vihreä ratingin mukaan,
+// sallii numeroiden lisäämisenkin, ja kyllä, kysyin tästä apua AI-kielimallilta
 const ratingValues = Object.values(HealthCheckRating);
 const [min, max] = [Math.min(...ratingValues), Math.max(...ratingValues)];
 const colorMap = ratingValues.map((value) => {
@@ -23,7 +14,11 @@ const colorMap = ratingValues.map((value) => {
   return `hsl(${hue}, 100%, 50%)`;
 });
 
-const EntryHealthCheck = ({ data, diagnoses }: Props) => {
+interface Props {
+  data: HealthCheckEntry;
+}
+
+const EntryHealthCheck = ({ data }: Props) => {
   return (
     <>
       <Typography>
@@ -36,7 +31,7 @@ const EntryHealthCheck = ({ data, diagnoses }: Props) => {
       <Typography color="textSecondary" sx={{ marginTop: '1em' }}>
         {data.specialist}, specialist
       </Typography>
-      <DiagnosisList codes={data.diagnosisCodes} diagnoses={diagnoses} />
+      <DiagnosisList codes={data.diagnosisCodes} />
     </>
   );
 };

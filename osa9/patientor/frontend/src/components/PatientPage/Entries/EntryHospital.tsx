@@ -1,14 +1,13 @@
 import Typography from '@mui/material/Typography';
 
-import { type Diagnosis, type HospitalEntry } from '../../types';
+import { type HospitalEntry } from '../../../types';
 import DiagnosisList from './DiagnosisList';
 
 interface Props {
   data: HospitalEntry;
-  diagnoses: Diagnosis[];
 }
 
-const EntryHospital = ({ data, diagnoses }: Props) => {
+const EntryHospital = ({ data }: Props) => {
   return (
     <>
       <Typography
@@ -27,7 +26,7 @@ const EntryHospital = ({ data, diagnoses }: Props) => {
       <Typography color="textSecondary" sx={{ marginTop: '1em' }}>
         {data.specialist}, specialist
       </Typography>
-      <DiagnosisList codes={data.diagnosisCodes} diagnoses={diagnoses} />
+      <DiagnosisList codes={data.diagnosisCodes} />
     </>
   );
 };

@@ -2,14 +2,14 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 
-import { type Diagnosis } from '../../types';
+import { useDiagnoses } from '../../Diagnoses/useDiagnoses';
 
 interface Props {
   codes: string[] | undefined;
-  diagnoses: Diagnosis[];
 }
 
-const DiagnosisList = ({ codes, diagnoses }: Props) => {
+const DiagnosisList = ({ codes }: Props) => {
+  const diagnoses = useDiagnoses();
   if (!codes) return null;
 
   return (
