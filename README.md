@@ -19,4 +19,4 @@ edistyminen...
 - [x] osa6
 - [x] osa7
 - [x] osa8 (graphql)
-- [ ] osa9 (typescript)
+- [x] osa9 (typescript)
