@@ -18,11 +18,21 @@ services:
       - '127.0.0.1:9323:9323' # playwright report
       - '127.0.0.1:8000:8000' # esbuild serve
       - '127.0.0.1:4000:4000' # apollo server
+      - '8081:8081' # metro bundler for expo
+      - '19000-19002:19000-19002' # expo dev tools
     environment:
       - NODE_ENV=development
       # MongoDB memory serverin tuki
       - MONGOMS_DISTRO=ubuntu-22.04
       - MONGOMS_PLATFORM=linux
+      # Android SDK/expo setup
+      - ADB_SERVER_SOCKET=tcp:host.docker.internal:5037
+      # Expo Go kännykkäsoftaan yhdistäminen (localhostin ulkopuolelta) vaatii,
+      # että kontissa pyörivä metro bundler liitetään host-koneen osoitteeseen,
+      # joka ladataan repository juuressa sijaitsevasta .env tiedostosta
+      - REACT_NATIVE_PACKAGER_HOSTNAME=${HOST_LAN_IP} # hostin ip lan-verkossa
+      - BROWSER=none
+      # - EXPO_DEVTOOLS_LISTEN_ADDRESS=0.0.0.0
 
 volumes:
   node_modules:
