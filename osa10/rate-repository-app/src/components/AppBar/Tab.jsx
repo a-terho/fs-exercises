@@ -1,5 +1,4 @@
 import { Pressable, StyleSheet, Text } from 'react-native';
-
 import theme from '../../theme';
 
 const styles = StyleSheet.create({
@@ -10,7 +9,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   text: {
-    fontSize: theme.fontSizes.appBar,
+    fontSize: theme.fontSizes.heading,
     fontWeight: theme.fontWeights.bold,
     color: theme.colors.textAppBar,
   },

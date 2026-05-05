@@ -1,3 +1,3 @@
 # rate-repository-app
 
-Tehtävät 10.1 - 10.4
+Tehtävät 10.1 - 10.5

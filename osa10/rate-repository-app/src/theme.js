@@ -8,8 +8,8 @@ const theme = {
   },
   fontSizes: {
     body: 14,
+    heading: 22,
     subheading: 16,
-    appBar: 22,
   },
   fonts: {
     main: 'System',
@@ -17,6 +17,10 @@ const theme = {
   fontWeights: {
     normal: '400',
     bold: '700',
+  },
+  itemSeperator: {
+    height: 10,
+    backgroundColor: 'lightgrey',
   },
 };
 
