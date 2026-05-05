@@ -18,8 +18,9 @@ services:
       - '127.0.0.1:9323:9323' # playwright report
       - '127.0.0.1:8000:8000' # esbuild serve
       - '127.0.0.1:4000:4000' # apollo server
-      - '8081:8081' # metro bundler for expo
-      - '19000-19002:19000-19002' # expo dev tools
+      - '8081:8081' # metro bundler
+      - '19000:19000' # metro bundler
+      - '19001-19002:19001-19002' # expo dev tools
     environment:
       - NODE_ENV=development
       # MongoDB memory serverin tuki
