@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: theme.fontSizes.heading,
     fontWeight: theme.fontWeights.bold,
-    color: theme.colors.textAppBar,
+    color: theme.colors.textLight,
   },
 });
 
