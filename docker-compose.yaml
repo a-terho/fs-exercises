@@ -21,6 +21,7 @@ services:
       - '8081:8081' # metro bundler
       - '19000:19000' # metro bundler
       - '19001-19002:19001-19002' # expo dev tools
+      - '5001:5001' # rate-repository-api
     environment:
       - NODE_ENV=development
       # MongoDB memory serverin tuki
@@ -30,8 +31,8 @@ services:
       - ADB_SERVER_SOCKET=tcp:host.docker.internal:5037
       # Expo Go kännykkäsoftaan yhdistäminen (localhostin ulkopuolelta) vaatii,
       # että kontissa pyörivä metro bundler liitetään host-koneen osoitteeseen,
-      # joka ladataan repository juuressa sijaitsevasta .env tiedostosta
-      - REACT_NATIVE_PACKAGER_HOSTNAME=${HOST_LAN_IP} # hostin ip lan-verkossa
+      # joka ladataan monorepositoryn juuressa sijaitsevasta .env tiedostosta
+      - REACT_NATIVE_PACKAGER_HOSTNAME=${EXPO_PUBLIC_HOST_LAN_IP}
       - BROWSER=none
       # - EXPO_DEVTOOLS_LISTEN_ADDRESS=0.0.0.0
 

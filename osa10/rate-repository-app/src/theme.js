@@ -29,8 +29,7 @@ const theme = {
     height: 10,
     backgroundColor: 'lightgrey',
   },
+  maxWidth: 800,
 };
-
-console.log(theme.fonts);
 
 export default theme;
