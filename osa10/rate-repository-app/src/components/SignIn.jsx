@@ -1,10 +1,11 @@
-import { TextInput, Pressable, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import styled from 'styled-components/native';
 import theme from '../theme';
 
 import Text from './Text';
+import TextInput from './TextInput';
 
 const FormView = styled(View)({
   margin: 20,
