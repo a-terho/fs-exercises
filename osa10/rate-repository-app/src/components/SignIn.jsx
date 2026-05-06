@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-native';
 
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import styled from 'styled-components/native';
+import { styled } from 'styled-components/native';
 import theme from '../theme';
 
 import Text from './Text';
