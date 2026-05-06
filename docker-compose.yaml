@@ -3,7 +3,7 @@ services:
     build:
       dockerfile: debian.Dockerfile # playwright ei tue alpinea
     container_name: fs-monorepo
-    command: sh -c "npm install && tail -f /dev/null"
+    command: sh -c "tail -f /dev/null"
     volumes:
       # sisällytä lähdekoodi kontin luettavaksi
       # erota kuitenkin node_modules omaan volumeen
