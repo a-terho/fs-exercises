@@ -4,7 +4,11 @@ import theme from '../../theme';
 
 import ListItem from './ListItem';
 
-const listStyle = StyleSheet.create({ maxWidth: theme.maxWidth });
+const styles = StyleSheet.create({
+  list: {
+    maxWidth: theme.maxWidth,
+  },
+});
 
 const ItemSeparator = () => <View style={theme.itemSeperator} />;
 
@@ -19,7 +23,7 @@ const RepositoryList = () => {
   return (
     <>
       <FlatList
-        style={listStyle}
+        style={styles.list}
         data={repositoryNodes}
         ItemSeparatorComponent={ItemSeparator}
         renderItem={({ item: props }) => <ListItem {...props} />}
