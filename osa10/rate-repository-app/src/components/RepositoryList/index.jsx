@@ -26,7 +26,7 @@ const RepositoryList = () => {
         style={styles.list}
         data={repositoryNodes}
         ItemSeparatorComponent={ItemSeparator}
-        renderItem={({ item: props }) => <ListItem {...props} />}
+        renderItem={({ item: props }) => <ListItem key={props.id} {...props} />}
         keyExtractor={(item) => item.id}
       />
     </>
