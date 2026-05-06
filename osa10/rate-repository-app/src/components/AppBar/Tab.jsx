@@ -5,7 +5,7 @@ import theme from '../../theme';
 import Text from '../Text';
 
 const styles = StyleSheet.create({
-  button: {
+  navLink: {
     marginTop: 16,
     marginBottom: 16,
     marginLeft: 8,
@@ -18,13 +18,17 @@ const styles = StyleSheet.create({
   },
 });
 
-const Tab = ({ text, link }) => {
+const Tab = ({ text, linkTo, onPress }) => {
   return (
     <>
-      <Pressable style={styles.button}>
-        <Link to={link}>
+      <Pressable style={styles.navLink} onPress={onPress}>
+        {linkTo ? (
+          <Link to={linkTo}>
+            <Text style={styles.text}>{text}</Text>
+          </Link>
+        ) : (
           <Text style={styles.text}>{text}</Text>
-        </Link>
+        )}
       </Pressable>
     </>
   );

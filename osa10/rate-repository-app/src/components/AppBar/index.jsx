@@ -1,6 +1,7 @@
 import { ScrollView, StyleSheet, View } from 'react-native';
 import Constants from 'expo-constants';
 import theme from '../../theme';
+import useAuth from '../../hooks/useAuth';
 
 import Tab from './Tab';
 
@@ -13,18 +14,24 @@ const styles = StyleSheet.create({
   },
 });
 
-const tabs = [
-  { id: 0, text: 'Repository', link: '/' },
-  { id: 1, text: 'Sign in', link: '/signin' },
-];
+const tabs = [{ id: 0, text: 'Repository', linkTo: '/' }];
 
 const AppBar = () => {
+  const { user, signOut } = useAuth();
+
   return (
     <View style={styles.tabContainer}>
       <ScrollView horizontal>
         {tabs.map((tab) => (
           <Tab key={tab.id} {...tab} />
         ))}
+
+        {/* erillinen tabi viimeisenä kirjautumista varten */}
+        {user ? (
+          <Tab text="Sign out" onPress={signOut} />
+        ) : (
+          <Tab text="Sign in" linkTo="/signIn" />
+        )}
       </ScrollView>
     </View>
   );

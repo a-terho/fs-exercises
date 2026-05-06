@@ -1,4 +1,6 @@
 import { Pressable, View } from 'react-native';
+import { useNavigate } from 'react-router-native';
+
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import styled from 'styled-components/native';
@@ -6,6 +8,8 @@ import theme from '../theme';
 
 import Text from './Text';
 import TextInput from './TextInput';
+
+import useSignIn from '../hooks/useSignIn';
 
 const FormView = styled(View)({
   margin: 20,
@@ -37,13 +41,24 @@ const signInSchema = yup.object().shape({
 });
 
 const SignIn = () => {
+  const [signIn] = useSignIn();
+  const navigate = useNavigate();
+
   const initialValues = {
     username: '',
     password: '',
   };
 
-  const onSubmit = (values) => {
+  const onSubmit = async (values) => {
     console.log(values);
+    const { username, password } = values;
+    try {
+      const { data } = await signIn({ username, password });
+      navigate('/');
+      console.log(data);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -74,6 +89,7 @@ const SignIn = () => {
                 placeholder="Password"
                 secureTextEntry
                 onChangeText={form.handleChange('password')}
+                onSubmitEditing={form.handleSubmit}
                 value={form.values.password}
                 style={hasPasswordError ? errorFrame : undefined}
               />
