@@ -1,6 +1,5 @@
-import { Pressable, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { Link } from 'react-router-native';
-import theme from '../../theme';
 
 import Text from '../Text';
 
@@ -16,19 +15,11 @@ const styles = StyleSheet.create({
 const Tab = ({ text, linkTo, onPress }) => {
   return (
     <>
-      <Pressable style={styles.navLink} onPress={onPress}>
-        {linkTo ? (
-          <Link to={linkTo}>
-            <Text heading strong color="textLight">
-              {text}
-            </Text>
-          </Link>
-        ) : (
-          <Text heading strong color="textLight">
-            {text}
-          </Text>
-        )}
-      </Pressable>
+      <Link to={linkTo} style={styles.navLink} onPress={onPress}>
+        <Text heading strong color="textLight">
+          {text}
+        </Text>
+      </Link>
     </>
   );
 };

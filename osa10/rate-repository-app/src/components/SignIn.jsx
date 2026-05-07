@@ -1,64 +1,62 @@
-import { Pressable, View } from 'react-native';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-native';
 
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import theme from '../theme';
 
-import { FormView, FormInput, SubmitButton, ErrorText } from './styled';
+import { ErrorText, FormView } from './Form/styled';
+import FormInputView from './Form/InputView';
+import SubmitPressable from './Form/SubmitPressable';
 
 import useSignIn from '../hooks/useSignIn';
 
-const signInSchema = yup.object().shape({
+const validationSchema = yup.object().shape({
   username: yup.string().required('Username is required'),
   password: yup.string().required('Password is required'),
 });
 
 export const SignInContainer = ({ onSubmit }) => {
+  const [error, setError] = useState('');
+
   const initialValues = {
     username: '',
     password: '',
   };
 
+  const handleSubmit = async (...args) => {
+    const error = await onSubmit(...args);
+    if (error) setError(error.message);
+  };
+
   return (
     <Formik
       initialValues={initialValues}
-      onSubmit={onSubmit}
-      validationSchema={signInSchema}
+      onSubmit={handleSubmit}
+      validationSchema={validationSchema}
     >
       {(form) => {
         const hasUsernameError = form.errors.username && form.touched.username;
         const hasPasswordError = form.errors.password && form.touched.password;
-        const errorFrame = { borderColor: theme.colors.error };
         return (
           <FormView>
-            <View>
-              <FormInput
-                placeholder="Username"
-                onChangeText={form.handleChange('username')}
-                value={form.values.username}
-                style={hasUsernameError ? errorFrame : undefined}
-              />
-              {hasUsernameError && (
-                <ErrorText>{form.errors.username}</ErrorText>
-              )}
-            </View>
-            <View>
-              <FormInput
-                placeholder="Password"
-                secureTextEntry
-                onChangeText={form.handleChange('password')}
-                onSubmitEditing={form.handleSubmit}
-                value={form.values.password}
-                style={hasPasswordError ? errorFrame : undefined}
-              />
-              {hasPasswordError && (
-                <ErrorText>{form.errors.password}</ErrorText>
-              )}
-            </View>
-            <Pressable onPress={form.handleSubmit}>
-              <SubmitButton>Submit</SubmitButton>
-            </Pressable>
+            <FormInputView
+              placeholder="Username"
+              onChangeText={form.handleChange('username')}
+              value={form.values.username}
+              hasError={hasUsernameError}
+              errorText={form.errors.username}
+            />
+            <FormInputView
+              placeholder="Password"
+              secureTextEntry
+              onChangeText={form.handleChange('password')}
+              onSubmitEditing={form.handleSubmit}
+              value={form.values.password}
+              hasError={hasPasswordError}
+              errorText={form.errors.password}
+            />
+            <SubmitPressable text="Submit" onPress={form.handleSubmit} />
+            {error ? <ErrorText>{error}</ErrorText> : null}
           </FormView>
         );
       }}
@@ -71,14 +69,12 @@ const SignIn = () => {
   const navigate = useNavigate();
 
   const onSubmit = async (values) => {
-    console.log(values);
     const { username, password } = values;
     try {
-      const { data } = await signIn({ username, password });
+      await signIn({ username, password });
       navigate('/');
-      console.log(data);
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      return error;
     }
   };
 

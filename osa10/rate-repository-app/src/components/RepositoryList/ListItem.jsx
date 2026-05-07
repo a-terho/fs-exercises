@@ -2,7 +2,7 @@ import { Image, View, Pressable, StyleSheet } from 'react-native';
 import * as Linking from 'expo-linking';
 
 import Text from '../Text';
-import { SubmitButton } from '../styled';
+import SubmitPressable from '../Form/SubmitPressable';
 
 import Tag from './Tag';
 import Stat from './Stat';
@@ -63,11 +63,9 @@ const ListItem = ({ onPress, data }) => {
         <Stat number={data.reviewCount} label="Reviews" />
         <Stat number={data.ratingAverage} label="Rating" />
       </View>
-      {data.url && (
-        <Pressable onPress={openURL}>
-          <SubmitButton>Open in GitHub</SubmitButton>
-        </Pressable>
-      )}
+      {data.url ? (
+        <SubmitPressable text="Open in GitHub" onPress={openURL} />
+      ) : null}
     </View>
   );
 };

@@ -12,10 +12,11 @@ const RepositoryPage = () => {
   const params = useParams();
 
   const { loading, error, data } = useQuery(GET_REPOSITORY, {
+    fetchPolicy: 'cache-and-network',
     variables: { id: params.id },
   });
 
-  if (loading || error) return null;
+  if (loading || error || !data) return null;
 
   const { reviews, ...repo } = data.repository;
 

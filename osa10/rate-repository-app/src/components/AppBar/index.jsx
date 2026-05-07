@@ -13,21 +13,18 @@ const styles = StyleSheet.create({
   },
 });
 
-const tabs = [{ id: 0, text: 'Repository', linkTo: '/' }];
-
 const AppBar = () => {
   const { user, signOut } = useAuth();
 
   return (
     <View style={styles.tabContainer}>
       <ScrollView horizontal>
-        {tabs.map((tab) => (
-          <Tab key={tab.id} {...tab} />
-        ))}
-
-        {/* erillinen tabi viimeisenä kirjautumista varten */}
+        <Tab text="Repository" linkTo="/" />
         {user ? (
-          <Tab text="Sign out" onPress={signOut} />
+          <>
+            <Tab text="Create a review" linkTo="/addreview" />
+            <Tab text="Sign out" linkTo="/" onPress={signOut} />
+          </>
         ) : (
           <Tab text="Sign in" linkTo="/signIn" />
         )}

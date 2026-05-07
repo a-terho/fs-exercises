@@ -6,7 +6,6 @@ import ItemSeparator from '../ItemSeparator';
 import ListItem from './ListItem';
 
 export const RepositoryListContainer = ({ repositories }) => {
-  // Get the nodes from the edges array
   const repositoryNodes = repositories
     ? repositories.edges.map((edge) => edge.node)
     : [];
