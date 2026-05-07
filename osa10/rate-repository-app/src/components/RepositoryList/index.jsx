@@ -1,15 +1,9 @@
-import { FlatList, View, StyleSheet } from 'react-native';
+import { FlatList, View } from 'react-native';
 import { useNavigate } from 'react-router-native';
 import useRepositories from '../../hooks/useRepositories';
-import theme from '../../theme';
 
+import ItemSeparator from '../ItemSeparator';
 import ListItem from './ListItem';
-
-const styles = StyleSheet.create({
-  list: { maxWidth: theme.maxWidth },
-});
-
-const ItemSeparator = () => <View style={theme.itemSeperator} />;
 
 export const RepositoryListContainer = ({ repositories }) => {
   // Get the nodes from the edges array
@@ -21,21 +15,21 @@ export const RepositoryListContainer = ({ repositories }) => {
   const navigateToRepo = (id) => navigate(`/repos/${id}`);
 
   return (
-    <>
+    // flexShrink = sovita käytettävissä olevaan tilaan (eli näyttöön)
+    <View style={{ flexShrink: 1 }}>
       <FlatList
-        style={styles.list}
         data={repositoryNodes}
         ItemSeparatorComponent={ItemSeparator}
         renderItem={({ item: repo }) => (
           <ListItem
             key={repo.id}
             onPress={() => navigateToRepo(repo.id)}
-            {...repo}
+            data={repo}
           />
         )}
-        keyExtractor={(item) => item.id}
+        keyExtractor={({ id }) => id}
       />
-    </>
+    </View>
   );
 };
 

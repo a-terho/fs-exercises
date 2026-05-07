@@ -11,11 +11,6 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     marginRight: 8,
   },
-  text: {
-    fontSize: theme.fontSizes.heading,
-    fontWeight: theme.fontWeights.bold,
-    color: theme.colors.textLight,
-  },
 });
 
 const Tab = ({ text, linkTo, onPress }) => {
@@ -24,10 +19,14 @@ const Tab = ({ text, linkTo, onPress }) => {
       <Pressable style={styles.navLink} onPress={onPress}>
         {linkTo ? (
           <Link to={linkTo}>
-            <Text style={styles.text}>{text}</Text>
+            <Text heading strong color="textLight">
+              {text}
+            </Text>
           </Link>
         ) : (
-          <Text style={styles.text}>{text}</Text>
+          <Text heading strong color="textLight">
+            {text}
+          </Text>
         )}
       </Pressable>
     </>

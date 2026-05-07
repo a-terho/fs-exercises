@@ -13,6 +13,7 @@ const theme = {
     body: 14,
     heading: 22,
     subheading: 16,
+    icon: 18,
   },
   fonts: {
     main: Platform.select({
@@ -25,7 +26,7 @@ const theme = {
     normal: '400',
     bold: '700',
   },
-  itemSeperator: {
+  itemSeparator: {
     height: 10,
     backgroundColor: 'lightgrey',
   },

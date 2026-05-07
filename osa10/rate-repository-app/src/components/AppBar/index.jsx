@@ -8,7 +8,6 @@ import Tab from './Tab';
 const styles = StyleSheet.create({
   tabContainer: {
     paddingTop: Constants.statusBarHeight,
-    maxWidth: theme.maxWidth,
     backgroundColor: theme.colors.bgAppBar,
     flexDirection: 'row',
   },
