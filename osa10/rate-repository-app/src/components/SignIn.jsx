@@ -3,37 +3,11 @@ import { useNavigate } from 'react-router-native';
 
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import { styled } from 'styled-components/native';
 import theme from '../theme';
 
-import Text from './Text';
-import TextInput from './TextInput';
+import { FormView, FormInput, SubmitButton, ErrorText } from './styled';
 
 import useSignIn from '../hooks/useSignIn';
-
-const FormView = styled(View)({
-  margin: 20,
-  gap: 15,
-});
-
-const FormInput = styled(TextInput)({
-  padding: 10,
-  border: 2,
-  borderRadius: 5,
-});
-
-const FormButton = styled(Text)({
-  backgroundColor: theme.colors.primary,
-  color: theme.colors.textLight,
-  textAlign: 'center',
-  padding: 10,
-  borderRadius: 5,
-});
-
-const ErrorText = styled(Text)({
-  color: theme.colors.error,
-  margin: 5,
-});
 
 const signInSchema = yup.object().shape({
   username: yup.string().required('Username is required'),
@@ -83,7 +57,7 @@ export const SignInContainer = ({ onSubmit }) => {
               )}
             </View>
             <Pressable onPress={form.handleSubmit}>
-              <FormButton>Submit</FormButton>
+              <SubmitButton>Submit</SubmitButton>
             </Pressable>
           </FormView>
         );

@@ -1,6 +1,12 @@
-import { Image, View, StyleSheet } from 'react-native';
+import { Image, View, Pressable, StyleSheet } from 'react-native';
+import { useParams } from 'react-router-native';
+import * as Linking from 'expo-linking';
+
+import { useQuery } from '@apollo/client/react';
+import { GET_REPOSITORY } from '../../graphql/queries';
 
 import Text from '../Text';
+import { SubmitButton } from '../styled';
 
 import Tag from './Tag';
 import Stat from './Stat';
@@ -28,43 +34,61 @@ const styles = StyleSheet.create({
   },
   statContainer: {
     marginTop: 10,
+    marginBottom: 10,
     flexDirection: 'row',
     gap: 10,
   },
 });
 
-const RepositoryItem = ({
-  fullName,
-  description,
-  language,
-  stargazersCount,
-  forksCount,
-  reviewCount,
-  ratingAverage,
-  ownerAvatarUrl,
-}) => {
+const RepositoryItem = ({ onPress, ...props }) => {
+  const params = useParams();
+
+  const { data } = useQuery(GET_REPOSITORY, {
+    variables: { id: params.id },
+  });
+
+  // renderöityvän datan lähde valitaan url perusteella
+  let repo = {};
+  if (params.id && data) {
+    // käytetään queryn palauttamaa dataa, vastauksessa on
+    // __typename kenttä, joka poistetaan destrukturoimalla
+    const { __typename, ...rest } = data.repository;
+    repo = rest;
+  } else {
+    // käytetään komponentin propsien kautta välitettyä dataa
+    repo = props;
+  }
+
+  const openGitHub = () => Linking.openURL(repo.url);
+
   return (
     <View testID="repositoryItem" style={styles.itemContainer}>
-      <View style={styles.headerContainer}>
-        <Image style={styles.icon} source={{ uri: ownerAvatarUrl }} />
+      <Pressable style={styles.headerContainer} onPress={onPress}>
+        <Image style={styles.icon} source={{ uri: repo.ownerAvatarUrl }} />
         <View style={styles.headerTextContainer}>
           <Text strong subheading>
-            {fullName}
+            {repo.fullName}
           </Text>
           <Text subheading color="textSecondary">
-            {description}
+            {repo.description}
           </Text>
           <View style={styles.tagContainer}>
-            <Tag text={language} />
+            <Tag text={repo.language} />
           </View>
         </View>
-      </View>
+      </Pressable>
       <View style={styles.statContainer}>
-        <Stat number={stargazersCount} label="Stars" />
-        <Stat number={forksCount} label="Forks" />
-        <Stat number={reviewCount} label="Reviews" />
-        <Stat number={ratingAverage} label="Rating" />
+        <Stat number={repo.stargazersCount} label="Stars" />
+        <Stat number={repo.forksCount} label="Forks" />
+        <Stat number={repo.reviewCount} label="Reviews" />
+        <Stat number={repo.ratingAverage} label="Rating" />
       </View>
+      {/* vain yksilöidyn kyselyn yhteydessä palautuu url kenttä */}
+      {repo.url && (
+        <Pressable onPress={openGitHub}>
+          <SubmitButton>Open in GitHub</SubmitButton>
+        </Pressable>
+      )}
     </View>
   );
 };
