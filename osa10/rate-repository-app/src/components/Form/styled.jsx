@@ -2,8 +2,8 @@ import { styled } from 'styled-components/native';
 import theme from '../../theme';
 
 import { View } from 'react-native';
-import Text from '../Text';
-import TextInput from '../TextInput';
+import Text from '../shared/Text';
+import TextInput from '../shared/TextInput';
 
 export const FormView = styled(View)({
   margin: 20,

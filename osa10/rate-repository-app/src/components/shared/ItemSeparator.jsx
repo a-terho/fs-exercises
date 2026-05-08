@@ -1,5 +1,5 @@
 import { View } from 'react-native';
-import theme from '../theme';
+import theme from '../../theme';
 
 const ItemSeparator = () => <View style={theme.itemSeparator} />;
 

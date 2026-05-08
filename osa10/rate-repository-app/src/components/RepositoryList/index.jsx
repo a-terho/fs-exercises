@@ -6,10 +6,10 @@ import { useDebouncedCallback } from 'use-debounce';
 
 import theme from '../../theme';
 
-import ItemSeparator from '../ItemSeparator';
-import ListItem from './ListItem';
-import TextInput from '../TextInput';
-import Text from '../Text';
+import ItemSeparator from '../shared/ItemSeparator';
+import RepositoryItem from '../RepositoryItem';
+import TextInput from '../shared/TextInput';
+import Text from '../shared/Text';
 
 import useRepositories from '../../hooks/useRepositories';
 
@@ -57,7 +57,7 @@ export const RepositoryListContainer = ({ repositories, query }) => {
   );
 
   const debouncedFilter = useDebouncedCallback(
-    (value) => filterRepositories(value),
+    (value) => updateQueryVariables({ searchKeyword: value }),
     500,
   );
 
@@ -70,10 +70,6 @@ export const RepositoryListContainer = ({ repositories, query }) => {
   const changeSelectionPrinciple = (value) => {
     setSelectionPrinciple(value);
     updateQueryVariables(JSON.parse(value));
-  };
-
-  const filterRepositories = (value) => {
-    updateQueryVariables({ searchKeyword: value });
   };
 
   const repositoryNodes = repositories
@@ -114,7 +110,7 @@ export const RepositoryListContainer = ({ repositories, query }) => {
         }
         data={repositoryNodes}
         renderItem={({ item: repository }) => (
-          <ListItem
+          <RepositoryItem
             key={repository.id}
             onPress={() => navigateToRepo(repository.id)}
             data={repository}

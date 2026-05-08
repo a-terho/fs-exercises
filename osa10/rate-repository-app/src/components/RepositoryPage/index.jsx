@@ -1,8 +1,8 @@
 import { FlatList, View } from 'react-native';
 import { useParams } from 'react-router-native';
 
-import ItemSeparator from '../ItemSeparator';
-import RepositoryListItem from '../RepositoryList/ListItem';
+import ItemSeparator from '../shared/ItemSeparator';
+import RepositoryItem from '../RepositoryItem';
 import ReviewItem from '../ReviewItem';
 
 import useRepository from '../../hooks/useRepository';
@@ -18,7 +18,7 @@ const RepositoryPage = () => {
     // flexShrink = sovita käytettävissä olevaan tilaan (eli näyttöön)
     <View style={{ flexShrink: 1 }}>
       <FlatList
-        ListHeaderComponent={<RepositoryListItem data={repository} />}
+        ListHeaderComponent={<RepositoryItem data={repository} />}
         data={reviews}
         ItemSeparatorComponent={ItemSeparator}
         renderItem={({ item: review }) => {

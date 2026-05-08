@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-native';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 
-import ButtonPressable from './ButtonPressable';
+import ButtonPressable from './shared/ButtonPressable';
 import { ErrorText, FormView } from './Form/styled';
 import FormInputView from './Form/InputView';
 

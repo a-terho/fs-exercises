@@ -1,10 +1,10 @@
 import { Alert, FlatList, StyleSheet, View } from 'react-native';
 import { useNavigate } from 'react-router-native';
 
-import ButtonPressable from './ButtonPressable';
-import ItemSeparator from './ItemSeparator';
+import ButtonPressable from './shared/ButtonPressable';
+import ItemSeparator from './shared/ItemSeparator';
 import ReviewItem from './ReviewItem';
-import Text from './Text';
+import Text from './shared/Text';
 
 import useMyReviews from '../hooks/useMyReviews';
 

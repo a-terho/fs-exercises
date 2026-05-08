@@ -1,11 +1,11 @@
 import { Image, View, Pressable, StyleSheet } from 'react-native';
 import * as Linking from 'expo-linking';
 
-import ButtonPressable from '../ButtonPressable';
-import Text from '../Text';
+import ButtonPressable from './shared/ButtonPressable';
+import Text from './shared/Text';
 
-import Tag from './Tag';
-import Stat from './Stat';
+import Tag from './RepositoryList/Tag';
+import Stat from './RepositoryList/Stat';
 
 const styles = StyleSheet.create({
   icon: {
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const ListItem = ({ onPress, data }) => {
+const RepositoryItem = ({ onPress, data }) => {
   const openURL = () => Linking.openURL(data.url);
 
   if (!data) return null;
@@ -70,4 +70,4 @@ const ListItem = ({ onPress, data }) => {
   );
 };
 
-export default ListItem;
+export default RepositoryItem;
