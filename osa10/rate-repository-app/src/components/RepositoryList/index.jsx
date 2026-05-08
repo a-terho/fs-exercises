@@ -1,10 +1,23 @@
 import { useState } from 'react';
-import { FlatList, View } from 'react-native';
+import { FlatList, StyleSheet, View } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useNavigate } from 'react-router-native';
+import { useDebouncedCallback } from 'use-debounce';
+
+import theme from '../../theme';
 
 import ItemSeparator from '../ItemSeparator';
 import ListItem from './ListItem';
+import TextInput from '../TextInput';
+
+const styles = StyleSheet.create({
+  filter: {
+    backgroundColor: theme.colors.bgFilter,
+    padding: 12,
+    margin: 5,
+    borderRadius: 5,
+  },
+});
 
 import useRepositories from '../../hooks/useRepositories';
 
@@ -33,13 +46,30 @@ const selectionPrinciples = [
 ];
 
 export const RepositoryListContainer = ({ repositories, refetch }) => {
+  const [variables, setVariables] = useState({});
+  const [filter, setFilter] = useState('');
+
   const [selectionPriciple, setSelectionPrinciple] = useState(
     selectionPrinciples[0].value,
   );
+  const debouncedFilter = useDebouncedCallback(
+    (value) => filterRepositories(value),
+    500,
+  );
+
+  const updateQueryVariables = (object) => {
+    const newVariables = { ...variables, ...object };
+    setVariables(newVariables);
+    refetch(newVariables); // tee kysely uudelleen päivitetyillä muuttujilla
+  };
 
   const changeSelectionPrinciple = (value) => {
     setSelectionPrinciple(value);
-    refetch(value); // päivitä kyselyn tiedot uudelleen palvelimelta
+    updateQueryVariables(value);
+  };
+
+  const filterRepositories = (value) => {
+    updateQueryVariables({ searchKeyword: value });
   };
 
   const repositoryNodes = repositories
@@ -54,14 +84,25 @@ export const RepositoryListContainer = ({ repositories, refetch }) => {
     <View style={{ flexShrink: 1 }}>
       <FlatList
         ListHeaderComponent={
-          <Picker
-            selectedValue={selectionPriciple}
-            onValueChange={changeSelectionPrinciple}
-          >
-            {selectionPrinciples.map((principle) => (
-              <Picker.Item label={principle.label} value={principle.value} />
-            ))}
-          </Picker>
+          <>
+            <TextInput
+              placeholder="Filter repositories..."
+              style={styles.filter}
+              onChangeText={(text) => {
+                setFilter(text);
+                debouncedFilter(text);
+              }}
+              value={filter}
+            />
+            <Picker
+              selectedValue={selectionPriciple}
+              onValueChange={changeSelectionPrinciple}
+            >
+              {selectionPrinciples.map((principle) => (
+                <Picker.Item label={principle.label} value={principle.value} />
+              ))}
+            </Picker>
+          </>
         }
         data={repositoryNodes}
         ItemSeparatorComponent={ItemSeparator}

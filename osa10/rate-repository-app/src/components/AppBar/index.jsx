@@ -19,7 +19,7 @@ const AppBar = () => {
   return (
     <View style={styles.tabContainer}>
       <ScrollView horizontal>
-        <Tab text="Repository" linkTo="/" />
+        <Tab text="Repositories" linkTo="/" />
         {user ? (
           <>
             <Tab text="Create a review" linkTo="/addreview" />

@@ -8,6 +8,7 @@ const theme = {
     error: '#d73a4a',
     primary: '#0366d6',
     bgAppBar: '#24292e',
+    bgFilter: 'lightgrey',
   },
   fontSizes: {
     body: 14,

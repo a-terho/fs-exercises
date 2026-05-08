@@ -29,6 +29,7 @@
     "react-router-native": "^6.30.3",
     "react-test-renderer": "19.2.5",
     "styled-components": "^6.4.1",
+    "use-debounce": "^10.1.1",
     "yup": "^1.7.1"
   },
   "private": true,

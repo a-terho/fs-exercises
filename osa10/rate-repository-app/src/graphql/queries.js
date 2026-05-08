@@ -5,8 +5,13 @@ export const GET_REPOSITORIES = gql`
   query GetRepositories(
     $orderDirection: OrderDirection
     $orderBy: AllRepositoriesOrderBy
+    $searchKeyword: String
   ) {
-    repositories(orderDirection: $orderDirection, orderBy: $orderBy) {
+    repositories(
+      orderDirection: $orderDirection
+      orderBy: $orderBy
+      searchKeyword: $searchKeyword
+    ) {
       totalCount
       edges {
         node {
