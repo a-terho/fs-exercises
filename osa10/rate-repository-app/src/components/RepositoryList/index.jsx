@@ -1,11 +1,47 @@
+import { useState } from 'react';
 import { FlatList, View } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import { useNavigate } from 'react-router-native';
-import useRepositories from '../../hooks/useRepositories';
 
 import ItemSeparator from '../ItemSeparator';
 import ListItem from './ListItem';
 
-export const RepositoryListContainer = ({ repositories }) => {
+import useRepositories from '../../hooks/useRepositories';
+
+const selectionPrinciples = [
+  {
+    label: 'Latest repositories',
+    value: {
+      orderBy: 'CREATED_AT',
+      orderDirection: 'DESC',
+    },
+  },
+  {
+    label: 'Highest rated repositories',
+    value: {
+      orderBy: 'RATING_AVERAGE',
+      orderDirection: 'DESC',
+    },
+  },
+  {
+    label: 'Lowest rated repositories',
+    value: {
+      orderBy: 'RATING_AVERAGE',
+      orderDirection: 'ASC',
+    },
+  },
+];
+
+export const RepositoryListContainer = ({ repositories, refetch }) => {
+  const [selectionPriciple, setSelectionPrinciple] = useState(
+    selectionPrinciples[0].value,
+  );
+
+  const changeSelectionPrinciple = (value) => {
+    setSelectionPrinciple(value);
+    refetch(value); // päivitä kyselyn tiedot uudelleen palvelimelta
+  };
+
   const repositoryNodes = repositories
     ? repositories.edges.map((edge) => edge.node)
     : [];
@@ -17,6 +53,16 @@ export const RepositoryListContainer = ({ repositories }) => {
     // flexShrink = sovita käytettävissä olevaan tilaan (eli näyttöön)
     <View style={{ flexShrink: 1 }}>
       <FlatList
+        ListHeaderComponent={
+          <Picker
+            selectedValue={selectionPriciple}
+            onValueChange={changeSelectionPrinciple}
+          >
+            {selectionPrinciples.map((principle) => (
+              <Picker.Item label={principle.label} value={principle.value} />
+            ))}
+          </Picker>
+        }
         data={repositoryNodes}
         ItemSeparatorComponent={ItemSeparator}
         renderItem={({ item: repo }) => (
@@ -33,9 +79,11 @@ export const RepositoryListContainer = ({ repositories }) => {
 };
 
 const RepositoryList = () => {
-  const { repositories } = useRepositories();
+  const { repositories, refetch } = useRepositories();
 
-  return <RepositoryListContainer repositories={repositories} />;
+  return (
+    <RepositoryListContainer repositories={repositories} refetch={refetch} />
+  );
 };
 
 export default RepositoryList;

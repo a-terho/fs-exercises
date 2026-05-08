@@ -2,8 +2,11 @@ import { gql } from '@apollo/client';
 import { REVIEW_DATA, REPO_LIST_DATA } from './fragments';
 
 export const GET_REPOSITORIES = gql`
-  query {
-    repositories {
+  query GetRepositories(
+    $orderDirection: OrderDirection
+    $orderBy: AllRepositoriesOrderBy
+  ) {
+    repositories(orderDirection: $orderDirection, orderBy: $orderBy) {
       totalCount
       edges {
         node {
