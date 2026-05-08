@@ -4,9 +4,9 @@ import { useNavigate } from 'react-router-native';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 
+import ButtonPressable from './ButtonPressable';
 import { ErrorText, FormView } from './Form/styled';
 import FormInputView from './Form/InputView';
-import SubmitPressable from './Form/SubmitPressable';
 
 import useAddReview from '../hooks/useAddReview';
 
@@ -39,7 +39,6 @@ const AddReview = () => {
   const onSubmit = async (values) => {
     try {
       const id = await addReview(values);
-      console.log(id);
       navigateToRepo(id);
     } catch (error) {
       setError(error.message);
@@ -88,8 +87,9 @@ const AddReview = () => {
               value={form.values.text}
               multiline
             />
-            <SubmitPressable
+            <ButtonPressable
               text="Create a review"
+              type="submit"
               onPress={form.handleSubmit}
             />
             {error ? <ErrorText>{error}</ErrorText> : null}

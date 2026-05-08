@@ -7,6 +7,7 @@ const theme = {
     textLight: 'white',
     error: '#d73a4a',
     primary: '#0366d6',
+    secondary: '#498ddb',
     bgAppBar: '#24292e',
     bgFilter: 'lightgrey',
   },

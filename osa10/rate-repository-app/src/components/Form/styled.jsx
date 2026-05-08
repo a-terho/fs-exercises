@@ -17,15 +17,6 @@ export const FormTextInput = styled(TextInput)((props) => ({
   borderColor: props.error ? theme.colors.error : undefined,
 }));
 
-export const SubmitButtonText = styled(Text)({
-  backgroundColor: theme.colors.primary,
-  color: theme.colors.textLight,
-  fontWeight: theme.fontWeights.bold,
-  textAlign: 'center',
-  padding: 15,
-  borderRadius: 5,
-});
-
 export const ErrorText = styled(Text)({
   color: theme.colors.error,
   margin: 5,

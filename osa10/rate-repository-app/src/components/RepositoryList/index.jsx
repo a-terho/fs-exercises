@@ -9,6 +9,7 @@ import theme from '../../theme';
 import ItemSeparator from '../ItemSeparator';
 import ListItem from './ListItem';
 import TextInput from '../TextInput';
+import Text from '../Text';
 
 const styles = StyleSheet.create({
   filter: {
@@ -45,13 +46,16 @@ const selectionPrinciples = [
   },
 ];
 
-export const RepositoryListContainer = ({ repositories, refetch }) => {
+export const RepositoryListContainer = ({ repositories, query }) => {
   const [variables, setVariables] = useState({});
   const [filter, setFilter] = useState('');
 
+  // tallennetaan merkkijonona, koska selain ei tykkää objektiarvoista
+  // valintakentässä, tämä on toki vähän hack-fiksaus tähän ongelmaan
   const [selectionPriciple, setSelectionPrinciple] = useState(
-    selectionPrinciples[0].value,
+    JSON.stringify(selectionPrinciples[0].value),
   );
+
   const debouncedFilter = useDebouncedCallback(
     (value) => filterRepositories(value),
     500,
@@ -60,12 +64,12 @@ export const RepositoryListContainer = ({ repositories, refetch }) => {
   const updateQueryVariables = (object) => {
     const newVariables = { ...variables, ...object };
     setVariables(newVariables);
-    refetch(newVariables); // tee kysely uudelleen päivitetyillä muuttujilla
+    query.refetch(newVariables); // tee kysely uudelleen päivitetyillä muuttujilla
   };
 
   const changeSelectionPrinciple = (value) => {
     setSelectionPrinciple(value);
-    updateQueryVariables(value);
+    updateQueryVariables(JSON.parse(value));
   };
 
   const filterRepositories = (value) => {
@@ -99,13 +103,15 @@ export const RepositoryListContainer = ({ repositories, refetch }) => {
               onValueChange={changeSelectionPrinciple}
             >
               {selectionPrinciples.map((principle) => (
-                <Picker.Item label={principle.label} value={principle.value} />
+                <Picker.Item
+                  label={principle.label}
+                  value={JSON.stringify(principle.value)}
+                />
               ))}
             </Picker>
           </>
         }
         data={repositoryNodes}
-        ItemSeparatorComponent={ItemSeparator}
         renderItem={({ item: repo }) => (
           <ListItem
             key={repo.id}
@@ -113,6 +119,12 @@ export const RepositoryListContainer = ({ repositories, refetch }) => {
             data={repo}
           />
         )}
+        ListEmptyComponent={
+          !query.loading && repositoryNodes.length == 0 ? (
+            <Text style={{ margin: 5 }}>No repositories found</Text>
+          ) : null
+        }
+        ItemSeparatorComponent={ItemSeparator}
         keyExtractor={({ id }) => id}
       />
     </View>
@@ -120,10 +132,13 @@ export const RepositoryListContainer = ({ repositories, refetch }) => {
 };
 
 const RepositoryList = () => {
-  const { repositories, refetch } = useRepositories();
+  const { repositories, refetch, loading } = useRepositories();
 
   return (
-    <RepositoryListContainer repositories={repositories} refetch={refetch} />
+    <RepositoryListContainer
+      repositories={repositories}
+      query={{ refetch, loading }}
+    />
   );
 };
 

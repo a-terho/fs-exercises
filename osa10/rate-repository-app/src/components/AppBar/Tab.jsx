@@ -14,13 +14,11 @@ const styles = StyleSheet.create({
 
 const Tab = ({ text, linkTo, onPress }) => {
   return (
-    <>
-      <Link to={linkTo} style={styles.navLink} onPress={onPress}>
-        <Text heading strong color="textLight">
-          {text}
-        </Text>
-      </Link>
-    </>
+    <Link to={linkTo} style={styles.navLink} onPress={onPress}>
+      <Text heading strong color="textLight">
+        {text}
+      </Text>
+    </Link>
   );
 };
 

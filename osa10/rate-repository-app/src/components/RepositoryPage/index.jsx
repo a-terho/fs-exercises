@@ -6,7 +6,7 @@ import { GET_REPOSITORY } from '../../graphql/queries';
 
 import ItemSeparator from '../ItemSeparator';
 import RepositoryListItem from '../RepositoryList/ListItem';
-import ReviewItem from './ReviewItem';
+import ReviewItem from '../ReviewItem';
 
 const RepositoryPage = () => {
   const params = useParams();
@@ -35,9 +35,10 @@ const RepositoryPage = () => {
         ListHeaderComponent={<RepositoryListItem data={repo} />}
         data={userReviews}
         ItemSeparatorComponent={ItemSeparator}
-        renderItem={({ item: review }) => (
-          <ReviewItem key={review.id} data={review} />
-        )}
+        renderItem={({ item: review }) => {
+          const title = review.user.username;
+          return <ReviewItem key={review.id} title={title} data={review} />;
+        }}
         keyExtractor={({ id }) => id}
       />
     </View>

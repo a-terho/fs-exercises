@@ -4,9 +4,9 @@ import { useNavigate } from 'react-router-native';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 
+import ButtonPressable from './ButtonPressable';
 import { ErrorText, FormView } from './Form/styled';
 import FormInputView from './Form/InputView';
-import SubmitPressable from './Form/SubmitPressable';
 
 import useSignIn from '../hooks/useSignIn';
 
@@ -55,7 +55,11 @@ export const SignInContainer = ({ onSubmit }) => {
               hasError={hasPasswordError}
               errorText={form.errors.password}
             />
-            <SubmitPressable text="Submit" onPress={form.handleSubmit} />
+            <ButtonPressable
+              text="Submit"
+              type="submit"
+              onPress={form.handleSubmit}
+            />
             {error ? <ErrorText>{error}</ErrorText> : null}
           </FormView>
         );

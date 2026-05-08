@@ -17,7 +17,15 @@ const useAuth = () => {
   const signOut = async () => {
     // poista kirjautumistoken storagesta ja nollaa Apollo Client local cache
     await authStorage.removeAccessToken();
-    apolloClient.resetStore();
+    try {
+      await apolloClient.resetStore();
+    } catch (err) {
+      // resetStore tykkää heittää AbortErroria vaikka muutoin kaikki nollantuu
+      // joku query on ilmeisesti monesti kesken, en vaan löytänyt että mikä
+      if (err.name !== 'AbortError') {
+        console.log('error', err);
+      }
+    }
   };
 
   return {

@@ -4,9 +4,9 @@ import { useNavigate } from 'react-router-native';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 
+import ButtonPressable from './ButtonPressable';
 import { ErrorText, FormView } from './Form/styled';
 import FormInputView from './Form/InputView';
-import SubmitPressable from './Form/SubmitPressable';
 
 import useSignIn from '../hooks/useSignIn';
 import useSignUp from '../hooks/useSignUp';
@@ -87,8 +87,9 @@ const SignUp = () => {
               hasError={hasConfirmError}
               errorText={form.errors.confirm}
             />
-            <SubmitPressable
+            <ButtonPressable
               text="Create account and sign in"
+              type="submit"
               onPress={form.handleSubmit}
             />
             {error ? <ErrorText>{error}</ErrorText> : null}

@@ -1,7 +1,7 @@
 import { View, StyleSheet } from 'react-native';
-import theme from '../../theme';
+import theme from '../theme';
 
-import Text from '../Text';
+import Text from './Text';
 
 const styles = StyleSheet.create({
   itemContainer: {
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const ReviewItem = ({ data }) => {
+const ReviewItem = ({ title, data }) => {
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
@@ -48,7 +48,7 @@ const ReviewItem = ({ data }) => {
         <View style={styles.textContainer}>
           <View style={styles.headerText}>
             <Text subheading strong>
-              {data.user.username}
+              {title}
             </Text>
             <Text subheading color="textSecondary">
               {formatDate(data.createdAt)}
