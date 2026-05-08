@@ -10,9 +10,7 @@
     "apollo-server-koa": {
       "@koa/cors": "^5.0.0"
     },
-    "jest-expo": {
-      "@tootallnate/once": "^3.0.1"
-    },
+    "@tootallnate/once": "^3.0.1",
     "postcss": "^8.5.10"
   }
 }
