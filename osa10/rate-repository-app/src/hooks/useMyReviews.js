@@ -2,10 +2,10 @@ import { useQuery, useMutation } from '@apollo/client/react';
 import { ME } from '../graphql/queries';
 import { DELETE_REVIEW } from '../graphql/mutations';
 
-const useMyReviews = () => {
-  const { loading, data } = useQuery(ME, {
+const useMyReviews = (variables) => {
+  const { loading, data, fetchMore } = useQuery(ME, {
     fetchPolicy: 'cache-and-network',
-    variables: { includeReviews: true },
+    variables: { ...variables, includeReviews: true },
   });
 
   let userReviews = [];
@@ -21,19 +21,36 @@ const useMyReviews = () => {
       : [];
   }
 
-  const [mutate] = useMutation(DELETE_REVIEW, {
+  const [mutation] = useMutation(DELETE_REVIEW, {
     // tekee kyselyn uudelleen automaattisesti mutaation onnistuessa
-    refetchQueries: [{ query: ME, variables: { includeReviews: true } }],
+    refetchQueries: [
+      { query: ME, variables: { ...variables, includeReviews: true } },
+    ],
   });
 
   const deleteMyReview = (id) => {
-    return mutate({ variables: { id } });
+    return mutation({ variables: { id } });
+  };
+
+  const fetchMoreReviews = () => {
+    const canFetchMore = !loading && data?.me.reviews.pageInfo.hasNextPage;
+
+    if (!canFetchMore) return;
+
+    fetchMore({
+      variables: {
+        ...variables,
+        includeReviews: true,
+        after: data.me.reviews.pageInfo.endCursor,
+      },
+    });
   };
 
   return {
     reviews: userReviews,
     loading,
     deleteMyReview,
+    fetchMoreReviews,
   };
 };
 

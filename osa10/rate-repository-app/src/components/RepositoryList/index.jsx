@@ -11,6 +11,8 @@ import ListItem from './ListItem';
 import TextInput from '../TextInput';
 import Text from '../Text';
 
+import useRepositories from '../../hooks/useRepositories';
+
 const styles = StyleSheet.create({
   filter: {
     backgroundColor: theme.colors.bgFilter,
@@ -19,8 +21,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
 });
-
-import useRepositories from '../../hooks/useRepositories';
 
 const selectionPrinciples = [
   {
@@ -104,6 +104,7 @@ export const RepositoryListContainer = ({ repositories, query }) => {
             >
               {selectionPrinciples.map((principle) => (
                 <Picker.Item
+                  key={principle.label}
                   label={principle.label}
                   value={JSON.stringify(principle.value)}
                 />
@@ -112,15 +113,16 @@ export const RepositoryListContainer = ({ repositories, query }) => {
           </>
         }
         data={repositoryNodes}
-        renderItem={({ item: repo }) => (
+        renderItem={({ item: repository }) => (
           <ListItem
-            key={repo.id}
-            onPress={() => navigateToRepo(repo.id)}
-            data={repo}
+            key={repository.id}
+            onPress={() => navigateToRepo(repository.id)}
+            data={repository}
           />
         )}
+        onEndReached={query.fetchMore}
         ListEmptyComponent={
-          !query.loading && repositoryNodes.length == 0 ? (
+          !query.loading && repositoryNodes.length === 0 ? (
             <Text style={{ margin: 5 }}>No repositories found</Text>
           ) : null
         }
@@ -132,12 +134,14 @@ export const RepositoryListContainer = ({ repositories, query }) => {
 };
 
 const RepositoryList = () => {
-  const { repositories, refetch, loading } = useRepositories();
+  const { repositories, loading, refetch, fetchMore } = useRepositories({
+    first: 4,
+  });
 
   return (
     <RepositoryListContainer
       repositories={repositories}
-      query={{ refetch, loading }}
+      query={{ loading, refetch, fetchMore }}
     />
   );
 };

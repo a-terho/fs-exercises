@@ -18,7 +18,9 @@ const styles = StyleSheet.create({
 });
 
 const MyReviews = () => {
-  const { reviews, loading, deleteMyReview } = useMyReviews();
+  const { reviews, loading, deleteMyReview, fetchMoreReviews } = useMyReviews({
+    first: 4,
+  });
 
   const navigate = useNavigate();
   const navigateToRepo = (id) => navigate(`/repos/${id}`);
@@ -71,10 +73,11 @@ const MyReviews = () => {
                 alignItems: 'center',
               }}
             >
-              <Text>You haven't made any reviews yet</Text>
+              <Text>You have not made any reviews yet</Text>
             </View>
           ) : null
         }
+        onEndReached={fetchMoreReviews}
         ItemSeparatorComponent={ItemSeparator}
         keyExtractor={({ id }) => id}
       />
