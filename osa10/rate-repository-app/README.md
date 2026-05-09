@@ -1,5 +1,5 @@
 # rate-repository-app
 
-Tehtävät 10.1 - 10.27
+Tehtävät 10.1 - 10.28
 
-Repon juuressa tulee olla .env tiedosto, jossa on määritetty EXPO_PUBLIC_HOST_LAN_IP, joka on host-koneen IP nykyisessä paikallisverkossa. Tämä mm. tarvitaan. jotta mobiilin Expo Go voi kommunikoida palvelimen kanssa.
+Kansion juuressa tulee olla kehitysvaiheessa .env tiedosto, jossa on määritetty EXPO_PUBLIC_APOLLO_URI, joka on muotoa http://IP:4000/graphql. IP on host-koneen IP nykyisessä paikallisverkossa. Tämä mm. tarvitaan. jotta mobiilin Expo Go voi kommunikoida palvelimen kanssa.

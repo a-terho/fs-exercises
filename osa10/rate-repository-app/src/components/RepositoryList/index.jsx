@@ -95,6 +95,7 @@ export const RepositoryListContainer = ({ repositories, query }) => {
               value={filter}
             />
             <Picker
+              itemStyle={{ height: 50 }} // iOS renderöi siistimmin
               selectedValue={selectionPriciple}
               onValueChange={changeSelectionPrinciple}
             >

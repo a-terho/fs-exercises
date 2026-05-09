@@ -1,11 +1,11 @@
 import { FlatList, View } from 'react-native';
 import { useParams } from 'react-router-native';
 
-import ItemSeparator from '../shared/ItemSeparator';
-import RepositoryItem from '../RepositoryItem';
-import ReviewItem from '../ReviewItem';
+import ItemSeparator from './shared/ItemSeparator';
+import RepositoryItem from './RepositoryItem';
+import ReviewItem from './ReviewItem';
 
-import useRepository from '../../hooks/useRepository';
+import useRepository from '../hooks/useRepository';
 
 const RepositoryPage = () => {
   const params = useParams();
