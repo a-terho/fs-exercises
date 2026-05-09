@@ -20,4 +20,4 @@ edistyminen...
 - [x] osa7
 - [x] osa8 (graphql)
 - [x] osa9 (typescript)
-- [ ] osa10 (react native)
+- [x] osa10 (react native)
