@@ -48,7 +48,20 @@ describe('RepositoryList', () => {
         ],
       };
 
-      render(<RepositoryListContainer repositories={repositories} />);
+      const query = {
+        loading: false,
+        refetch: jest.fn(),
+        fetchMore: jest.fn(),
+      };
+      const navigate = jest.fn();
+
+      render(
+        <RepositoryListContainer
+          repositories={repositories}
+          query={query}
+          navigate={navigate}
+        />,
+      );
 
       const repositoryItems = screen.getAllByTestId('repositoryItem');
       const [firstRepositoryItem, secondRepositoryItem] = repositoryItems;

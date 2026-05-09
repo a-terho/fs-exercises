@@ -46,7 +46,7 @@ const selectionPrinciples = [
   },
 ];
 
-export const RepositoryListContainer = ({ repositories, query }) => {
+export const RepositoryListContainer = ({ repositories, query, navigate }) => {
   const [variables, setVariables] = useState({});
   const [filter, setFilter] = useState('');
 
@@ -76,7 +76,6 @@ export const RepositoryListContainer = ({ repositories, query }) => {
     ? repositories.edges.map((edge) => edge.node)
     : [];
 
-  const navigate = useNavigate();
   const navigateToRepo = (id) => navigate(`/repos/${id}`);
 
   return (
@@ -134,11 +133,13 @@ const RepositoryList = () => {
   const { repositories, loading, refetch, fetchMore } = useRepositories({
     first: 4,
   });
+  const navigate = useNavigate();
 
   return (
     <RepositoryListContainer
       repositories={repositories}
       query={{ loading, refetch, fetchMore }}
+      navigate={navigate}
     />
   );
 };
