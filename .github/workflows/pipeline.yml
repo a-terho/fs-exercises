@@ -48,11 +48,12 @@ jobs:
         with:
           name: playwright-report
           path: osa11/fs-pokedex/playwright-report/
-          retention-days: 7
+          retention-days: 30
 
       - name: Build app
         working-directory: osa11/fs-pokedex
         run: npm run build
 
       - name: Trigger deployment
+        if: ${{ github.event_name == 'push' }}
         run: curl ${{ secrets.RENDER_DEPLOY_HOOK }}
