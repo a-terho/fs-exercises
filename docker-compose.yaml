@@ -22,6 +22,7 @@ services:
       - '19000:19000' # metro bundler
       - '19001-19002:19001-19002' # expo dev tools
       - '5001:5001' # rate-repository-api
+      - '127.0.0.1:8080:8080' # webpack dev
     environment:
       - NODE_ENV=development
       # MongoDB memory serverin tuki

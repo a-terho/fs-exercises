@@ -21,3 +21,4 @@ edistyminen...
 - [x] osa8 (graphql)
 - [x] osa9 (typescript)
 - [x] osa10 (react native)
+- [ ] osa11 (ci/cd)

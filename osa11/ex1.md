@@ -1,0 +1,9 @@
+Linting a Python project can be done with Ruff, which is a fast modern linter and seems to be quite popular altenative to older linters such as pylint/flake8. Using mypy as a completementary tool will offer additional static type checking support.
+
+Pytest seems to be the most common way to write tests for Python projects. It covers unit testing, integration testing and API testing (along with using requests/httpx module). Python also comes with default unittest module. For browser E2E testing, Playwright can be used in Python projects, too.
+
+Build tools for Python package the code for distribution (bundling) and manage the development environment and dependencies. Python code does not really need compilation. Popular tools for this seem to be Poetry and Hatch. For dependency installations, uv is the fast modern approach though pip is still the standard installer.
+
+Along with Github Actions and Jenkins, GitLab provides its own popular CI pipeline support. Aside from the big native ones, CircleCI seems to be a popular CI dedicated tool. For cloud, Microsoft provides Azure Pipelines and AWS provides AWS CodePipeline.
+
+With self-hosting, the setup would require some kind of continuous maintenance to keep the services up to date. You would be able to keep data on your servers but you would also need to take care of all the security aspects. That would require a dedicated worker for it. For cloud-based environments, the maintanence is handled by the providers. There will also be a scaling issue for self-hosted services: the more development acitivity there is, the more compute and eventually more hardware the CI pipeline needs. For smaller teams, the cloud-based options are likely more suitable and it's also easier and more cost-effective. Self-hosting should be reserved for when there are some compliance requirements or extremely heavy usage and costs with cloud-providers.
