@@ -6,6 +6,11 @@ on:
       - main
     paths:
       - 'osa11/**'
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize]
+    paths:
+      - 'osa11/**'
 
 jobs:
   simple_deployment_pipeline:
@@ -45,9 +50,9 @@ jobs:
           path: osa11/fs-pokedex/playwright-report/
           retention-days: 7
 
-      # - name: Build app
-      #   working-directory: osa11/fs-pokedex
-      #   run: npm run build
+      - name: Build app
+        working-directory: osa11/fs-pokedex
+        run: npm run build
 
       - name: Trigger deployment
         run: curl ${{ secrets.RENDER_DEPLOY_HOOK }}
