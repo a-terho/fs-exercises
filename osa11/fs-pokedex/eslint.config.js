@@ -8,6 +8,8 @@ module.exports = [
     ignores: [
       'webpack.config.js',
       'eslint.config.js',
+      'playwright.config.js',
+      'jest.setup.js',
       '.eslintrc.js',
       'node_modules/**',
       'dist/**',
@@ -36,14 +38,15 @@ module.exports = [
     },
   },
   {
-    files: ['jest.setup.js'],
+    files: ['e2e-tests/**/*.js'],
     languageOptions: {
-      ecmaVersion: 2018,
       sourceType: 'commonjs',
       globals: {
         ...globals.node,
-        ...globals.jest,
       },
+    },
+    rules: {
+      'no-unused-vars': 'off',
     },
   },
   {

@@ -30,6 +30,21 @@ jobs:
         working-directory: osa11/fs-pokedex
         run: npm test
 
+      - name: Install Playwright Browsers
+        working-directory: osa11/fs-pokedex
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright tests
+        working-directory: osa11/fs-pokedex
+        run: npx playwright test
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: osa11/fs-pokedex/playwright-report/
+          retention-days: 7
+
       - name: Build app
         working-directory: osa11/fs-pokedex
         run: npm run build
