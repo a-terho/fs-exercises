@@ -2,13 +2,13 @@ name: say hello
 
 on:
   push:
-    branches: main
-    paths: 'osa11/**'
+    branches: [main]
+    paths: ['osa11/**']
 
 jobs:
   hello_word_job:
     runs-on: ubuntu-latest
     steps:
       - name: Say hello
-      - run: |
+        run: |
           echo "Hello World!"
