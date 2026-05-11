@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-     paths: 
+    paths:
       - 'osa11/**'
 
 jobs:
@@ -17,8 +17,8 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: '24'
-      
-      - name: Install dependencies      
+
+      - name: Install dependencies
         working-directory: osa11/fs-pokedex
         run: npm install
 
