@@ -1,0 +1,27 @@
+name: Deployment pipeline
+
+on:
+  push:
+    branches:
+      - main
+     paths: 
+      - 'osa11/**'
+
+jobs:
+  simple_deployment_pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+      
+      - name: Install dependencies      
+        working-directory: osa11/fs-pokedex
+        run: npm install
+
+      - name: Check style
+        working-directory: osa11/fs-pokedex
+        run: npm run eslint
