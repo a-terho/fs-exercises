@@ -1,6 +1,6 @@
 # CI/CD
 
-Tehtävät 11.1 - 11.16
+Tehtävät 11.1 - 11.17
 
 Käyttöön otettu webapp löytyy täältä: https://fs-pokedex-a5yl.onrender.com/
 
