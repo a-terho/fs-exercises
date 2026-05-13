@@ -56,12 +56,12 @@ jobs:
 
 
   deploy_app:
+    needs: [simple_deployment_pipeline]
+    runs-on: ubuntu-latest
+
     # toimii main branch push ja merge commit to main-tilanteissa
     # etsii #skip tagia vain viimeisimmän commitin (head_commit) viestistä
     if: ${{ github.event_name == 'push' && !(github.event.head_commit && contains(github.event.head_commit.message, '#skip')) }}
-
-    needs: [simple_deployment_pipeline]
-    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v6
@@ -78,9 +78,9 @@ jobs:
 
 
   announce_deployment:
-    runs-on: ubuntu-latest
     needs: [deploy_app]
-
+    runs-on: ubuntu-latest
+    
     steps:
       - name: Announce deployment on Discord
         uses: sarisia/actions-status-discord@v1
@@ -98,10 +98,13 @@ jobs:
 
   
   announce_build_fail:
-    runs-on: ubuntu-latest
     needs: [simple_deployment_pipeline]
-    if: ${{ needs.simple_deployment_pipeline.result == 'failure' }}
+    runs-on: ubuntu-latest
 
+    # toimii main branch push ja merge commit to main-tilanteissa
+    # ei ilmoita pull requestin yhteydessä ajetun pipelinen epäonnistumista
+    if: ${{ github.event_name == 'push' && needs.simple_deployment_pipeline.result == 'failure' }}
+    
     steps:
       - name: Announce build failure on Discord
         uses: sarisia/actions-status-discord@v1
