@@ -75,6 +75,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v6
+
       - name: Bump version and push tag
         uses: anothrNick/github-tag-action@4ed44965e0db8dab2b466a16da04aec3cc312fd8
         env:
@@ -83,24 +85,25 @@ jobs:
           # DRY_RUN: true
 
 
-  announce_deployment:
-    needs: [deploy_app]
-    runs-on: ubuntu-latest
+  # toimii, kommentoitu piiloon spämmin välttämiseksi
+  # announce_deployment:
+  #   needs: [deploy_app]
+  #   runs-on: ubuntu-latest
     
-    steps:
-      - name: Announce deployment on Discord
-        uses: sarisia/actions-status-discord@v1
-        with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}
-          nodetail: true
-          content: "✅ Deployment successful!"
-          title: "New version of `fs-pokedex` is ready!"
-          description: |
-            **Gotta catch 'em all!**
+  #   steps:
+  #     - name: Announce deployment on Discord
+  #       uses: sarisia/actions-status-discord@v1
+  #       with:
+  #         webhook: ${{ secrets.DISCORD_WEBHOOK }}
+  #         nodetail: true
+  #         content: "✅ Deployment successful!"
+  #         title: "New version of `fs-pokedex` is ready!"
+  #         description: |
+  #           **Gotta catch 'em all!**
 
-            [View repository](https://github.com/a-terho/fs-exercises/tree/main/osa11)  
-            [View commit](${{ github.event.head_commit.url }})
-          color: 0xf6cf58
+  #           [View repository](https://github.com/a-terho/fs-exercises/tree/main/osa11)  
+  #           [View commit](${{ github.event.head_commit.url }})
+  #         color: 0xf6cf58
 
   
   announce_build_failure:
