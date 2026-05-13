@@ -69,6 +69,12 @@ jobs:
       - name: Trigger deployment in Render
         run: curl --fail --silent --show-error ${{ secrets.RENDER_DEPLOY_HOOK }}
 
+
+  tag_release:
+    needs: [deploy_app]
+    runs-on: ubuntu-latest
+
+    steps:
       - name: Bump version and push tag
         uses: anothrNick/github-tag-action@4ed44965e0db8dab2b466a16da04aec3cc312fd8
         env:
@@ -97,7 +103,7 @@ jobs:
           color: 0xf6cf58
 
   
-  announce_build_fail:
+  announce_build_failure:
     needs: [simple_deployment_pipeline]
     runs-on: ubuntu-latest
 
