@@ -54,28 +54,72 @@ jobs:
         working-directory: osa11/fs-pokedex
         run: npm run build
 
-  deploy_app:
-    # toimii vain main branch push ja PR merge-tilanteissa
-    if: ${{ github.event_name == 'push' }}
 
-    env:
-      # etsi #skip-tagia vain lopullisesta PR:n commit-viestistä (head_commit) eikä kaikista PR:n sisältämien committien viesteistä
-      SKIP_DEPLOY: ${{ github.event.head_commit && contains(github.event.head_commit.message, '#skip') }}
-    
+  deploy_app:
+    needs: [simple_deployment_pipeline]
     runs-on: ubuntu-latest
-    needs:
-      - simple_deployment_pipeline
+
+    # toimii main branch push ja merge commit to main-tilanteissa
+    # etsii #skip tagia vain viimeisimmän commitin (head_commit) viestistä
+    if: ${{ github.event_name == 'push' && !(github.event.head_commit && contains(github.event.head_commit.message, '#skip')) }}
+
     steps:
       - uses: actions/checkout@v6
 
       - name: Trigger deployment in Render
-        if: ${{ env.SKIP_DEPLOY != 'true' }}
-        run: curl ${{ secrets.RENDER_DEPLOY_HOOK }}
+        run: curl --fail --silent --show-error ${{ secrets.RENDER_DEPLOY_HOOK }}
 
       - name: Bump version and push tag
-        if: ${{ env.SKIP_DEPLOY != 'true' }}
         uses: anothrNick/github-tag-action@4ed44965e0db8dab2b466a16da04aec3cc312fd8
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: patch
           # DRY_RUN: true
+
+
+  announce_deployment:
+    needs: [deploy_app]
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Announce deployment on Discord
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          nodetail: true
+          content: "✅ Deployment successful!"
+          title: "New version of `fs-pokedex` is ready!"
+          description: |
+            **Gotta catch 'em all!**
+
+            [View repository](https://github.com/a-terho/fs-exercises/tree/main/osa11)  
+            [View commit](${{ github.event.head_commit.url }})
+          color: 0xf6cf58
+
+  
+  announce_build_fail:
+    needs: [simple_deployment_pipeline]
+    runs-on: ubuntu-latest
+
+    # toimii main branch push ja merge commit to main-tilanteissa
+    # ei ilmoita pull requestin yhteydessä ajetun pipelinen epäonnistumista
+    if: ${{ github.event_name == 'push' && needs.simple_deployment_pipeline.result == 'failure' }}
+    
+    steps:
+      - name: Announce build failure on Discord
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          nocontext: true
+          content: "❌ Build failed!"
+          title: "Pipeline error occurred before deployment"
+          description: |
+            **Repository:** ${{ github.repository }}  
+            **Branch:** ${{ github.ref_name }}  
+            **Author:** ${{ github.actor }}  
+            **Workflow:** ${{ github.workflow }}  
+            **Job:** simple_deployment_pipeline
+            
+            [View failed workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})  
+            [View commit](${{ github.event.head_commit.url }})
+          color: 0xf62c13
