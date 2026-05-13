@@ -54,7 +54,6 @@ jobs:
         working-directory: osa11/fs-pokedex
         run: npm run build
 
-
   deploy_app:
     needs: [simple_deployment_pipeline]
     runs-on: ubuntu-latest
@@ -68,7 +67,6 @@ jobs:
 
       - name: Trigger deployment in Render
         run: curl --fail --silent --show-error ${{ secrets.RENDER_DEPLOY_HOOK }}
-
 
   tag_release:
     needs: [deploy_app]
@@ -84,12 +82,11 @@ jobs:
           DEFAULT_BUMP: patch
           # DRY_RUN: true
 
-
   # toimii, kommentoitu piiloon spämmin välttämiseksi
   # announce_deployment:
   #   needs: [deploy_app]
   #   runs-on: ubuntu-latest
-    
+
   #   steps:
   #     - name: Announce deployment on Discord
   #       uses: sarisia/actions-status-discord@v1
@@ -101,11 +98,10 @@ jobs:
   #         description: |
   #           **Gotta catch 'em all!**
 
-  #           [View repository](https://github.com/a-terho/fs-exercises/tree/main/osa11)  
+  #           [View repository](https://github.com/a-terho/fs-exercises/tree/main/osa11)
   #           [View commit](${{ github.event.head_commit.url }})
   #         color: 0xf6cf58
 
-  
   announce_build_failure:
     needs: [simple_deployment_pipeline]
     runs-on: ubuntu-latest
@@ -113,22 +109,22 @@ jobs:
     # toimii main branch push ja merge commit to main-tilanteissa
     # ei ilmoita pull requestin yhteydessä ajetun pipelinen epäonnistumista
     if: ${{ github.event_name == 'push' && needs.simple_deployment_pipeline.result == 'failure' }}
-    
+
     steps:
       - name: Announce build failure on Discord
         uses: sarisia/actions-status-discord@v1
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
           nocontext: true
-          content: "❌ Build failed!"
-          title: "Pipeline error occurred before deployment"
+          content: '❌ Build failed!'
+          title: 'Pipeline error occurred before deployment'
           description: |
             **Repository:** ${{ github.repository }}  
             **Branch:** ${{ github.ref_name }}  
             **Author:** ${{ github.actor }}  
             **Workflow:** ${{ github.workflow }}  
             **Job:** simple_deployment_pipeline
-            
+
             [View failed workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})  
             [View commit](${{ github.event.head_commit.url }})
           color: 0xf62c13
