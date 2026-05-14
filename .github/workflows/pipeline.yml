@@ -63,8 +63,6 @@ jobs:
     if: ${{ github.event_name == 'push' && !(github.event.head_commit && contains(github.event.head_commit.message, '#skip')) }}
 
     steps:
-      - uses: actions/checkout@v6
-
       - name: Trigger deployment in Render
         run: curl --fail --silent --show-error ${{ secrets.RENDER_DEPLOY_HOOK }}
 
@@ -82,7 +80,6 @@ jobs:
           DEFAULT_BUMP: patch
           # DRY_RUN: true
 
-  # toimii, kommentoitu piiloon spämmin välttämiseksi
   # announce_deployment:
   #   needs: [deploy_app]
   #   runs-on: ubuntu-latest
@@ -102,29 +99,29 @@ jobs:
   #           [View commit](${{ github.event.head_commit.url }})
   #         color: 0xf6cf58
 
-  announce_build_failure:
-    needs: [simple_deployment_pipeline]
-    runs-on: ubuntu-latest
+  # announce_build_failure:
+  #   needs: [simple_deployment_pipeline]
+  #   runs-on: ubuntu-latest
 
-    # toimii main branch push ja merge commit to main-tilanteissa
-    # ei ilmoita pull requestin yhteydessä ajetun pipelinen epäonnistumista
-    if: ${{ github.event_name == 'push' && needs.simple_deployment_pipeline.result == 'failure' }}
+  #   # toimii main branch push ja merge commit to main-tilanteissa
+  #   # ei ilmoita pull requestin yhteydessä ajetun pipelinen epäonnistumista
+  #   if: ${{ github.event_name == 'push' && needs.simple_deployment_pipeline.result == 'failure' }}
 
-    steps:
-      - name: Announce build failure on Discord
-        uses: sarisia/actions-status-discord@v1
-        with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}
-          nocontext: true
-          content: '❌ Build failed!'
-          title: 'Pipeline error occurred before deployment'
-          description: |
-            **Repository:** ${{ github.repository }}  
-            **Branch:** ${{ github.ref_name }}  
-            **Author:** ${{ github.actor }}  
-            **Workflow:** ${{ github.workflow }}  
-            **Job:** simple_deployment_pipeline
+  #   steps:
+  #     - name: Announce build failure on Discord
+  #       uses: sarisia/actions-status-discord@v1
+  #       with:
+  #         webhook: ${{ secrets.DISCORD_WEBHOOK }}
+  #         nocontext: true
+  #         content: '❌ Build failed!'
+  #         title: 'Pipeline error occurred before deployment'
+  #         description: |
+  #           **Repository:** ${{ github.repository }}
+  #           **Branch:** ${{ github.ref_name }}
+  #           **Author:** ${{ github.actor }}
+  #           **Workflow:** ${{ github.workflow }}
+  #           **Job:** simple_deployment_pipeline
 
-            [View failed workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})  
-            [View commit](${{ github.event.head_commit.url }})
-          color: 0xf62c13
+  #           [View failed workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+  #           [View commit](${{ github.event.head_commit.url }})
+  #         color: 0xf62c13
