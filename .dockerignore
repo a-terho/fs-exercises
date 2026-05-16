@@ -1,15 +1,25 @@
 # turvataan ettei turhat tiedostot päädy vahingossa konttiin
-#  jos Dockerfileen päädytään lisäämään joskus COPY layer
-
+# jos Dockerfileen päädytään lisäämään joskus COPY layer
 .dockerignore
 docker-compose.yaml
-Dockerfile
+*Dockerfile
 dev.sh
 **/node_modules
 **/dist
+**/coverage
+**/playwright-report
+**/requests
+**/test-results
+**/.cache
 **/.env
 **/.git
-**/.gitignore
+**/.gitattributes
+**/.keep
+**/.prettierrc
 **/.vscode
 **/.DS_Store
+**/.Spotlight-V100
+**/.Trashes
 **/Thumbs.db
+**/*.sync-conflict-*-*-*.*
+**/*.log
