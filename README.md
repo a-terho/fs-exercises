@@ -21,5 +21,5 @@ edistyminen...
 - [x] osa8 (graphql)
 - [x] osa9 (typescript)
 - [x] osa10 (react native)
-- [ ] osa11 (ci/cd)
-- [ ] osa12 (containers)
+- [x] osa11 (ci/cd)
+- [x] osa12 (containers) löytyy [täältä (fs-containers)](https://github.com/a-terho/fs-containers)

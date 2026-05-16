@@ -4,7 +4,9 @@
   "workspaces": [
     "osa*/*",
     "!osa8/*",
-    "!osa9/*"
+    "!osa9/*",
+    "!containers/",
+    "!cicd-demo/"
   ],
   "overrides": {
     "apollo-server-koa": {
