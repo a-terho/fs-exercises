@@ -1,0 +1,8 @@
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+
+{
+  "title": "Using Promises",
+  "author": "MDN Web Docs",
+  "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises"
+}
