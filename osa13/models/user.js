@@ -1,32 +1,31 @@
 const { Model, DataTypes } = require('sequelize');
 const { sequelize } = require('../util/db.js');
 
-class Blog extends Model {}
+class User extends Model {}
 
-Blog.init(
+User.init(
   {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    title: {
+    name: {
       type: DataTypes.TEXT,
       allowNull: false,
     },
-    author: {
+    username: {
       type: DataTypes.TEXT,
+      unique: true,
+      allowNull: false,
+      validate: { isEmail: true },
     },
-    url: {
+    passwordHash: {
       type: DataTypes.TEXT,
       allowNull: false,
-    },
-    likes: {
-      type: DataTypes.INTEGER,
-      defaultValue: 0,
     },
   },
-  { sequelize, modelName: 'blog', timestamps: false },
+  { sequelize, modelName: 'user' },
 );
 
-module.exports = Blog;
+module.exports = User;

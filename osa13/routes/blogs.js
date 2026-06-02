@@ -1,30 +1,75 @@
 const router = require('express').Router();
 module.exports = router;
 
-const Blog = require('../models/blog.js');
+const { userExtractor } = require('../util/middleware.js');
+const { Blog, User } = require('../models');
+const { Op } = require('sequelize');
 
 router.get('/', async (req, res) => {
-  const blogs = await Blog.findAll();
+  const where = {};
+  if (req.query.search) {
+    if (/[\\%_]/.test(req.query.search)) {
+      return res
+        .status(400)
+        .json({ error: 'search term contains invalid characters' });
+    }
+    where[Op.or] = [
+      {
+        title: { [Op.iLike]: `%${req.query.search}%` },
+      },
+      {
+        author: { [Op.iLike]: `%${req.query.search}%` },
+      },
+    ];
+  }
+
+  const blogs = await Blog.findAll({
+    include: {
+      model: User,
+      attributes: ['name'],
+    },
+    attributes: { exclude: ['userId'] },
+    where,
+    order: [['likes', 'DESC']],
+  });
   return res.status(200).json(blogs);
 });
 
-router.post('/', async (req, res) => {
+router.post('/', userExtractor, async (req, res) => {
   const { title, author, url, likes } = req.body || {};
-  try {
-    const blog = await Blog.create({ title, author, url, likes });
-    return res.status(201).json(blog);
-  } catch (err) {
-    return res.status(400).json({ err });
-  }
+  const userId = req.userId;
+
+  const blog = await Blog.create({ title, author, url, likes, userId });
+  return res.status(201).json(blog);
 });
 
-router.delete('/:id', async (req, res) => {
-  const id = req.params.id;
-  const blog = await Blog.findByPk(id);
-  if (blog !== null) {
-    await blog.destroy();
-    return res.status(200).end();
+const blogFinder = async (req, res, next) => {
+  req.blog = await Blog.findByPk(req.params.id);
+  if (req.blog !== null) {
+    return next();
   } else {
-    res.status(404).end();
+    return res.status(404).end();
   }
+};
+
+router.delete('/:id', userExtractor, blogFinder, async (req, res) => {
+  if (req.blog.userId !== req.userId) {
+    return res
+      .status(401)
+      .json({ error: 'only the blog creator can delete their blog' });
+  }
+
+  await req.blog.destroy();
+  return res.status(204).end();
+});
+
+router.put('/:id', blogFinder, async (req, res) => {
+  const { likes } = req.body || {};
+  if (!isFinite(likes)) {
+    return res.status(400).json({ error: 'likes must be a number value' });
+  }
+
+  req.blog.likes = Number(likes);
+  await req.blog.save();
+  return res.status(200).json(req.blog);
 });
