@@ -4,10 +4,8 @@ const User = require('./user.js');
 User.hasMany(Blog);
 Blog.belongsTo(User);
 
-// Blog.sync({ alter: true });
-// User.sync({ alter: true });
-Blog.sync();
-User.sync();
+User.sync({ alter: true });
+Blog.sync({ alter: true });
 
 const reset = async () => {
   await Blog.destroy({ truncate: true, cascade: true });
