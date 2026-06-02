@@ -4,8 +4,9 @@ const User = require('./user.js');
 User.hasMany(Blog);
 Blog.belongsTo(User);
 
-User.sync({ alter: true });
-Blog.sync({ alter: true });
+// poistettu käytöstä migraatioiden vuoksi
+// User.sync({ alter: true });
+// Blog.sync({ alter: true });
 
 const reset = async () => {
   await Blog.destroy({ truncate: true, cascade: true });

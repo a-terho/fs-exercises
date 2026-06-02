@@ -7,7 +7,7 @@ const { Blog, User } = require('../models');
 router.post('/', async (req, res) => {
   const { name, username, password } = req.body || {};
 
-  const passwordHash = await bcrypt.hash(password, 10);
+  const passwordHash = await bcrypt.hash(password ? password : 'secret', 10);
   const user = await User.create({ name, username, passwordHash });
   return res.status(201).json(user);
 });
