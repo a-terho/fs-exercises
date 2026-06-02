@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { JWT_SECRET } = require('../util/config.js');
+const { SECRET } = require('../util/config.js');
 
 const router = require('express').Router();
 module.exports = router;
@@ -24,7 +24,7 @@ router.post('/', async (req, res) => {
     username: user.username,
   };
 
-  const token = jwt.sign(payload, JWT_SECRET);
+  const token = jwt.sign(payload, SECRET);
 
   return res.status(200).json({
     token,

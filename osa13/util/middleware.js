@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { JWT_SECRET } = require('../util/config.js');
+const { SECRET } = require('../util/config.js');
 
 const errorHandler = (err, req, res, next) => {
   if (err.name === 'SequelizeValidationError') {
@@ -20,7 +20,7 @@ const userExtractor = (req, res, next) => {
     return res.status(400).json({ error: 'missing authorization token' });
   }
 
-  const decoded = jwt.verify(auth.substring(7), JWT_SECRET);
+  const decoded = jwt.verify(auth.substring(7), SECRET);
   req.userId = decoded.id;
   next();
 };
