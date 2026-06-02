@@ -1,7 +1,7 @@
 const router = require('express').Router();
 module.exports = router;
 
-const { User } = require('../models');
+const { Blog, User } = require('../models');
 
 router.post('/', async (req, res) => {
   const { name, username, password } = req.body || {};
@@ -10,7 +10,14 @@ router.post('/', async (req, res) => {
 });
 
 router.get('/', async (req, res) => {
-  const users = await User.findAll();
+  const users = await User.findAll({
+    include: {
+      model: Blog,
+      attributes: {
+        exclude: ['userId'],
+      },
+    },
+  });
   return res.status(200).json(users);
 });
 

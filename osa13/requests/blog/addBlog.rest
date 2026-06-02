@@ -1,5 +1,6 @@
 POST http://localhost:3001/api/blogs
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhLXRlcmhvQGEuYmNkZSIsImlhdCI6MTc4MDM4OTg0MX0.x-XNzDFLknb0PLMVtuGvtf51Jewwc-pShEn-I3XwtoU
 
 {
   "title": "Using Promises",
