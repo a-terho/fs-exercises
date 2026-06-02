@@ -1,3 +1,3 @@
 # postgres-db
 
-Tehtävät 13.1 - 13.17
+Tehtävät 13.1 - 13.19

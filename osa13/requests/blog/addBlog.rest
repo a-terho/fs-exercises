@@ -5,5 +5,6 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hb
 {
   "title": "Using Promises",
   "author": "MDN Web Docs",
-  "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises"
+  "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises",
+  "year": 2026
 }

@@ -36,10 +36,10 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', userExtractor, async (req, res) => {
-  const { title, author, url, likes } = req.body || {};
+  const { title, author, url, likes, year } = req.body || {};
   const userId = req.userId;
 
-  const blog = await Blog.create({ title, author, url, likes, userId });
+  const blog = await Blog.create({ title, author, url, likes, year, userId });
   return res.status(201).json(blog);
 });
 
