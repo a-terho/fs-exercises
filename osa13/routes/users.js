@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 const router = require('express').Router();
 module.exports = router;
 
@@ -5,7 +6,9 @@ const { Blog, User } = require('../models');
 
 router.post('/', async (req, res) => {
   const { name, username, password } = req.body || {};
-  const user = await User.create({ name, username });
+
+  const passwordHash = await bcrypt.hash(password, 10);
+  const user = await User.create({ name, username, passwordHash });
   return res.status(201).json(user);
 });
 

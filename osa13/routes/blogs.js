@@ -3,14 +3,34 @@ module.exports = router;
 
 const { userExtractor } = require('../util/middleware.js');
 const { Blog, User } = require('../models');
+const { Op } = require('sequelize');
 
 router.get('/', async (req, res) => {
+  const where = {};
+  if (req.query.search) {
+    if (/[\\%_]/.test(req.query.search)) {
+      return res
+        .status(400)
+        .json({ error: 'search term contains invalid characters' });
+    }
+    where[Op.or] = [
+      {
+        title: { [Op.iLike]: `%${req.query.search}%` },
+      },
+      {
+        author: { [Op.iLike]: `%${req.query.search}%` },
+      },
+    ];
+  }
+
   const blogs = await Blog.findAll({
     include: {
       model: User,
       attributes: ['name'],
     },
     attributes: { exclude: ['userId'] },
+    where,
+    order: [['likes', 'DESC']],
   });
   return res.status(200).json(blogs);
 });

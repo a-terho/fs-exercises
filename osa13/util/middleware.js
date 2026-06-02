@@ -15,7 +15,7 @@ const errorHandler = (err, req, res, next) => {
 };
 
 const userExtractor = (req, res, next) => {
-  const auth = req.get('authorization');
+  const auth = req.get('Authorization');
   if (!(auth && auth.startsWith('Bearer '))) {
     return res.status(400).json({ error: 'missing authorization token' });
   }

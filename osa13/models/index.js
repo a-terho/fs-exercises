@@ -9,4 +9,10 @@ Blog.belongsTo(User);
 Blog.sync();
 User.sync();
 
-module.exports = { Blog, User };
+const reset = async () => {
+  await Blog.destroy({ truncate: true, cascade: true });
+  await User.destroy({ truncate: true, cascade: true });
+  console.log('Database tables for blogs and users were reset');
+};
+
+module.exports = { Blog, User, reset };

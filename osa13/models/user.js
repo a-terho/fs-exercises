@@ -20,6 +20,10 @@ User.init(
       allowNull: false,
       validate: { isEmail: true },
     },
+    passwordHash: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
   },
   { sequelize, modelName: 'user' },
 );

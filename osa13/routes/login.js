@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('../util/config.js');
 
@@ -10,7 +11,9 @@ router.post('/', async (req, res) => {
   const { username, password } = req.body || {};
 
   const user = await User.findOne({ where: { username } });
-  const passwordCorrect = password === 'secret';
+  const passwordCorrect = user
+    ? await bcrypt.compare(password, user.passwordHash)
+    : false;
 
   if (!(user && passwordCorrect)) {
     return res.status(401).json({ error: 'wrong credentials' });
