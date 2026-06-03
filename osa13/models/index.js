@@ -1,8 +1,12 @@
 const Blog = require('./blog.js');
 const User = require('./user.js');
+const Readinglist = require('./readinglist.js');
 
 User.hasMany(Blog);
 Blog.belongsTo(User);
+
+User.belongsToMany(Blog, { through: Readinglist, as: 'readings' });
+Blog.belongsToMany(User, { through: Readinglist });
 
 // poistettu käytöstä migraatioiden vuoksi
 // User.sync({ alter: true });

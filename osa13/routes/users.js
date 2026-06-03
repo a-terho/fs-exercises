@@ -14,14 +14,49 @@ router.post('/', async (req, res) => {
 
 router.get('/', async (req, res) => {
   const users = await User.findAll({
-    include: {
-      model: Blog,
-      attributes: {
-        exclude: ['userId'],
+    attributes: ['id', 'name', 'username'],
+    include: [
+      {
+        model: Blog,
+        attributes: {
+          exclude: ['createdAt', 'updatedAt', 'userId'],
+        },
       },
-    },
+    ],
   });
   return res.status(200).json(users);
+});
+
+router.get('/:id', async (req, res) => {
+  const userId = req.params.id;
+
+  const where = {};
+  if (req.query.read) {
+    where.read = req.query.read === 'true' ? true : false;
+  }
+
+  const user = await User.findByPk(userId, {
+    attributes: ['name', 'username'],
+    include: [
+      // lukulista
+      {
+        model: Blog,
+        as: 'readings',
+        attributes: { exclude: ['createdAt', 'updatedAt', 'userId'] },
+        through: {
+          attributes: ['id', 'read'],
+          where,
+        },
+      },
+      // itse lisätyt blogit
+      // {
+      //   model: Blog,
+      //   attributes: { exclude: ['createdAt', 'updatedAt', 'userId'] },
+      // },
+    ],
+  });
+
+  return res.status(200).json(user);
 });
 
 router.put('/:username', async (req, res) => {
