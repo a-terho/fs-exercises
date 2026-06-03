@@ -5,6 +5,8 @@ const errorHandler = (err, req, res, next) => {
   if (err.name === 'SequelizeValidationError') {
     const messages = err.errors.map((e) => e.message);
     res.status(400).json({ error: messages });
+  } else if (err.name === 'SequelizeForeignKeyConstraintError') {
+    res.status(404).json({ error: err.parent.detail });
   } else if (err.name === 'JsonWebTokenError') {
     res.status(401).json({ error: 'invalid authorization token' });
   } else {
