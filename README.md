@@ -23,4 +23,4 @@ edistyminen...
 - [x] osa10 (react native)
 - [x] osa11 (ci/cd)
 - [x] osa12 (containers) löytyy [täältä (fs-containers)](https://github.com/a-terho/fs-containers)
-- [ ] osa13 (relational databases)
+- [x] osa13 (relational databases)
