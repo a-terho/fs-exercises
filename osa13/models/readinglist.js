@@ -12,11 +12,13 @@ Readinglist.init(
     },
     userId: {
       type: DataTypes.INTEGER,
+      unique: 'user_blog_unique',
       allowNull: false,
       references: { model: 'users', key: 'id' },
     },
     blogId: {
       type: DataTypes.INTEGER,
+      unique: 'user_blog_unique',
       allowNull: false,
       references: { model: 'blogs', key: 'id' },
     },

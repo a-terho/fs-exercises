@@ -1,25 +1,24 @@
 const { DataTypes } = require('sequelize');
 
 const up = async ({ context: queryInterface }) => {
-  await queryInterface.createTable('reading_lists', {
+  await queryInterface.createTable('sessions', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    userId: {
-      type: DataTypes.INTEGER,
+    token: {
+      type: DataTypes.TEXT,
       allowNull: false,
-      references: { model: 'users', key: 'id' },
     },
-    blogId: {
-      type: DataTypes.INTEGER,
+    username: {
+      type: DataTypes.TEXT,
       allowNull: false,
-      references: { model: 'blogs', key: 'id' },
+      validate: { isEmail: true },
     },
-    read: {
+    valid: {
       type: DataTypes.BOOLEAN,
-      defaultValue: false,
+      defaultValue: true,
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -30,15 +29,10 @@ const up = async ({ context: queryInterface }) => {
       allowNull: false,
     },
   });
-  await queryInterface.addConstraint('reading_lists', {
-    fields: ['userId', 'blogId'],
-    type: 'unique',
-    name: 'reading_lists_user_blog_unique',
-  });
 };
 
 const down = async ({ context: queryInterface }) => {
-  await queryInterface.dropTable('reading_lists');
+  await queryInterface.dropTable('sessions');
 };
 
 module.exports = { up, down };

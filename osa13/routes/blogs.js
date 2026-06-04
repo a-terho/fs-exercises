@@ -37,7 +37,7 @@ router.get('/', async (req, res) => {
 
 router.post('/', userExtractor, async (req, res) => {
   const { title, author, url, likes, year } = req.body || {};
-  const userId = req.userId;
+  const userId = req.user.id;
 
   const blog = await Blog.create({ title, author, url, likes, year, userId });
   return res.status(201).json(blog);
@@ -53,7 +53,8 @@ const blogFinder = async (req, res, next) => {
 };
 
 router.delete('/:id', userExtractor, blogFinder, async (req, res) => {
-  if (req.blog.userId !== req.userId) {
+  const userId = req.user.id;
+  if (req.blog.userId !== userId) {
     return res
       .status(401)
       .json({ error: 'only the blog creator can delete their blog' });

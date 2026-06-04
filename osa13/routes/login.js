@@ -5,7 +5,7 @@ const { SECRET } = require('../util/config.js');
 const router = require('express').Router();
 module.exports = router;
 
-const { User } = require('../models');
+const { User, Session } = require('../models');
 
 router.post('/', async (req, res) => {
   const { username, password } = req.body || {};
@@ -25,9 +25,11 @@ router.post('/', async (req, res) => {
   };
 
   const token = jwt.sign(payload, SECRET);
+  await Session.create({ token, username: user.username });
 
   return res.status(200).json({
     token,
     username: user.username,
+    name: user.name,
   });
 });
