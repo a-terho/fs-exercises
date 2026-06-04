@@ -1,6 +1,7 @@
 const Blog = require('./blog.js');
 const User = require('./user.js');
 const Readinglist = require('./readinglist.js');
+const Session = require('./session.js');
 
 User.hasMany(Blog);
 Blog.belongsTo(User);
@@ -15,7 +16,11 @@ Blog.belongsToMany(User, { through: Readinglist });
 const reset = async () => {
   await Blog.destroy({ truncate: true, cascade: true });
   await User.destroy({ truncate: true, cascade: true });
-  console.log('Database tables for blogs and users were reset');
+  await Readinglist.destroy({ truncate: true, cascade: true });
+  await Session.destroy({ truncate: true, cascade: true });
+  console.log(
+    'Database tables for blogs, users, reading_lists and sessions were reset',
+  );
 };
 
-module.exports = { Blog, User, reset };
+module.exports = { Blog, Readinglist, Session, User, reset };

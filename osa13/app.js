@@ -7,6 +7,7 @@ const { reset } = require('./models');
 const blogRouter = require('./routes/blogs.js');
 const userRouter = require('./routes/users.js');
 const loginRouter = require('./routes/login.js');
+const logoutRouter = require('./routes/logout.js');
 const authorRouter = require('./routes/authors.js');
 const readinglistRouter = require('./routes/readinglists.js');
 const { errorHandler } = require('./util/middleware.js');
@@ -22,6 +23,7 @@ app.post('/api/reset', async (_, res) => {
 app.use('/api/blogs', blogRouter);
 app.use('/api/users', userRouter);
 app.use('/api/login', loginRouter);
+app.use('/api/logout', logoutRouter);
 app.use('/api/authors', authorRouter);
 app.use('/api/readinglists', readinglistRouter);
 
