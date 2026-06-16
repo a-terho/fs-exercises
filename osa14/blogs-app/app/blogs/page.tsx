@@ -1,7 +1,7 @@
 import { getBlogs } from '@/app/services/blogs';
 
 const Blogs = () => {
-  const blogs = getBlogs();
+  const blogs = getBlogs().sort((a, b) => b.likes - a.likes);
   return (
     <>
       <h2>blogs</h2>
