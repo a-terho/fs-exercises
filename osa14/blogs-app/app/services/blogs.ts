@@ -75,8 +75,14 @@ const blogs: Blog[] = [
 
 const id = () => Math.random().toString(16).slice(2, 11);
 
-export const getBlogs = (): Blog[] => {
-  return blogs;
+export const getBlogs = (filter?: string): Blog[] => {
+  if (filter) {
+    return blogs.filter(
+      (b) => b.title.toLowerCase().search(filter.toLowerCase()) !== -1,
+    );
+  } else {
+    return blogs;
+  }
 };
 
 interface BlogInput {

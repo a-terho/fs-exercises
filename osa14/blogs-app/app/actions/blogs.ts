@@ -22,3 +22,12 @@ export const sendBlogLike = async (formData: FormData) => {
   revalidatePath(`/blogs/${id}`);
   revalidatePath('/blogs');
 };
+
+export const searchBlogs = async (formData: FormData) => {
+  const query = formData.get('query');
+  if (typeof query === 'string' && query.trim() !== '') {
+    redirect(`/blogs?q=${query}`);
+  } else {
+    redirect('/blogs');
+  }
+};
