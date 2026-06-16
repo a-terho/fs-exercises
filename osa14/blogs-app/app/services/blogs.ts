@@ -93,3 +93,8 @@ export const addBlog = ({ title, author, url }: BlogInput) => {
 export const getBlog = (id: string): Blog | undefined => {
   return blogs.find((b) => b.id === id);
 };
+
+export const likeBlog = (id: string) => {
+  const blog = blogs.find((b) => b.id === id);
+  if (blog) blog.likes += 1;
+};

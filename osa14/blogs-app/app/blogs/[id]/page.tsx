@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import { sendBlogLike } from '@/app/actions/blogs';
 import { getBlog } from '@/app/services/blogs';
 
 interface Props {
@@ -14,6 +15,10 @@ const BlogPage = async ({ params }: Props) => {
   return (
     <>
       <h2>{blog.title}</h2>
+      <form action={sendBlogLike}>
+        <input type="hidden" name="id" value={blog.id} />
+        <input type="submit" value="Like" />
+      </form>
       <p>
         by {blog.author} with {blog.likes} likes
       </p>
