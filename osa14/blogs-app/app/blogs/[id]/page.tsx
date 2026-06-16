@@ -1,0 +1,25 @@
+import { notFound } from 'next/navigation';
+import { getBlog } from '@/app/services/blogs';
+
+interface Props {
+  params: Promise<{ id: string }>;
+}
+
+const BlogPage = async ({ params }: Props) => {
+  const { id } = await params;
+
+  const blog = getBlog(id);
+  if (!blog) return notFound();
+
+  return (
+    <>
+      <h2>{blog.title}</h2>
+      <p>
+        by {blog.author} with {blog.likes} likes
+      </p>
+      <a href={blog.url}>{blog.url}</a>
+    </>
+  );
+};
+
+export default BlogPage;

@@ -89,3 +89,7 @@ export const addBlog = ({ title, author, url }: BlogInput) => {
   if (title.trim() !== '' && author.trim() !== '' && url.trim() !== '')
     blogs.push({ id: id(), title, author, url, likes: 0 });
 };
+
+export const getBlog = (id: string): Blog | undefined => {
+  return blogs.find((b) => b.id === id);
+};

@@ -8,8 +8,9 @@ const Blogs = () => {
       <ul>
         {blogs.map((blog) => (
           <li key={blog.id}>
-            <a href={blog.url}>{blog.title}</a> by {blog.author} ({blog.likes}{' '}
-            likes)
+            <a href={`/blogs/${blog.id}`}>
+              {blog.title} by {blog.author} ({blog.likes} likes)
+            </a>
           </li>
         ))}
       </ul>
