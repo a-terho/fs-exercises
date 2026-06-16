@@ -9,7 +9,8 @@ export default function RootLayout({
     <html>
       <body>
         <nav>
-          <Link href="/">home</Link> <Link href="/blogs">blogs</Link>
+          <Link href="/">home</Link> <Link href="/blogs">blogs</Link>{' '}
+          <Link href="/blogs/new">add blog</Link>
         </nav>
         {children}
       </body>
