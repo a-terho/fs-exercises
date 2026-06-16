@@ -1,6 +1,6 @@
 cicd-demo
-containers
 luentodemot
+osa12
 node_modules
 *.log
 *.sync-conflict-*-*-*.*
