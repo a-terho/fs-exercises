@@ -5,8 +5,7 @@
     "osa*/*",
     "!osa8/*",
     "!osa9/*",
-    "!containers/",
-    "!cicd-demo/"
+    "!osa14/*"
   ],
   "overrides": {
     "apollo-server-koa": {

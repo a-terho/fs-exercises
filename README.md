@@ -24,3 +24,4 @@ edistyminen...
 - [x] osa11 (ci/cd)
 - [x] osa12 (containers) löytyy [täältä (fs-containers)](https://github.com/a-terho/fs-containers)
 - [x] osa13 (relational databases)
+- [ ] osa14 (next.js)
