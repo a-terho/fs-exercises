@@ -1,4 +1,4 @@
-import { searchBlogs } from '../actions/blogs';
+import { searchBlogs } from '@/app/actions/blogs';
 import { getBlogs } from '@/app/services/blogs';
 
 interface Props {
@@ -9,7 +9,7 @@ const Blogs = async ({ searchParams }: Props) => {
   const { q } = await searchParams;
   const query = typeof q === 'string' ? q : undefined;
 
-  const blogs = getBlogs(query).sort((a, b) => b.likes - a.likes);
+  const blogs = (await getBlogs(query)).sort((a, b) => b.likes - a.likes);
 
   return (
     <>

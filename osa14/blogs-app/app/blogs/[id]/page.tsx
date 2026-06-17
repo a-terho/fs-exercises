@@ -9,7 +9,7 @@ interface Props {
 const BlogPage = async ({ params }: Props) => {
   const { id } = await params;
 
-  const blog = getBlog(id);
+  const blog = await getBlog(Number(id));
   if (!blog) return notFound();
 
   return (
