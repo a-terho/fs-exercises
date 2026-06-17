@@ -1,6 +1,8 @@
 import { searchBlogs } from '@/app/actions/blogs';
 import { getBlogs } from '@/app/services/blogs';
 
+import BlogList from '@/app/BlogList';
+
 interface Props {
   searchParams: Promise<{ q: string }>;
 }
@@ -23,17 +25,7 @@ const Blogs = async ({ searchParams }: Props) => {
           Filtering results with keyword <strong>{query}</strong>
         </p>
       ) : null}
-      <ul>
-        {blogs.length === 0
-          ? 'No blogs.'
-          : blogs.map((blog) => (
-              <li key={blog.id}>
-                <a href={`/blogs/${blog.id}`}>
-                  {blog.title} by {blog.author} ({blog.likes} likes)
-                </a>
-              </li>
-            ))}
-      </ul>
+      <BlogList blogs={blogs} />
     </>
   );
 };
