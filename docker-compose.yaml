@@ -23,6 +23,7 @@ services:
       - '19001-19002:19001-19002' # expo dev tools
       - '5001:5001' # rate-repository-api
       - '127.0.0.1:8080:8080' # webpack dev
+      - '127.0.0.1:4983:4983' # drizzle-kit studio
     environment:
       - NODE_ENV=development
       # MongoDB memory serverin tuki
