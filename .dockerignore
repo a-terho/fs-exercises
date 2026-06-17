@@ -14,7 +14,9 @@ dev.sh
 **/.env
 **/.git
 **/.gitattributes
+**/.github
 **/.keep
+**/.next
 **/.prettierrc
 **/.vscode
 **/.DS_Store
