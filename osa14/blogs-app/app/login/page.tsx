@@ -1,11 +1,11 @@
 'use client';
 
 import { type CSSProperties, useState } from 'react';
-import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 
 const formStyle: CSSProperties = {
-  margin: '10px',
+  marginTop: '10px',
   display: 'flex',
   flexDirection: 'column',
   rowGap: '5px',
@@ -26,10 +26,8 @@ const LoginPage = () => {
     const result = await signIn('credentials', {
       username: formData.get('username'),
       password: formData.get('password'),
-      redirect: false, // avoid throwing redirection error
+      redirect: false, // avoid automatic redirections
     });
-
-    console.log(result);
 
     if (result?.error) {
       if (result.error === 'CredentialsSignin') {
@@ -52,7 +50,7 @@ const LoginPage = () => {
         Password <input name="password" type="password" />
       </label>
       <button style={buttonStyle}>Login</button>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error ? <p style={{ color: 'red' }}>{error}</p> : null}
     </form>
   );
 };

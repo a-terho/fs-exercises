@@ -6,6 +6,10 @@ import { useSession, signOut } from 'next-auth/react';
 const NavBar = () => {
   const { data: session } = useSession();
 
+  const logout = async () => {
+    await signOut({ redirectTo: '/' });
+  };
+
   return (
     <nav>
       <>
@@ -17,7 +21,7 @@ const NavBar = () => {
           <Link href="/blogs/new">add blog</Link>
           {' | '}
           logged in as <em>{session.user?.email}</em>{' '}
-          <button onClick={() => signOut()}>logout</button>
+          <button onClick={logout}>logout</button>
         </>
       ) : (
         <Link href="/login">login</Link>

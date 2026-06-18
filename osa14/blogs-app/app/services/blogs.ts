@@ -1,6 +1,6 @@
 import { eq, ilike, sql } from 'drizzle-orm';
 
-import { type Blog, type BlogInput } from '../types';
+import { type Blog, type BlogInput } from '@/types';
 import { db } from '@/db';
 import { blogs } from '@/db/schema';
 
