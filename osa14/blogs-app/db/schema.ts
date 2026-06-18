@@ -18,6 +18,7 @@ export const users = schema.table('users', {
   id: serial('id').primaryKey(),
   username: text('username').notNull(),
   name: text('name').notNull(),
+  passwordHash: text('password_hash').notNull().default(''),
 });
 
 // allow user.blogs access (export is required!)

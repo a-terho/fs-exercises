@@ -1,0 +1,1 @@
+ALTER TABLE "blogs_app"."users" ADD COLUMN "password_hash" text DEFAULT '' NOT NULL;

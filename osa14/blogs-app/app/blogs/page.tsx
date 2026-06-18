@@ -1,7 +1,7 @@
 import { searchBlogs } from '@/app/actions/blogs';
 import { getBlogs } from '@/app/services/blogs';
 
-import BlogList from '@/app/BlogList';
+import BlogList from '@/app/components/BlogList';
 
 interface Props {
   searchParams: Promise<{ q: string }>;

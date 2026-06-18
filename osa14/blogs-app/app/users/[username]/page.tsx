@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 
-import BlogList from '@/app/BlogList';
+import BlogList from '@/app/components/BlogList';
 import { getUserByUsername } from '@/app/services/users';
 
 interface Params {

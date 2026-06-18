@@ -1,4 +1,4 @@
-import { type Blog } from './types';
+import { type Blog } from '@/types';
 
 interface Props {
   blogs: Blog[];
