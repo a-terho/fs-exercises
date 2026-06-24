@@ -24,7 +24,10 @@ const NavBar = () => {
           <button onClick={logout}>logout</button>
         </>
       ) : (
-        <Link href="/login">login</Link>
+        <>
+          <Link href="/login">login</Link>{' '}
+          <Link href="/register">register</Link>
+        </>
       )}
     </nav>
   );

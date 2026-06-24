@@ -49,7 +49,9 @@ const LoginPage = () => {
       <label>
         Password <input name="password" type="password" />
       </label>
-      <button style={buttonStyle}>Login</button>
+      <button type="submit" style={buttonStyle}>
+        Login
+      </button>
       {error ? <p style={{ color: 'red' }}>{error}</p> : null}
     </form>
   );
