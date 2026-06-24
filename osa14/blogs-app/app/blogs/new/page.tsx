@@ -1,4 +1,6 @@
-import { type CSSProperties } from 'react';
+'use client';
+
+import { type CSSProperties, useActionState } from 'react';
 import { newBlog } from '@/app/actions/blogs';
 
 const formStyle: CSSProperties = {
@@ -10,10 +12,12 @@ const formStyle: CSSProperties = {
 };
 
 const NewBlog = () => {
+  const [state, formAction] = useActionState(newBlog, { error: '' });
+
   return (
     <>
       <h2>add blog</h2>
-      <form action={newBlog}>
+      <form action={formAction}>
         <div style={formStyle}>
           <label>
             Title: <input type="text" name="title" />
@@ -25,6 +29,7 @@ const NewBlog = () => {
             URL: <input type="text" name="url" />
           </label>
           <input type="submit" value="add" />
+          {state?.error ? <p style={{ color: 'red ' }}>{state.error}</p> : null}
         </div>
       </form>
     </>
