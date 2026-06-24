@@ -2,17 +2,28 @@
 
 import { type CSSProperties, useActionState } from 'react';
 import { newBlog } from '@/app/actions/blogs';
+import { type BlogFormState } from '@/types';
+import ErrorMessage from '@/app/components/ErrorMessage';
 
 const formStyle: CSSProperties = {
-  maxWidth: '210px',
+  maxWidth: '250px',
   display: 'flex',
   flexDirection: 'column',
   rowGap: '5px',
   alignItems: 'flex-end',
 };
 
+const initialState: BlogFormState = {
+  errors: {},
+  values: {
+    title: '',
+    author: '',
+    url: '',
+  },
+};
+
 const NewBlog = () => {
-  const [state, formAction] = useActionState(newBlog, { error: '' });
+  const [state, formAction] = useActionState(newBlog, initialState);
 
   return (
     <>
@@ -20,16 +31,29 @@ const NewBlog = () => {
       <form action={formAction}>
         <div style={formStyle}>
           <label>
-            Title: <input type="text" name="title" />
+            Title:{' '}
+            <input
+              type="text"
+              name="title"
+              defaultValue={state.values?.title}
+            />
           </label>
+          <ErrorMessage text={state.errors?.title} />
           <label>
-            Author: <input type="text" name="author" />
+            Author:{' '}
+            <input
+              type="text"
+              name="author"
+              defaultValue={state.values?.author}
+            />
           </label>
+          <ErrorMessage text={state.errors?.author} />
           <label>
-            URL: <input type="text" name="url" />
+            URL:{' '}
+            <input type="text" name="url" defaultValue={state.values?.url} />
           </label>
+          <ErrorMessage text={state.errors?.url} />
           <input type="submit" value="add" />
-          {state?.error ? <p style={{ color: 'red ' }}>{state.error}</p> : null}
         </div>
       </form>
     </>

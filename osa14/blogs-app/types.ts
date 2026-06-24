@@ -11,3 +11,14 @@ export interface BlogInput {
   author: string;
   url: string;
 }
+
+export interface BlogFormErrors {
+  title?: string;
+  author?: string;
+  url?: string;
+}
+
+export interface BlogFormState {
+  errors: BlogFormErrors;
+  values: BlogInput;
+}
