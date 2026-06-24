@@ -32,11 +32,7 @@ const NewBlog = () => {
         <div style={formStyle}>
           <label>
             Title:{' '}
-            <input
-              type="text"
-              name="title"
-              defaultValue={state.values?.title}
-            />
+            <input type="text" name="title" defaultValue={state.values.title} />
           </label>
           <ErrorMessage text={state.errors?.title} />
           <label>
@@ -44,13 +40,13 @@ const NewBlog = () => {
             <input
               type="text"
               name="author"
-              defaultValue={state.values?.author}
+              defaultValue={state.values.author}
             />
           </label>
           <ErrorMessage text={state.errors?.author} />
           <label>
             URL:{' '}
-            <input type="text" name="url" defaultValue={state.values?.url} />
+            <input type="text" name="url" defaultValue={state.values.url} />
           </label>
           <ErrorMessage text={state.errors?.url} />
           <input type="submit" value="add" />

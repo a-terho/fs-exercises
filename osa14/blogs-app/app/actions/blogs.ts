@@ -6,7 +6,10 @@ import { revalidatePath } from 'next/cache';
 
 import { addBlog, likeBlog } from '@/app/services/blogs';
 
-export const newBlog = async (prevState: BlogFormState, formData: FormData) => {
+export const newBlog = async (
+  _prevState: BlogFormState,
+  formData: FormData,
+) => {
   const errors: BlogFormErrors = {};
 
   const title = formData.get('title') as string;

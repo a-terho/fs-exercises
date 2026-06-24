@@ -22,3 +22,21 @@ export interface BlogFormState {
   errors: BlogFormErrors;
   values: BlogInput;
 }
+
+export interface RegisterInput {
+  username: string;
+  name: string;
+  password: string;
+  passwordConfirm: string;
+}
+
+export interface RegisterFormErrors {
+  username?: string;
+  name?: string;
+  password?: string;
+}
+
+export interface RegisterFormState {
+  errors: RegisterFormErrors;
+  values: RegisterInput;
+}
