@@ -15,14 +15,16 @@ const BlogPage = async ({ params }: Props) => {
   return (
     <>
       <h2>{blog.title}</h2>
-      <form action={sendBlogLike}>
+      <form action={sendBlogLike} className="mb-5">
         <input type="hidden" name="id" value={blog.id} />
         <input type="submit" value="Like" />
       </form>
       <p>
         by {blog.author} with {blog.likes} likes
       </p>
-      <a href={blog.url}>{blog.url}</a>
+      <a href={blog.url} className="underline hover:text-blue-600">
+        {blog.url}
+      </a>
     </>
   );
 };

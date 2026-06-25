@@ -1,7 +1,7 @@
 'use client';
 
-import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
+import NavLink from './NavLink';
 
 const NavBar = () => {
   const { data: session } = useSession();
@@ -11,20 +11,29 @@ const NavBar = () => {
   };
 
   return (
-    <nav>
+    <nav className="flex gap-4 p-5">
       <>
-        <Link href="/">home</Link> <Link href="/blogs">blogs</Link>{' '}
-        <Link href="/users">users</Link>
-      </>{' '}
+        <NavLink href="/">home</NavLink> <NavLink href="/blogs">blogs</NavLink>{' '}
+        <NavLink href="/users">users</NavLink>{' '}
+        {session ? <NavLink href="/blogs/new">add blog</NavLink> : null}
+      </>
       {session ? (
-        <>
-          <Link href="/blogs/new">add blog</Link>
-          {' | '}
-          logged in as <em>{session.user?.email}</em>{' '}
-          <button onClick={logout}>logout</button>
-        </>
+        <div className="ml-auto flex gap-4">
+          <span>
+            logged in as <em>{session.user?.email}</em>
+          </span>{' '}
+          <button
+            onClick={logout}
+            className="hover:text-gray-600 hover:bg-gray-300 px-2 rounded border"
+          >
+            logout
+          </button>
+        </div>
       ) : (
-        <Link href="/login">login</Link>
+        <div className="ml-auto flex gap-4">
+          <NavLink href="/login">login</NavLink>{' '}
+          <NavLink href="/register">register</NavLink>
+        </div>
       )}
     </nav>
   );

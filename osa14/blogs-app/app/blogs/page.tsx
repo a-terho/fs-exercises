@@ -16,15 +16,17 @@ const Blogs = async ({ searchParams }: Props) => {
   return (
     <>
       <h2>blogs</h2>
-      <form action={searchBlogs}>
-        <input type="text" name="query" defaultValue={query} />
-        <input type="submit" value="Search" />
-      </form>
-      {query ? (
-        <p>
-          Filtering results with keyword <strong>{query}</strong>
-        </p>
-      ) : null}
+      <div className="mb-4">
+        <form action={searchBlogs} className="flex gap-1">
+          <input type="text" name="query" defaultValue={query} />
+          <input type="submit" value="Search" />
+        </form>
+        {query ? (
+          <p className="py-1">
+            Filtering results with keyword <strong>{query}</strong>
+          </p>
+        ) : null}
+      </div>
       <BlogList blogs={blogs} />
     </>
   );
