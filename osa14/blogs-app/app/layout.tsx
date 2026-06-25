@@ -17,7 +17,7 @@ export default function RootLayout({
           <NotificationProvider>
             <NavBar />
             <Notification />
-            <div className="px-2">{children}</div>
+            <div className="px-5">{children}</div>
           </NotificationProvider>
         </AuthSessionProvider>
       </body>

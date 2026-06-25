@@ -35,7 +35,7 @@ const BlogPage = async ({ params }: Props) => {
           ) : (
             <button className="rounded px-1 border-2 self-start">
               <a href="/me#reading-list">
-                ✓ reading list: {readingListEntry.read ? 'read' : 'unread'}
+                ✓ {readingListEntry.read ? 'read' : 'reading list'}
               </a>
             </button>
           )

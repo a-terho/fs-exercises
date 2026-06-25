@@ -2,7 +2,12 @@
 
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
-import { addBlog, likeBlog, addToReadingList } from '@/app/services/blogs';
+import {
+  addBlog,
+  likeBlog,
+  addToReadingList,
+  markRead,
+} from '@/app/services/blogs';
 import type { BlogFormState, BlogFormErrors } from '@/types';
 
 export const newBlog = async (
@@ -57,9 +62,17 @@ export const searchBlogs = async (formData: FormData) => {
 };
 
 export const addBlogToReadingList = async (formData: FormData) => {
-  const id = formData.get('id') as string;
+  const blogId = formData.get('id');
 
-  await addToReadingList(Number(id));
-  revalidatePath(`/blogs/${id}`);
+  await addToReadingList(Number(blogId));
+  revalidatePath(`/blogs/${blogId}`);
+  revalidatePath('/me');
+};
+
+export const markBlogRead = async (formData: FormData) => {
+  const blogId = formData.get('id');
+
+  await markRead(Number(blogId));
+  revalidatePath(`/blogs/${blogId}`);
   revalidatePath('/me');
 };

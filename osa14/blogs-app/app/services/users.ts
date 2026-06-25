@@ -23,7 +23,7 @@ export const getUserByUsername = async (username: string) => {
   return db.query.users.findFirst({
     where: eq(users.username, username),
     columns: { passwordHash: false, apiToken: false },
-    with: { blogs: true },
+    with: { blogs: { columns: { userId: false } } },
   });
 };
 
@@ -33,7 +33,7 @@ export const getUserDataById = async (userId: number) => {
   return db.query.users.findFirst({
     where: eq(users.id, userId),
     with: {
-      blogs: true,
+      blogs: { columns: { userId: false } },
       readingList: {
         with: {
           blog: {

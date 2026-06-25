@@ -35,6 +35,10 @@ body {
     @apply text-xl py-3;
   }
 
+  h4 {
+    @apply font-bold py-3;
+  }
+
   input[type='text'],
   input[type='password'] {
     border: 2px solid var(--foreground);
@@ -43,6 +47,6 @@ body {
 
   input[type='submit'] {
     border: 2px solid var(--foreground);
-    @apply rounded cursor-pointer px-2 bg-blue-200 dark:bg-blue-800 hover:bg-blue-500 hover:text-white;
+    @apply rounded cursor-pointer px-2 bg-blue-200 dark:bg-blue-800 text-foreground hover:bg-blue-500 hover:text-white;
   }
 }
