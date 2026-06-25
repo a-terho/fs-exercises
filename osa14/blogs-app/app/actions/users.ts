@@ -2,7 +2,7 @@
 
 import { redirect } from 'next/navigation';
 import { addUser, getUserByUsername } from '@/app/services/users';
-import { RegisterFormErrors, RegisterFormState } from '@/types';
+import type { RegisterFormErrors, RegisterFormState } from '@/types';
 
 export const registerUser = async (
   _prevState: RegisterFormState,
@@ -23,7 +23,7 @@ export const registerUser = async (
   const password = formData.get('password') as string;
   const passwordConfirm = formData.get('password-confirm') as string;
   if (!password || password.length < 4) {
-    errors.password = 'Password must be at least 4 characters long';
+    errors.password = 'Password must be at least 4 characters long!';
   } else if (!(password && passwordConfirm) || password !== passwordConfirm) {
     errors.password = 'Passwords must match!';
   }

@@ -1,10 +1,9 @@
 'use server';
 
-import { type BlogFormState, type BlogFormErrors } from '@/types';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
-
 import { addBlog, likeBlog } from '@/app/services/blogs';
+import type { BlogFormState, BlogFormErrors } from '@/types';
 
 export const newBlog = async (
   _prevState: BlogFormState,

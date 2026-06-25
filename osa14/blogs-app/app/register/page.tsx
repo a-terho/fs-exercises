@@ -1,19 +1,27 @@
 'use client';
 
-import { type CSSProperties, useActionState } from 'react';
+import { useActionState } from 'react';
 import { registerUser } from '@/app/actions/users';
 import { RegisterFormState } from '@/types';
 import ErrorMessage from '@/app/components/ErrorMessage';
 
-const formStyle: CSSProperties = {
-  marginTop: '10px',
-  display: 'flex',
-  flexDirection: 'column',
-  rowGap: '5px',
+const formStyle: React.CSSProperties = {
+  display: 'inline-grid',
+  gridTemplateColumns: 'max-content 1fr',
 };
 
-const buttonStyle: CSSProperties = {
-  alignSelf: 'flex-start',
+const fieldStyle: React.CSSProperties = {
+  display: 'grid',
+  gridColumn: '-1 / 1',
+  gridTemplateColumns: 'subgrid',
+};
+
+const errorStyle: React.CSSProperties = {
+  gridColumn: '-1 / 1',
+  width: 0,
+  minWidth: '100%',
+  whiteSpace: 'nowrap',
+  textAlign: 'center',
 };
 
 const initialState: RegisterFormState = {
@@ -31,39 +39,43 @@ const RegisterPage = () => {
 
   return (
     <form action={formAction} style={formStyle}>
-      <label>
-        Username{' '}
+      <label style={fieldStyle} className="gap-2">
+        username{' '}
         <input
           name="username"
           type="text"
           defaultValue={state.values.username}
         />
       </label>
-      <ErrorMessage text={state.errors?.username} />
-      <label>
-        Name <input name="name" type="text" defaultValue={state.values.name} />
+      <div style={errorStyle}>
+        <ErrorMessage text={state.errors?.username} />
+      </div>
+      <label style={fieldStyle} className="gap-2">
+        name <input name="name" type="text" defaultValue={state.values.name} />
       </label>
-      <ErrorMessage text={state.errors?.name} />
-      <label>
-        Password{' '}
+      <div style={errorStyle}>
+        <ErrorMessage text={state.errors?.name} />
+      </div>
+      <label style={fieldStyle} className="gap-2">
+        password{' '}
         <input
           name="password"
           type="password"
           defaultValue={state.values.password}
         />
       </label>
-      <label>
-        Confirm password{' '}
+      <label style={fieldStyle} className="gap-2">
+        confirm password{' '}
         <input
           name="password-confirm"
           type="password"
           defaultValue={state.values.passwordConfirm}
         />
       </label>
-      <ErrorMessage text={state.errors?.password} />
-      <button type="submit" style={buttonStyle}>
-        Register
-      </button>
+      <div style={errorStyle}>
+        <ErrorMessage text={state.errors?.password} />
+      </div>
+      <input type="submit" value="register" />
     </form>
   );
 };

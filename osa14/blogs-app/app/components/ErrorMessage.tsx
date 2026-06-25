@@ -1,7 +1,6 @@
-import { type CSSProperties } from 'react';
-
-const errorStyle: CSSProperties = {
+const errorStyle: React.CSSProperties = {
   color: 'red',
+  margin: 0,
 };
 
 const ErrorMessage = ({ text }: { text?: string }) => {

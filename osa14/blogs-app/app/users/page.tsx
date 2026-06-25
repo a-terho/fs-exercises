@@ -11,9 +11,12 @@ const Users = async () => {
   return (
     <div>
       <h2>users</h2>
-      <ul>
+      <ul className="mx-2 space-y-1">
         {users.map((user) => (
-          <li key={user.id}>
+          <li
+            key={user.id}
+            className="p-1 w-fit rounded bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-500"
+          >
             <Link href={`/users/${user.username}`}>{user.name}</Link>
           </li>
         ))}

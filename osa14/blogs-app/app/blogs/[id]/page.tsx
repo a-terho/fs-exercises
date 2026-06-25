@@ -15,7 +15,7 @@ const BlogPage = async ({ params }: Props) => {
   return (
     <>
       <h2>{blog.title}</h2>
-      <form action={sendBlogLike}>
+      <form action={sendBlogLike} className="mb-5">
         <input type="hidden" name="id" value={blog.id} />
         <input type="submit" value="Like" />
       </form>
