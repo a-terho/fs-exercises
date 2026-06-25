@@ -8,18 +8,44 @@ export const getUsers = async () => {
   return db.query.users.findMany();
 };
 
+// fetches user and their unpopulated reading list
+// useful for checking whether given user exists
+export const getUserById = async (userId: number) => {
+  if (isNaN(userId)) return undefined;
+  return db.query.users.findFirst({
+    where: eq(users.id, userId),
+    with: { readingList: true },
+  });
+};
+
+// fetches user and all their blogs
 export const getUserByUsername = async (username: string) => {
   return db.query.users.findFirst({
     where: eq(users.username, username),
+    columns: { passwordHash: false, apiToken: false },
     with: { blogs: true },
   });
 };
 
-export const getUserById = async (userId: number) => {
-  if (isNaN(userId)) return null;
-  return db.query.users.findFirst({ where: eq(users.id, userId) });
+// fetches all user data including join queries
+export const getUserDataById = async (userId: number) => {
+  if (isNaN(userId)) return undefined;
+  return db.query.users.findFirst({
+    where: eq(users.id, userId),
+    with: {
+      blogs: true,
+      readingList: {
+        with: {
+          blog: {
+            columns: { userId: false },
+          },
+        },
+      },
+    },
+  });
 };
 
+// fetches user and blogs while selecting API safe fields in response
 export const getUserByAPIToken = async (apiToken: string) => {
   return db.query.users.findFirst({
     where: eq(users.apiToken, apiToken),
@@ -35,12 +61,6 @@ export const addUser = async (
 ) => {
   const passwordHash = await bcrypt.hash(password, 10);
   return db.insert(users).values({ username, name, passwordHash });
-};
-
-export const getUserAPIToken = async (userId: number) => {
-  const user = await getUserById(userId);
-  if (!user) return ''; // default is empty string
-  return user.apiToken;
 };
 
 export const generateAPIToken = async (userId: number) => {
