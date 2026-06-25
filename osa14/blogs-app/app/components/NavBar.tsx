@@ -22,6 +22,7 @@ const NavBar = () => {
           <span>
             logged in as <em>{session.user?.email}</em>
           </span>{' '}
+          <NavLink href="/me">me</NavLink>{' '}
           <button
             onClick={logout}
             className="hover:text-gray-600 hover:bg-gray-300 px-2 rounded border"

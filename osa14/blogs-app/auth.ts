@@ -1,10 +1,19 @@
-import NextAuth from 'next-auth';
+import NextAuth, { type DefaultSession } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 
 import bcrypt from 'bcryptjs';
 import { eq } from 'drizzle-orm';
 import { db } from '@/db';
 import { users } from '@/db/schema';
+
+// expand Session type with id field
+declare module 'next-auth' {
+  interface Session {
+    user: {
+      id: string;
+    } & DefaultSession['user'];
+  }
+}
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -30,15 +39,31 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         if (!validated) return null;
 
-        // email field is replaced with username
         return {
+          // adding id here overrides the default id, but it still needs
+          // to be added to session.user seperately to be accessible
           id: String(user.id),
           name: user.name,
+          // email field is replaced with username
           email: user.username,
         };
       },
     }),
   ],
+  callbacks: {
+    jwt({ token, user }) {
+      // user is only available during sign-in
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
+    session({ session, token }) {
+      // pass user id from token to the session at each request
+      session.user.id = token.id as string;
+      return session;
+    },
+  },
   pages: { signIn: '/login' },
   session: { strategy: 'jwt' },
 });

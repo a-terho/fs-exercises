@@ -1,7 +1,13 @@
 'use server';
 
 import { redirect } from 'next/navigation';
-import { addUser, getUserByUsername } from '@/app/services/users';
+import { revalidatePath } from 'next/cache';
+import { auth } from '@/auth';
+import {
+  addUser,
+  generateAPIToken,
+  getUserByUsername,
+} from '@/app/services/users';
 import type { RegisterFormErrors, RegisterFormState } from '@/types';
 
 export const registerUser = async (
@@ -42,4 +48,16 @@ export const registerUser = async (
 
   await addUser(username, name, password);
   return redirect('/login');
+};
+
+export const newAPIToken = async (formData: FormData) => {
+  const session = await auth();
+  if (!session) return;
+
+  // only allow user in current session to generate API tokens for themselves
+  const userId = formData.get('user-id');
+  if (userId !== session.user?.id) return;
+
+  await generateAPIToken(Number(userId));
+  return revalidatePath('/me');
 };

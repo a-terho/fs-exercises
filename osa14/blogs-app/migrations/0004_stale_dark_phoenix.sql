@@ -1,0 +1,1 @@
+ALTER TABLE "blogs_app"."users" ADD COLUMN "api_token" text DEFAULT '' NOT NULL;
