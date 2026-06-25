@@ -36,6 +36,20 @@
       "when": 1782377321503,
       "tag": "0004_stale_dark_phoenix",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1782386790726,
+      "tag": "0005_open_swordsman",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1782391120145,
+      "tag": "0006_plain_the_enforcers",
+      "breakpoints": true
     }
   ]
 }

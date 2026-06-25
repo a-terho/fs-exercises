@@ -43,6 +43,6 @@ body {
 
   input[type='submit'] {
     border: 2px solid var(--foreground);
-    @apply rounded px-2 bg-blue-200 dark:bg-blue-800 hover:bg-blue-500 hover:text-white;
+    @apply rounded cursor-pointer px-2 bg-blue-200 dark:bg-blue-800 hover:bg-blue-500 hover:text-white;
   }
 }

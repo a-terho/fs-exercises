@@ -1,4 +1,11 @@
-import { pgSchema, serial, text, integer } from 'drizzle-orm/pg-core';
+import {
+  pgSchema,
+  serial,
+  text,
+  integer,
+  boolean,
+  unique,
+} from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
 export const schema = pgSchema('blogs_app');
@@ -22,10 +29,27 @@ export const users = schema.table('users', {
   apiToken: text('api_token').notNull().default(''),
 });
 
+export const readingList = schema.table(
+  'reading_list',
+  {
+    id: serial('id').primaryKey(),
+    userId: integer('user_id')
+      .notNull()
+      .references(() => users.id),
+    blogId: integer('blog_id')
+      .notNull()
+      .references(() => blogs.id),
+    read: boolean().notNull().default(false),
+  },
+  // also add unique constraint to disallowe duplicate entries
+  (table) => [unique().on(table.userId, table.blogId)],
+);
+
 // allow user.blogs access (export is required!)
 export const userRelations = relations(users, ({ many }) => {
   return {
     blogs: many(blogs),
+    readingList: many(readingList),
   };
 });
 
@@ -35,6 +59,19 @@ export const blogRelations = relations(blogs, ({ one }) => {
     user: one(users, {
       fields: [blogs.userId],
       references: [users.id],
+    }),
+  };
+});
+
+export const readingListRelations = relations(readingList, ({ one }) => {
+  return {
+    user: one(users, {
+      fields: [readingList.userId],
+      references: [users.id],
+    }),
+    blog: one(blogs, {
+      fields: [readingList.blogId],
+      references: [blogs.id],
     }),
   };
 });
