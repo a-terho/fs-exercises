@@ -1,5 +1,5 @@
 # blogs-app
 
-Tehtävät 14.1 - 14.18
+Tehtävät 14.1 - 14.19
 
 Web app löytyy täältä: https://fs-exercises-blogs-app.vercel.app/
