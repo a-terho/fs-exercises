@@ -1,4 +1,4 @@
-import { eq, ilike } from 'drizzle-orm';
+import { eq, ilike, and } from 'drizzle-orm';
 import { db } from '@/db';
 import { blogs, readingList } from '@/db/schema';
 import { type Blog, type BlogInput } from '@/types';
@@ -43,8 +43,8 @@ export const likeBlog = async (id: number) => {
 };
 
 export const addToReadingList = async (id: number) => {
-  const blog = await getBlog(id);
   const user = await getCurrentUser();
+  const blog = await getBlog(id);
   if (user && blog) {
     await db
       .insert(readingList)
@@ -55,4 +55,24 @@ export const addToReadingList = async (id: number) => {
         set: { read: false },
       });
   }
+};
+
+export const markRead = async (id: number) => {
+  const user = await getCurrentUser();
+  if (!user) return;
+
+  // first find the blog from user's reading list (without additional query)
+  const entry = user.readingList.find((entry) => entry.blogId === id);
+  if (!entry) return;
+
+  // secondly update the read status
+  await db
+    .update(readingList)
+    .set({ read: true })
+    .where(
+      and(
+        eq(readingList.blogId, entry.blogId),
+        eq(readingList.userId, user.id),
+      ),
+    );
 };

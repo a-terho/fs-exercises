@@ -1,9 +1,11 @@
 import { redirect } from 'next/navigation';
 import { auth } from '@/auth';
+import { markBlogRead } from '@/app/actions/blogs';
 import { newAPIToken } from '@/app/actions/users';
-import BlogList from '@/app/components/BlogList';
 import { getUserDataById } from '@/app/services/users';
 import type { Blog } from '@/types';
+
+import BlogList from '@/app/components/BlogList';
 
 const MePage = async () => {
   const session = await auth();
@@ -12,8 +14,23 @@ const MePage = async () => {
   }
 
   const data = await getUserDataById(Number(session.user?.id));
-  const readingListBlogs =
-    (data?.readingList.map((entry) => entry.blog) as Blog[]) || [];
+
+  // parse readingList into two different arrays based on read status
+  const unreadBlogs =
+    data?.readingList.reduce((list: Blog[], entry) => {
+      if (!entry.read) list.push(entry.blog);
+      return list;
+    }, []) || [];
+  const readBlogs =
+    data?.readingList.reduce((list: Blog[], entry) => {
+      if (entry.read) list.push(entry.blog);
+      return list;
+    }, []) || [];
+
+  const buttonAction = {
+    text: 'mark as read',
+    callback: markBlogRead,
+  };
 
   return (
     <>
@@ -46,10 +63,18 @@ const MePage = async () => {
         <hr className="border-t border-foreground my-8 w-100" />
         <div>
           <h3 id="reading-list">reading list</h3>
-          <BlogList
-            blogs={readingListBlogs}
-            emptyMessage="You have no blogs on the reading list."
-          />
+          {unreadBlogs.length > 0 ? (
+            <>
+              <h4>unread ({unreadBlogs.length})</h4>
+              <BlogList blogs={unreadBlogs} buttonAction={buttonAction} />
+            </>
+          ) : null}
+          {readBlogs.length > 0 ? (
+            <>
+              <h4>read ({readBlogs.length})</h4>
+              <BlogList blogs={readBlogs} />
+            </>
+          ) : null}
         </div>
       </div>
     </>
