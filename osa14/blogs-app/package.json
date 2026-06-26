@@ -7,6 +7,7 @@
     "build": "NODE_ENV=production next build",
     "start": "NODE_ENV=production next start",
     "lint": "eslint",
+    "test:dev": "NODE_ENV=test next dev",
     "test:e2e": "NODE_ENV=test playwright test",
     "test:e2e:ui": "NODE_ENV=test playwright test --ui"
   },
