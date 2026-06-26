@@ -82,7 +82,7 @@ const MePage = async () => {
               />
             </div>
           ) : (
-            <div data-testid="no-unread-blogs">No unread blogs.</div>
+            <p data-testid="no-unread-blogs">No unread blogs.</p>
           )}
           {readBlogs.length > 0 ? (
             <>
