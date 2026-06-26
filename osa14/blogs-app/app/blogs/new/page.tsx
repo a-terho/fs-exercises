@@ -1,8 +1,10 @@
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { newBlog } from '@/app/actions/blogs';
 import ErrorMessage from '@/app/components/ErrorMessage';
+import { useNotification } from '@/app/components/NotificationContext';
 import type { BlogFormState } from '@/types';
 
 const formStyle: React.CSSProperties = {
@@ -25,6 +27,7 @@ const errorStyle: React.CSSProperties = {
 };
 
 const initialState: BlogFormState = {
+  success: false,
   errors: {},
   values: {
     title: '',
@@ -35,33 +38,42 @@ const initialState: BlogFormState = {
 
 const NewBlog = () => {
   const [state, formAction] = useActionState(newBlog, initialState);
+  const { showNotification } = useNotification();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (state.success) {
+      showNotification('new blog added');
+      router.push('/blogs');
+    }
+  }, [state, showNotification, router]);
 
   return (
     <>
       <h2>add blog</h2>
       <form action={formAction} style={formStyle}>
         <label style={fieldStyle} className="gap-2">
-          title
+          Title
           <input type="text" name="title" defaultValue={state.values.title} />
         </label>
         <div style={errorStyle}>
           <ErrorMessage text={state.errors?.title} />
         </div>
         <label style={fieldStyle} className="gap-2">
-          author
+          Author
           <input type="text" name="author" defaultValue={state.values.author} />
         </label>
         <div style={errorStyle}>
           <ErrorMessage text={state.errors?.author} />
         </div>
         <label style={fieldStyle} className="gap-2">
-          url
+          URL
           <input type="text" name="url" defaultValue={state.values.url} />
         </label>
         <div style={errorStyle}>
           <ErrorMessage text={state.errors?.url} />
         </div>
-        <input type="submit" value="add" />
+        <input data-testid="create-blog-button" type="submit" value="Create" />
       </form>
     </>
   );

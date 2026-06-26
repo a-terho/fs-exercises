@@ -1,14 +1,22 @@
-import { eq, ilike, and } from 'drizzle-orm';
+import { eq, ilike, and, count } from 'drizzle-orm';
 import { db } from '@/db';
 import { blogs, readingList } from '@/db/schema';
 import { type Blog, type BlogInput } from '@/types';
 import { getCurrentUser } from './session';
+import { getUserById } from './users';
 
 export const getBlogs = async (filter?: string): Promise<Blog[]> => {
   const trimmed = filter?.trim();
   return db.query.blogs.findMany({
     where: trimmed ? ilike(blogs.title, `%${trimmed}%`) : undefined,
   });
+};
+
+export const getBlogCount = async (): Promise<number> => {
+  const res: { count: number }[] = await db
+    .select({ count: count() })
+    .from(blogs);
+  return res[0].count;
 };
 
 export const addBlog = async ({ title, author, url }: BlogInput) => {
@@ -42,9 +50,14 @@ export const likeBlog = async (id: number) => {
       .where(eq(blogs.id, id));
 };
 
-export const addToReadingList = async (id: number) => {
-  const user = await getCurrentUser();
-  const blog = await getBlog(id);
+interface Input {
+  userId: number;
+  blogId: number;
+}
+
+export const addToReadingList = async ({ userId, blogId }: Input) => {
+  const user = await getUserById(userId);
+  const blog = await getBlog(blogId);
   if (user && blog) {
     await db
       .insert(readingList)
@@ -57,12 +70,12 @@ export const addToReadingList = async (id: number) => {
   }
 };
 
-export const markRead = async (id: number) => {
-  const user = await getCurrentUser();
+export const markRead = async ({ userId, blogId }: Input) => {
+  const user = await getUserById(userId);
   if (!user) return;
 
   // first find the blog from user's reading list (without additional query)
-  const entry = user.readingList.find((entry) => entry.blogId === id);
+  const entry = user.readingList.find((entry) => entry.blogId === blogId);
   if (!entry) return;
 
   // secondly update the read status

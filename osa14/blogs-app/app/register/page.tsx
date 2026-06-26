@@ -40,24 +40,24 @@ const RegisterPage = () => {
   return (
     <form action={formAction} style={formStyle}>
       <label style={fieldStyle} className="gap-2">
-        username{' '}
+        Username{' '}
         <input
           name="username"
           type="text"
           defaultValue={state.values.username}
         />
       </label>
-      <div style={errorStyle}>
+      <div style={errorStyle} data-testid="username-error">
         <ErrorMessage text={state.errors?.username} />
       </div>
       <label style={fieldStyle} className="gap-2">
-        name <input name="name" type="text" defaultValue={state.values.name} />
+        Name <input name="name" type="text" defaultValue={state.values.name} />
       </label>
       <div style={errorStyle}>
         <ErrorMessage text={state.errors?.name} />
       </div>
       <label style={fieldStyle} className="gap-2">
-        password{' '}
+        Password{' '}
         <input
           name="password"
           type="password"
@@ -65,17 +65,17 @@ const RegisterPage = () => {
         />
       </label>
       <label style={fieldStyle} className="gap-2">
-        confirm password{' '}
+        Confirm Password{' '}
         <input
           name="password-confirm"
           type="password"
           defaultValue={state.values.passwordConfirm}
         />
       </label>
-      <div style={errorStyle}>
+      <div style={errorStyle} data-testid="passwordConfirm-error">
         <ErrorMessage text={state.errors?.password} />
       </div>
-      <input type="submit" value="register" />
+      <input data-testid="register-button" type="submit" value="Register" />
     </form>
   );
 };

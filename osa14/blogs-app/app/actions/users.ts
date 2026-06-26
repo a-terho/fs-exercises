@@ -2,12 +2,12 @@
 
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
-import { auth } from '@/auth';
 import {
   addUser,
   generateAPIToken,
   getUserByUsername,
 } from '@/app/services/users';
+import { getCurrentUser } from '@/app/services/session';
 import type { RegisterFormErrors, RegisterFormState } from '@/types';
 
 export const registerUser = async (
@@ -51,13 +51,11 @@ export const registerUser = async (
 };
 
 export const newAPIToken = async (formData: FormData) => {
-  const session = await auth();
-  if (!session) return;
+  const user = await getCurrentUser();
 
-  // only allow user in current session to generate API tokens for themselves
-  const userId = formData.get('user-id');
-  if (userId !== session.user?.id) return;
+  // only allow valid user in current session to generate API tokens
+  if (!user) return;
 
-  await generateAPIToken(Number(userId));
+  await generateAPIToken(user.id);
   return revalidatePath('/me');
 };

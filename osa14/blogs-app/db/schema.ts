@@ -18,7 +18,7 @@ export const blogs = schema.table('blogs', {
   likes: integer('likes').notNull().default(0),
   userId: integer('user_id')
     .notNull()
-    .references(() => users.id),
+    .references(() => users.id, { onDelete: 'cascade' }),
 });
 
 export const users = schema.table('users', {
@@ -35,17 +35,17 @@ export const readingList = schema.table(
     id: serial('id').primaryKey(),
     userId: integer('user_id')
       .notNull()
-      .references(() => users.id),
+      .references(() => users.id, { onDelete: 'cascade' }),
     blogId: integer('blog_id')
       .notNull()
-      .references(() => blogs.id),
+      .references(() => blogs.id, { onDelete: 'cascade' }),
     read: boolean().notNull().default(false),
   },
-  // also add unique constraint to disallowe duplicate entries
+  // also add unique constraint to disallow duplicate entries
   (table) => [unique().on(table.userId, table.blogId)],
 );
 
-// allow user.blogs access (export is required!)
+// allow user.blogs and user.readingList access (export is required!)
 export const userRelations = relations(users, ({ many }) => {
   return {
     blogs: many(blogs),

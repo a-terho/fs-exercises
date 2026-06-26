@@ -2,6 +2,7 @@
 
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
+import { auth } from '@/auth';
 import {
   addBlog,
   likeBlog,
@@ -13,7 +14,7 @@ import type { BlogFormState, BlogFormErrors } from '@/types';
 export const newBlog = async (
   _prevState: BlogFormState,
   formData: FormData,
-) => {
+): Promise<BlogFormState> => {
   const errors: BlogFormErrors = {};
 
   const title = formData.get('title') as string;
@@ -34,16 +35,20 @@ export const newBlog = async (
   // if there are any errors, display them to the client
   // while also passing the current values for the renderer
   if (Object.keys(errors).length > 0) {
-    return { errors, values: { title, author, url } };
+    return { success: false, errors, values: { title, author, url } };
   }
 
   await addBlog({ title, author, url });
   revalidatePath('/blogs');
-  redirect('/blogs');
+  return {
+    success: true,
+    errors: {},
+    values: { title: '', author: '', url: '' },
+  };
 };
 
 export const sendBlogLike = async (formData: FormData) => {
-  const id = formData.get('id') as string;
+  const id = formData.get('blog-id');
 
   await likeBlog(Number(id));
   revalidatePath(`/blogs/${id}`);
@@ -62,17 +67,25 @@ export const searchBlogs = async (formData: FormData) => {
 };
 
 export const addBlogToReadingList = async (formData: FormData) => {
-  const blogId = formData.get('id');
+  const session = await auth();
+  const blogId = formData.get('blog-id');
 
-  await addToReadingList(Number(blogId));
+  await addToReadingList({
+    userId: Number(session?.user.id),
+    blogId: Number(blogId),
+  });
   revalidatePath(`/blogs/${blogId}`);
   revalidatePath('/me');
 };
 
 export const markBlogRead = async (formData: FormData) => {
-  const blogId = formData.get('id');
+  const session = await auth();
+  const blogId = formData.get('blog-id');
 
-  await markRead(Number(blogId));
+  await markRead({
+    userId: Number(session?.user.id),
+    blogId: Number(blogId),
+  });
   revalidatePath(`/blogs/${blogId}`);
   revalidatePath('/me');
 };

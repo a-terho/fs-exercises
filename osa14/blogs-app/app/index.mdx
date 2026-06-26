@@ -1,0 +1,34 @@
+import { getBlogCount } from '@/app/services/blogs';
+import OnlyIf from '@/app/components/ConditionalBlock';
+
+## blogs app
+
+This is an implementation of [Full Stack Open](https://fullstackopen.com/) blogs-app built with **Next.js**. It features:
+
+1. authentication
+2. blog listing with search support
+3. personal reading list support
+4. interactivity (_likes_)
+5. support for dark mode.
+
+<OnlyIf condition={!props.loggedIn}>
+  You may first [create an account](/register) and then [log in](/login). After
+  that, you can view your profile.
+</OnlyIf>
+
+<OnlyIf condition={props.loggedIn}>
+  You can view your profile [here](/me).
+</OnlyIf>
+
+All blogs are listed under the [blogs tab](/blogs) view. There are currently {getBlogCount()} blogs. <OnlyIf condition={props.loggedIn}>Add new blog [here](/blogs/new).</OnlyIf>
+
+---
+
+Technologies used:
+
+- Next.js and React with deployment to Vercel
+- Neon with Drizzle ORM
+- Auth.js
+- MDX
+
+Source code is located at [fs-exercises repository](https://github.com/a-terho/fs-exercises/tree/main/osa14/blogs-app).
