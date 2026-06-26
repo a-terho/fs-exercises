@@ -1,4 +1,4 @@
-import { eq, ilike, and } from 'drizzle-orm';
+import { eq, ilike, and, count } from 'drizzle-orm';
 import { db } from '@/db';
 import { blogs, readingList } from '@/db/schema';
 import { type Blog, type BlogInput } from '@/types';
@@ -9,6 +9,13 @@ export const getBlogs = async (filter?: string): Promise<Blog[]> => {
   return db.query.blogs.findMany({
     where: trimmed ? ilike(blogs.title, `%${trimmed}%`) : undefined,
   });
+};
+
+export const getBlogCount = async (): Promise<number> => {
+  const res: { count: number }[] = await db
+    .select({ count: count() })
+    .from(blogs);
+  return res[0].count;
 };
 
 export const addBlog = async ({ title, author, url }: BlogInput) => {
