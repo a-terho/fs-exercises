@@ -2,6 +2,7 @@
 
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
+import { auth } from '@/auth';
 import {
   addBlog,
   likeBlog,
@@ -47,7 +48,7 @@ export const newBlog = async (
 };
 
 export const sendBlogLike = async (formData: FormData) => {
-  const id = formData.get('id') as string;
+  const id = formData.get('blog-id');
 
   await likeBlog(Number(id));
   revalidatePath(`/blogs/${id}`);
@@ -66,17 +67,25 @@ export const searchBlogs = async (formData: FormData) => {
 };
 
 export const addBlogToReadingList = async (formData: FormData) => {
-  const blogId = formData.get('id');
+  const session = await auth();
+  const blogId = formData.get('blog-id');
 
-  await addToReadingList(Number(blogId));
+  await addToReadingList({
+    userId: Number(session?.user.id),
+    blogId: Number(blogId),
+  });
   revalidatePath(`/blogs/${blogId}`);
   revalidatePath('/me');
 };
 
 export const markBlogRead = async (formData: FormData) => {
-  const blogId = formData.get('id');
+  const session = await auth();
+  const blogId = formData.get('blog-id');
 
-  await markRead(Number(blogId));
+  await markRead({
+    userId: Number(session?.user.id),
+    blogId: Number(blogId),
+  });
   revalidatePath(`/blogs/${blogId}`);
   revalidatePath('/me');
 };

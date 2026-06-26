@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "NODE_ENV=production next build",
     "start": "NODE_ENV=production next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:e2e": "NODE_ENV=test playwright test",
+    "test:e2e:ui": "NODE_ENV=test playwright test --ui"
   },
   "dependencies": {
     "@mdx-js/loader": "^3.1.1",
@@ -21,6 +23,7 @@
     "react-dom": "^19.2.6"
   },
   "devDependencies": {
+    "@playwright/test": "^1.61.1",
     "@tailwindcss/postcss": "^4",
     "@types/bcryptjs": "^2.4.6",
     "@types/mdx": "^2.0.14",

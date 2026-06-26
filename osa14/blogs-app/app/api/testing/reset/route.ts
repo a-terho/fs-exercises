@@ -10,8 +10,8 @@ export const DELETE = async () => {
     );
   }
 
-  await db.delete(users);
   await db.delete(blogs);
   await db.delete(readingList);
-  return NextResponse.json({}, { status: 204 });
+  await db.delete(users);
+  return NextResponse.json(null, { status: 200 });
 };

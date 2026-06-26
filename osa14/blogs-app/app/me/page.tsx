@@ -58,7 +58,6 @@ const MePage = async () => {
             </div>
           )}
           <form action={newAPIToken} className="mt-5">
-            <input type="hidden" name="user-id" value={session.user?.id} />
             <input
               data-testid="generate-token-button"
               type="submit"
@@ -68,20 +67,23 @@ const MePage = async () => {
         </div>
         <hr className="border-t border-foreground my-8 w-100" />
         <div data-testid="reading-list-section">
-          <h3 id="reading-list">reading list</h3>
           {unreadBlogs.length === 0 && readBlogs.length == 0 ? (
-            <div data-testid="empty-reading-list"></div>
-          ) : null}
+            <p data-testid="empty-reading-list">Your reading list is empty.</p>
+          ) : (
+            <h3 id="reading-list">reading list</h3>
+          )}
           {unreadBlogs.length > 0 ? (
             <div data-testid="unread-section">
               <h4>unread ({unreadBlogs.length})</h4>
               <BlogList
                 blogs={unreadBlogs}
                 buttonAction={buttonAction}
-                emptyTestId="no-unread-blogs"
+                buttonTestIdPrefix="mark-read-"
               />
             </div>
-          ) : null}
+          ) : (
+            <div data-testid="no-unread-blogs">No unread blogs.</div>
+          )}
           {readBlogs.length > 0 ? (
             <>
               <h4>read ({readBlogs.length})</h4>

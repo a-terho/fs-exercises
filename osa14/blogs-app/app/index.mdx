@@ -12,15 +12,15 @@ This is an implementation of [Full Stack Open](https://fullstackopen.com/) blogs
 5. support for dark mode.
 
 <OnlyIf condition={!props.loggedIn}>
-  You may first [register](/register) and then [login](/login) to your account.
-  After that, you can view your profile.
+  You may first [create an account](/register) and then [log in](/login). After
+  that, you can view your profile.
 </OnlyIf>
 
 <OnlyIf condition={props.loggedIn}>
   You can view your profile [here](/me).
 </OnlyIf>
 
-All blogs are listed in the [blogs](/blogs) view. There are currently {getBlogCount()} blogs. <OnlyIf condition={props.loggedIn}>Add new blog [here](/blogs/new).</OnlyIf>
+All blogs are listed under the [blogs tab](/blogs) view. There are currently {getBlogCount()} blogs. <OnlyIf condition={props.loggedIn}>Add new blog [here](/blogs/new).</OnlyIf>
 
 ---
 

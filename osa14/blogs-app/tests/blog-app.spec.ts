@@ -346,6 +346,9 @@ test.describe("Blog Application", () => {
         page.getByTestId("add-to-reading-list-button").click(),
       ])
 
+      // Wait for server action to complete -- added, /me would render before revalidation
+      await page.waitForTimeout(500)
+
       // Navigate to me page
       await page.goto("/me")
 
@@ -414,6 +417,9 @@ test.describe("Blog Application", () => {
         page.waitForResponse((response) => response.status() === 200),
         page.getByTestId("add-to-reading-list-button").click(),
       ])
+
+      // Wait for server action to complete -- added, /me would render before revalidation
+      await page.waitForTimeout(500)
 
       // Go to me page
       await page.goto("/me")

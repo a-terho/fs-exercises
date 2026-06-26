@@ -23,13 +23,13 @@ const BlogPage = async ({ params }: Props) => {
       <h2 data-testid="blog-title">{blog.title}</h2>
       <div className="flex gap-2">
         <form action={sendBlogLike} className="mb-5">
-          <input type="hidden" name="id" value={blog.id} />
+          <input type="hidden" name="blog-id" value={blog.id} />
           <input type="submit" value="like" />
         </form>
         {user ? (
           !readingListEntry ? (
             <form action={addBlogToReadingList} className="mb-5">
-              <input type="hidden" name="id" value={blog.id} />
+              <input type="hidden" name="blog-id" value={blog.id} />
               <input
                 data-testid="add-to-reading-list-button"
                 type="submit"

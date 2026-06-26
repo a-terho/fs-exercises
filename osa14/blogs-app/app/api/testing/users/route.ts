@@ -1,5 +1,5 @@
-import { addUser } from '@/app/services/users';
 import { type NextRequest, NextResponse } from 'next/server';
+import { addUser } from '@/app/services/users';
 
 interface Body {
   username: string;
@@ -17,5 +17,5 @@ export const POST = async (req: NextRequest) => {
 
   const body: Body = await req.json();
   await addUser(body.username, body.name, body.password);
-  return NextResponse.json({}, { status: 201 });
+  return NextResponse.json(null, { status: 201 });
 };
