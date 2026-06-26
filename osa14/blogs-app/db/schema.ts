@@ -41,11 +41,11 @@ export const readingList = schema.table(
       .references(() => blogs.id),
     read: boolean().notNull().default(false),
   },
-  // also add unique constraint to disallowe duplicate entries
+  // also add unique constraint to disallow duplicate entries
   (table) => [unique().on(table.userId, table.blogId)],
 );
 
-// allow user.blogs access (export is required!)
+// allow user.blogs and user.readingList access (export is required!)
 export const userRelations = relations(users, ({ many }) => {
   return {
     blogs: many(blogs),

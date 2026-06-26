@@ -56,14 +56,14 @@ const LoginPage = () => {
   return (
     <form onSubmit={handleSubmit} style={formStyle}>
       <label style={fieldStyle} className="gap-2">
-        username <input name="username" type="text" />
+        Username <input name="username" type="text" />
       </label>
       <label style={fieldStyle} className="gap-2">
-        password <input name="password" type="password" />
+        Password <input name="password" type="password" />
       </label>
-      <input type="submit" value="login" />
+      <input data-testid="login-button" type="submit" value="Login" />
       {error ? (
-        <div style={errorStyle}>
+        <div style={errorStyle} data-testid="error-message">
           <ErrorMessage text={error} />
         </div>
       ) : null}

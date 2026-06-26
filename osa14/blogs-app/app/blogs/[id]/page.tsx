@@ -19,8 +19,8 @@ const BlogPage = async ({ params }: Props) => {
   );
 
   return (
-    <>
-      <h2>{blog.title}</h2>
+    <div data-testid="blog-detail">
+      <h2 data-testid="blog-title">{blog.title}</h2>
       <div className="flex gap-2">
         <form action={sendBlogLike} className="mb-5">
           <input type="hidden" name="id" value={blog.id} />
@@ -30,7 +30,11 @@ const BlogPage = async ({ params }: Props) => {
           !readingListEntry ? (
             <form action={addBlogToReadingList} className="mb-5">
               <input type="hidden" name="id" value={blog.id} />
-              <input type="submit" value="add to reading list" />
+              <input
+                data-testid="add-to-reading-list-button"
+                type="submit"
+                value="add to reading list"
+              />
             </form>
           ) : (
             <button className="rounded px-1 border-2 self-start">
@@ -41,13 +45,13 @@ const BlogPage = async ({ params }: Props) => {
           )
         ) : null}
       </div>
-      <p>
+      <p data-testid="blog-author">
         by {blog.author} with {blog.likes} likes
       </p>
       <a href={blog.url} className="underline hover:text-blue-600">
         {blog.url}
       </a>
-    </>
+    </div>
   );
 };
 

@@ -19,6 +19,7 @@ export interface BlogFormErrors {
 }
 
 export interface BlogFormState {
+  success: boolean;
   errors: BlogFormErrors;
   values: BlogInput;
 }

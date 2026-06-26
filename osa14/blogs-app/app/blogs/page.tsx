@@ -18,8 +18,13 @@ const Blogs = async ({ searchParams }: Props) => {
       <h2>blogs</h2>
       <div className="mb-4">
         <form action={searchBlogs} className="flex gap-1">
-          <input type="text" name="query" defaultValue={query} />
-          <input type="submit" value="Search" />
+          <input
+            data-testid="filter-input"
+            type="text"
+            name="query"
+            defaultValue={query}
+          />
+          <input data-testid="search-button" type="submit" value="Search" />
         </form>
         {query ? (
           <p className="py-1">
@@ -27,7 +32,9 @@ const Blogs = async ({ searchParams }: Props) => {
           </p>
         ) : null}
       </div>
-      <BlogList blogs={blogs} />
+      <div data-testid="blogs-list">
+        <BlogList blogs={blogs} />
+      </div>
     </>
   );
 };

@@ -35,39 +35,52 @@ const MePage = async () => {
   return (
     <>
       <div className="flex flex-col items-center text-center">
-        <div>
+        <div data-testid="user-profile">
           <h2>my profile</h2>
-          <div>
+          <div data-testid="user-name">
             name: <strong>{session.user?.name}</strong>
           </div>
-          <div>
+          <div data-testid="user-username">
             username: <strong>{session.user?.email}</strong>
           </div>
         </div>
         <hr className="border-t border-foreground my-8 w-100" />
-        <div>
+        <div data-testid="api-token-section">
           <h3 id="api-token">api token</h3>
           {data?.apiToken ? (
-            <>
+            <div data-testid="token-display">
               <div>your personal access token:</div>
-              <div>{data.apiToken}</div>
-            </>
+              <code data-testid="api-token">{data.apiToken}</code>
+            </div>
           ) : (
-            <div>you have not generated personal access token yet</div>
+            <div data-testid="no-token-message">
+              you have not generated personal access token yet
+            </div>
           )}
           <form action={newAPIToken} className="mt-5">
             <input type="hidden" name="user-id" value={session.user?.id} />
-            <input type="submit" value="generate new token" />
+            <input
+              data-testid="generate-token-button"
+              type="submit"
+              value="generate new token"
+            />
           </form>
         </div>
         <hr className="border-t border-foreground my-8 w-100" />
-        <div>
+        <div data-testid="reading-list-section">
           <h3 id="reading-list">reading list</h3>
+          {unreadBlogs.length === 0 && readBlogs.length == 0 ? (
+            <div data-testid="empty-reading-list"></div>
+          ) : null}
           {unreadBlogs.length > 0 ? (
-            <>
+            <div data-testid="unread-section">
               <h4>unread ({unreadBlogs.length})</h4>
-              <BlogList blogs={unreadBlogs} buttonAction={buttonAction} />
-            </>
+              <BlogList
+                blogs={unreadBlogs}
+                buttonAction={buttonAction}
+                emptyTestId="no-unread-blogs"
+              />
+            </div>
           ) : null}
           {readBlogs.length > 0 ? (
             <>
