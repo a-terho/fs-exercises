@@ -1,6 +1,7 @@
 # fs-exercises
 
-Full Stack open kurssin harjoitukset
+Sisältönä Full Stack Open kurssin harjoitukset.  
+Lisäksi opetellaan konttaamaan ja tutkiskellaan monorepon toimintaa.
 
 Docker dev-kontin voi käynnistää ajamalla oheisen komennon:
 
@@ -8,7 +9,7 @@ Docker dev-kontin voi käynnistää ajamalla oheisen komennon:
 ./dev.sh
 ```
 
-edistyminen...
+Edistymistä on tapahtunut!
 
 - [x] osa0
 - [x] osa1
@@ -24,4 +25,4 @@ edistyminen...
 - [x] osa11 (ci/cd)
 - [x] osa12 (containers) löytyy [täältä (fs-containers)](https://github.com/a-terho/fs-containers)
 - [x] osa13 (relational databases)
-- [ ] osa14 (next.js)
+- [x] osa14 (next.js)
